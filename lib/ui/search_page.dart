@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
+import 'journey.dart';
 import '../main.dart';
 import '../train_model.dart';
 
@@ -26,6 +27,7 @@ class SearchResult {
   final bool isAmbiguousMatch;
   final bool isCoupledTrain;
   final String queryTime;
+  final String? trainCodeForJourney;
 
   SearchResult({
     required this.model,
@@ -42,6 +44,7 @@ class SearchResult {
     this.isAmbiguousMatch = false,
     this.isCoupledTrain = false,
     required this.queryTime,
+    this.trainCodeForJourney,
   });
 }
 
@@ -744,6 +747,7 @@ class _SearchPageState extends State<SearchPage> {
                 isAmbiguousMatch: exactMatches.length > 1,
                 isCoupledTrain: uniqueEmuNos.length > 1,
                 queryTime: queryTime,
+                trainCodeForJourney: fullCode,
               ),
             );
           }
@@ -941,6 +945,15 @@ class _SearchPageState extends State<SearchPage> {
           final bureau = (record['配属路局'] ?? '').toString().trim();
           final emuNo = cleanString('${record['type_code']}${record['车组号']}');
 
+          String? trainCodeForJourney;
+          if (showRoutes && routeMap[emuNo] != null) {
+            final routeStr = routeMap[emuNo]!;
+            final match = RegExp(r'本务车次:\s*([^\s\n]+)').firstMatch(routeStr);
+            if (match != null) {
+              trainCodeForJourney = match.group(1)?.trim();
+            }
+          }
+
           _searchResults.add(
             SearchResult(
               model: record['type_code'] ?? '',
@@ -954,6 +967,7 @@ class _SearchPageState extends State<SearchPage> {
               rank: i + 1,
               routeInfo: showRoutes ? routeMap[emuNo] : null,
               queryTime: queryTime,
+              trainCodeForJourney: trainCodeForJourney,
             ),
           );
         }
@@ -995,197 +1009,222 @@ class _SearchPageState extends State<SearchPage> {
       ),
     );
   }
-
   Widget _buildResultCard(SearchResult result) {
     final settings = Provider.of<AppSettings>(context, listen: false);
 
-    return Card(
-      elevation: 4,
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                _buildTrainIcon(result.model, result.number),
-                const SizedBox(width: 8),
-                Expanded(
+    // 判断是否支持点击跳转到 Journey 页面
+    final bool canNavigateToJourney = result.trainCodeForJourney != null &&
+        result.trainCodeForJourney!.isNotEmpty &&
+        (searchType == 'trainCode' ||
+            (searchType == 'trainId' && showRoutes));
+
+    return InkWell(
+      onTap: canNavigateToJourney
+          ? () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => AddJourneyPage(
+              initialTrainNumber: result.trainCodeForJourney!,
+              autoSearchAndExpand: true,
+            ),
+          ),
+        );
+      }
+          : null, // 不支持跳转时点击无反应
+      borderRadius: BorderRadius.circular(12),
+      child: Card(
+        elevation: 4,
+        margin: const EdgeInsets.only(bottom: 12),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  _buildTrainIcon(result.model, result.number),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${result.model}-${result.number}',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        if (searchType == 'bureau')
+                          Text(
+                            result.bureauFullName,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withAlpha(150),
+                            ),
+                          ),
+                        if (result.isCoupledTrain)
+                          Text(
+                            '可能为重联列车',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: Theme.of(context).colorScheme.primary,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+
+                        if (result.isAmbiguousMatch)
+                          Text(
+                            '存在多个匹配结果，请核对车号',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: Theme.of(context).colorScheme.error,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        if (result.score != null) ...[
+                          const SizedBox(height: 4),
+                          Row(
+                            children: [
+                              Container(
+                                width: 60,
+                                height: 6,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(3),
+                                ),
+                                child: FractionallySizedBox(
+                                  alignment: Alignment.centerLeft,
+                                  widthFactor: result.score!.clamp(0.0, 1.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: result.score! >= 0.8
+                                          ? Colors.green
+                                          : result.score! >= 0.5
+                                          ? Colors.orange
+                                          : Colors.red,
+                                      borderRadius: BorderRadius.circular(3),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                '${(result.score! * 100).toInt()}%',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: result.score! >= 0.8
+                                      ? Colors.green
+                                      : result.score! >= 0.6
+                                      ? Colors.orange
+                                      : Colors.red,
+                                ),
+                              ),
+                              if (result.rank != null) ...[
+                                const SizedBox(width: 8),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 6,
+                                    vertical: 2,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primary
+                                        .withAlpha(20),
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: Text(
+                                    '#${result.rank!}',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color:
+                                      Theme.of(context).colorScheme.primary,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                  if (settings.showBureauIcons)
+                    BureauIconWidget(bureau: result.bureau, size: 32)
+                  else
+                    const SizedBox(width: 32, height: 32),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (result.bureau.isNotEmpty && searchType != 'bureau')
+                    _buildInfoRow('配属路局', result.bureauFullName),
+                  if (result.depot != null && result.depot!.isNotEmpty)
+                    _buildInfoRow('配属动车所', result.depot!),
+                  if (result.manufacturer != null &&
+                      result.manufacturer!.isNotEmpty)
+                    _buildInfoRow('生产厂家', result.manufacturer!),
+                  if (result.stationinfo != null)
+                    _buildInfoRow('运行交路', result.stationinfo!),
+                  if (result.remarks != null && result.remarks!.isNotEmpty)
+                    _buildInfoRow('备注', result.remarks!),
+                ],
+              ),
+              if (result.routeInfo != null && result.routeInfo!.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color:
+                    Theme.of(context).colorScheme.primary.withAlpha(20),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${result.model}-${result.number}',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                    children: result.routeInfo!
+                        .split('\n')
+                        .map(
+                          (line) => Text(
+                        line,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withAlpha(200),
                         ),
                       ),
-                      if (searchType == 'bureau')
-                        Text(
-                          result.bureauFullName,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.onSurface.withAlpha(150),
-                          ),
-                        ),
-                      if (result.isCoupledTrain)
-                        Text(
-                          '可能为重联列车',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: Theme.of(context).colorScheme.primary,
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
-
-                      if (result.isAmbiguousMatch)
-                        Text(
-                          '存在多个匹配结果，请核对车号',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: Theme.of(context).colorScheme.error,
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
-                      if (result.score != null) ...[
-                        const SizedBox(height: 4),
-                        Row(
-                          children: [
-                            Container(
-                              width: 60,
-                              height: 6,
-                              decoration: BoxDecoration(
-                                color: Colors.grey[200],
-                                borderRadius: BorderRadius.circular(3),
-                              ),
-                              child: FractionallySizedBox(
-                                alignment: Alignment.centerLeft,
-                                widthFactor: result.score!.clamp(0.0, 1.0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: result.score! >= 0.8
-                                        ? Colors.green
-                                        : result.score! >= 0.5
-                                        ? Colors.orange
-                                        : Colors.red,
-                                    borderRadius: BorderRadius.circular(3),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              '${(result.score! * 100).toInt()}%',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: result.score! >= 0.8
-                                    ? Colors.green
-                                    : result.score! >= 0.6
-                                    ? Colors.orange
-                                    : Colors.red,
-                              ),
-                            ),
-                            if (result.rank != null) ...[
-                              const SizedBox(width: 8),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 6,
-                                  vertical: 2,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.primary.withAlpha(20),
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                child: Text(
-                                  '#${result.rank!}',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.primary,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ],
-                        ),
-                      ],
-                    ],
+                    )
+                        .toList(),
                   ),
                 ),
-                if (settings.showBureauIcons)
-                  BureauIconWidget(bureau: result.bureau, size: 32)
-                else
-                  const SizedBox(width: 32, height: 32),
               ],
-            ),
-            const SizedBox(height: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (result.bureau.isNotEmpty && searchType != 'bureau')
-                  _buildInfoRow('配属路局', result.bureauFullName),
-                if (result.depot != null && result.depot!.isNotEmpty)
-                  _buildInfoRow('配属动车所', result.depot!),
-                if (result.manufacturer != null &&
-                    result.manufacturer!.isNotEmpty)
-                  _buildInfoRow('生产厂家', result.manufacturer!),
-                if (result.stationinfo != null)
-                  _buildInfoRow('运行交路', result.stationinfo!),
-                if (result.remarks != null && result.remarks!.isNotEmpty)
-                  _buildInfoRow('备注', result.remarks!),
-              ],
-            ),
-            if (result.routeInfo != null && result.routeInfo!.isNotEmpty) ...[
               const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary.withAlpha(20),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: result.routeInfo!
-                      .split('\n')
-                      .map(
-                        (line) => Text(
-                          line,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.onSurface.withAlpha(200),
-                          ),
-                        ),
-                      )
-                      .toList(),
+              Text(
+                '查询时间: ${result.queryTime}',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurface
+                      .withAlpha(150),
                 ),
               ),
             ],
-            const SizedBox(height: 8),
-            Text(
-              '查询时间: ${result.queryTime}',
-              style: TextStyle(
-                fontSize: 12,
-                color: Theme.of(context).colorScheme.onSurface.withAlpha(150),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
   }
-
   Widget _buildPaginationControls() {
     if (_totalPages <= 1) return const SizedBox.shrink();
 

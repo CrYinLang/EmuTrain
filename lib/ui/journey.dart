@@ -17,7 +17,14 @@ import 'linemap.dart';
 import 'travel_screen.dart';
 
 class AddJourneyPage extends StatefulWidget {
-  const AddJourneyPage({super.key});
+  final String? initialTrainNumber;
+  final bool autoSearchAndExpand;
+
+  const AddJourneyPage({
+    super.key,
+    this.initialTrainNumber,
+    this.autoSearchAndExpand = false,
+  });
 
   @override
   State<AddJourneyPage> createState() => _AddJourneyPageState();
@@ -60,6 +67,15 @@ class _AddJourneyPageState extends State<AddJourneyPage>
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     _selectedDate = today.add(const Duration(days: 1));
+
+    if (widget.initialTrainNumber != null && widget.initialTrainNumber!.isNotEmpty) {
+      _trainNumberCtrl.text = widget.initialTrainNumber!;
+      _searchMode = 0; // 强制车次查询模式
+      _selectedDate = today;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _searchTrain(); // 自动触发搜索
+      });
+    }
   }
 
   Map<String, String> _stationNameMap = {};
@@ -225,6 +241,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
       _showSnack('请输入车次');
       return;
     }
+
     setState(() {
       _loading = true;
       _trainResults.clear();
@@ -233,12 +250,15 @@ class _AddJourneyPageState extends State<AddJourneyPage>
       _expandedIndex = null;
       if (_animCtrl.isAnimating) _animCtrl.reset();
     });
+
     try {
       final url =
           'https://search.12306.cn/search/v1/train/search?keyword=$trainNumber&date=$_formattedDate';
       final response = await http.get(Uri.parse(url));
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+
         if (data['status'] == true) {
           final allResults = data['data'] ?? [];
           final limitedResults = allResults.length > 15
@@ -246,13 +266,30 @@ class _AddJourneyPageState extends State<AddJourneyPage>
               : allResults;
 
           setState(() => _trainResults = limitedResults);
+
+          // ==================== 自动展开逻辑（关键修复） ====================
+          if (widget.autoSearchAndExpand && limitedResults.isNotEmpty) {
+            if (limitedResults.length == 1) {
+              // 只有一条结果时：自动展开 + 加载详情 + 禁止收回
+              setState(() => _expandedIndex = 0);
+              _animCtrl.forward();
+              await _fetchDetails(0, false);   // 加载停站信息
+            } else {
+              // 多条结果时：只自动展开第一条（可选），不强制禁止收回
+              setState(() => _expandedIndex = 0);
+              _animCtrl.forward();
+              await _fetchDetails(0, false);
+            }
+          }
+          // =================================================================
+
           _showSnack(
             _trainResults.isEmpty
                 ? '未找到相关车次信息'
                 : '找到 ${_trainResults.length} 条结果',
           );
         } else {
-          _showSnack('搜索失败: ${data['errorMsg']}');
+          _showSnack('搜索失败: ${data['errorMsg'] ?? '未知错误'}');
         }
       } else {
         _showSnack('网络请求失败: ${response.statusCode}');
@@ -419,6 +456,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
       }
     } catch (e) {
       _showSnack('发生错误: $e');
+      print(e);
     } finally {
       setState(() => _loading = false);
     }
@@ -766,6 +804,13 @@ class _AddJourneyPageState extends State<AddJourneyPage>
   }
 
   void _toggleExpand(int index, bool isStation) async {
+    if (widget.autoSearchAndExpand &&
+        !isStation &&                    // 车次查询模式
+        _trainResults.length == 1 &&     // 只有一条结果
+        _expandedIndex == index) {
+      return; // 不允许收回
+    }
+
     if (isStation) {
       if (_stationExpandedIndex == index) {
         _animCtrl.reverse().then((_) {
