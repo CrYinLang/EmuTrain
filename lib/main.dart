@@ -410,10 +410,19 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
+    _loadDefaultHomePage();
     _handleUpdate();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final settings = Provider.of<AppSettings>(context, listen: false);
       settings.checkRemoteCommand();
+    });
+  }
+
+  Future<void> _loadDefaultHomePage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final defaultPage = prefs.getString('default_home_page') ?? '旅途';
+    setState(() {
+      _currentIndex = defaultPage == '旅途' ? 0 : 1;
     });
   }
 

@@ -23,9 +23,11 @@ class _SettingsScreenState extends State<SettingsScreen>
   bool _showTrainImage = true;
   bool _showRealTrainMap = true;
   bool _showAutoUpdate = true;
+  String _defaultHomePage = '旅途';
 
   static const String _trainImageKey = 'show_train_image';
   static const String _realTrainMapKey = 'show_real_train_map';
+  static const String _defaultHomePageKey = 'default_home_page';
   static const String _showAutoUpdateKey = 'show_auto_update';
 
   @override
@@ -47,12 +49,17 @@ class _SettingsScreenState extends State<SettingsScreen>
       _showTrainImage = prefs.getBool(_trainImageKey) ?? true;
       _showRealTrainMap = prefs.getBool(_realTrainMapKey) ?? true;
       _showAutoUpdate = prefs.getBool(_showAutoUpdateKey) ?? true;
+      _defaultHomePage = prefs.getString(_defaultHomePageKey) ?? '旅途';
     });
   }
 
-  Future<void> _saveSetting(String key, bool value) async {
+  Future<void> _saveSetting(String key, dynamic value) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(key, value);
+    if (value is bool) {
+      await prefs.setBool(key, value);
+    } else if (value is String) {
+      await prefs.setString(key, value);
+    }
   }
 
   // ==================== 通用 UI 构建 ====================
@@ -324,6 +331,69 @@ class _SettingsScreenState extends State<SettingsScreen>
           ],
         ),
         const SizedBox(height: 16),
+
+        _buildSection(
+          icon: Icons.home,
+          title: '主页设置',
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.home_work,
+                        size: 20,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      const SizedBox(width: 12),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '默认主页',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
+                          ),
+                          Text(
+                            '设置应用启动时显示的首页',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withOpacity(0.7),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  DropdownButton<String>(
+                    value: _defaultHomePage,
+                    items: ['旅途', '搜索']
+                        .map((v) => DropdownMenuItem(
+                      value: v,
+                      child: Text(v, style: const TextStyle(fontSize: 16)),
+                    ))
+                        .toList(),
+                    onChanged: (v) async {
+                      if (v != null) {
+                        setState(() => _defaultHomePage = v);
+                        await _saveSetting(_defaultHomePageKey, v);
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
 
         // 应用信息
         _buildSection(
