@@ -1,13 +1,14 @@
 //home_page.dart
 import 'dart:convert';
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
-import '../train_model.dart';
 import '../main.dart';
+import '../train_model.dart';
 
 // 搜索结果数据类（统一所有查询类型的结果）
 class SearchResult {
@@ -94,7 +95,9 @@ class _SearchPageState extends State<SearchPage> {
 
   Future<void> _loadConfig() async {
     try {
-      final String dataString = await rootBundle.loadString('assets/train.json');
+      final String dataString = await rootBundle.loadString(
+        'assets/train.json',
+      );
       final Map<String, dynamic> dataJson = json.decode(dataString);
 
       final loadedData = <Map<String, dynamic>>[];
@@ -131,7 +134,11 @@ class _SearchPageState extends State<SearchPage> {
     return digits.length >= 4 ? digits.substring(digits.length - 4) : null;
   }
 
-  double calculateMatchScore(String input, String trainNumber, String modelCode) {
+  double calculateMatchScore(
+    String input,
+    String trainNumber,
+    String modelCode,
+  ) {
     final cleanedInput = cleanString(input);
     final cleanedTrainNumber = cleanString(trainNumber);
     final cleanedModelCode = cleanString(modelCode);
@@ -144,7 +151,9 @@ class _SearchPageState extends State<SearchPage> {
       if (cleanedInput.endsWith(cleanedTrainNumber)) {
         numberScore = 1.0;
       } else if (cleanedTrainNumber.length >= 4) {
-        String trainLastFour = cleanedTrainNumber.substring(cleanedTrainNumber.length - 4);
+        String trainLastFour = cleanedTrainNumber.substring(
+          cleanedTrainNumber.length - 4,
+        );
         if (cleanedInput.contains(trainLastFour)) {
           numberScore = 0.8;
         }
@@ -297,7 +306,10 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _goToPage(int page) {
-    if (page == _currentPage || _loadingPage || page < 1 || page > _totalPages) {
+    if (page == _currentPage ||
+        _loadingPage ||
+        page < 1 ||
+        page > _totalPages) {
       _pageController.text = _currentPage.toString();
       return;
     }
@@ -310,12 +322,16 @@ class _SearchPageState extends State<SearchPage> {
     try {
       // 获取当前日期（格式：20260214）
       final now = DateTime.now();
-      final formattedDate = '${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}';
+      final formattedDate =
+          '${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}';
 
-      final apiUrl = 'https://search.12306.cn/search/v1/train/search?keyword=$code&date=$formattedDate';
+      final apiUrl =
+          'https://search.12306.cn/search/v1/train/search?keyword=$code&date=$formattedDate';
 
       final headers = {'User-Agent': 'Mozilla/5.0'};
-      final response = await http.get(Uri.parse(apiUrl), headers: headers).timeout(Duration(seconds: 10));
+      final response = await http
+          .get(Uri.parse(apiUrl), headers: headers)
+          .timeout(Duration(seconds: 10));
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
@@ -325,12 +341,15 @@ class _SearchPageState extends State<SearchPage> {
 
           // 遍历所有车次数据
           for (var train in trainData) {
-            final stationTrainCode = train['station_train_code']?.toString().trim() ?? '';
+            final stationTrainCode =
+                train['station_train_code']?.toString().trim() ?? '';
             final fromStation = train['from_station']?.toString().trim() ?? '';
             final toStation = train['to_station']?.toString().trim() ?? '';
 
             // 精确匹配车次
-            if (stationTrainCode == code && fromStation.isNotEmpty && toStation.isNotEmpty) {
+            if (stationTrainCode == code &&
+                fromStation.isNotEmpty &&
+                toStation.isNotEmpty) {
               return '$fromStation ~ $toStation';
             }
           }
@@ -369,14 +388,12 @@ class _SearchPageState extends State<SearchPage> {
     });
 
     try {
-      
       final headers = {'User-Agent': 'Mozilla/5.0'};
       final queryTime = DateTime.now().toLocal().toString().substring(0, 19);
 
       if (searchType == 'bureau') {
         await _searchByBureau(input);
       }
-
       // ==================== 车次查询 ====================
       else if (searchType == 'trainCode') {
         if (!RegExp(r'^[1-9]\d{0,3}$').hasMatch(input)) {
@@ -396,7 +413,9 @@ class _SearchPageState extends State<SearchPage> {
         final settings = Provider.of<AppSettings>(context, listen: false);
         http.Response? resp;
 
-        if (settings.dataSource == TrainDataSource.railGo){setState(() => errorMsg = 'RAILGO数据源已停用!请切换数据源!');}
+        if (settings.dataSource == TrainDataSource.railGo) {
+          setState(() => errorMsg = 'RAILGO数据源已停用!请切换数据源!');
+        }
 
         if (settings.dataSource == TrainDataSource.railRe) {
           resp = await http.get(
@@ -405,14 +424,17 @@ class _SearchPageState extends State<SearchPage> {
           );
         } else if (settings.dataSource == TrainDataSource.railGo) {
           resp = await http.get(
-            Uri.parse('https://emu.data.railgo.zenglingkun.cn/train/${fullCode.toUpperCase()}'),
+            Uri.parse(
+              'https://emu.data.railgo.zenglingkun.cn/train/${fullCode.toUpperCase()}',
+            ),
             headers: headers,
           );
         } else {
           http.Response? resp12306;
           resp12306 = await http.get(
             Uri.parse(
-                'https://mobile.12306.cn/wxxcx/openplatform-inner/miniprogram/wifiapps/appFrontEnd/v2/lounge/open-smooth-common/trainStyleBatch/getCarDetail?carCode=&trainCode=${fullCode.toUpperCase()}&runningDay=0&reqType=form'),
+              'https://mobile.12306.cn/wxxcx/openplatform-inner/miniprogram/wifiapps/appFrontEnd/v2/lounge/open-smooth-common/trainStyleBatch/getCarDetail?carCode=&trainCode=${fullCode.toUpperCase()}&runningDay=0&reqType=form',
+            ),
             headers: headers,
           );
           if (resp12306.statusCode == 200) {
@@ -420,12 +442,18 @@ class _SearchPageState extends State<SearchPage> {
               Map<String, dynamic> data = json.decode(resp12306.body);
 
               if (data['content'] == null) {
-                setState(() => errorMsg = '返回数据格式错误\n当前数据源: ${settings.dataSource.toString().split('.').last}');
+                setState(
+                  () => errorMsg =
+                      '返回数据格式错误\n当前数据源: ${settings.dataSource.toString().split('.').last}',
+                );
                 return;
               }
 
               if (data['content'] is! Map || data['content']['data'] == null) {
-                setState(() => errorMsg = '车次不存在!\n是城际还是动集?是的话切换数据源\n当前数据源: ${settings.dataSource.toString().split('.').last}');
+                setState(
+                  () => errorMsg =
+                      '车次不存在!\n是城际还是动集?是的话切换数据源\n当前数据源: ${settings.dataSource.toString().split('.').last}',
+                );
                 return;
               }
 
@@ -433,25 +461,38 @@ class _SearchPageState extends State<SearchPage> {
               String? carCode = data['content']['data']['carCode'] as String?;
 
               if (carCode == null || carCode.isEmpty) {
-                setState(() => errorMsg = '车次不存在!\n当前数据源: ${settings.dataSource.toString().split('.').last}');
+                setState(
+                  () => errorMsg =
+                      '车次不存在!\n当前数据源: ${settings.dataSource.toString().split('.').last}',
+                );
               } else {
-                String responseBody = '[{"DateTime":"${DateTime.now()}","emu_no":"$carCode","train_no":"${fullCode.toUpperCase()}"}]';
+                String responseBody =
+                    '[{"DateTime":"${DateTime.now()}","emu_no":"$carCode","train_no":"${fullCode.toUpperCase()}"}]';
                 resp = http.Response(responseBody, 200);
               }
             } catch (e) {
-              setState(() => errorMsg = '解析返回数据失败: $e\n当前数据源: ${settings.dataSource.toString().split('.').last}');
+              setState(
+                () => errorMsg =
+                    '解析返回数据失败: $e\n当前数据源: ${settings.dataSource.toString().split('.').last}',
+              );
             }
           }
         }
 
         if (resp == null) {
-          setState(() => errorMsg = '请求失败，请检查网络连接或数据源设置\n当前数据源: ${settings.dataSource.toString().split('.').last}');
+          setState(
+            () => errorMsg =
+                '请求失败，请检查网络连接或数据源设置\n当前数据源: ${settings.dataSource.toString().split('.').last}',
+          );
           return;
         }
 
         final List data = json.decode(resp.body);
         if (resp.body.isEmpty || resp.body == '[]' || data.isEmpty) {
-          setState(() => errorMsg = '未查询到车次,请尝试:\n1.前往12306查询今日是否运行\n2.切换数据源查询\n当前数据源: ${settings.dataSource.toString().split('.').last}');
+          setState(
+            () => errorMsg =
+                '未查询到车次,请尝试:\n1.前往12306查询今日是否运行\n2.切换数据源查询\n当前数据源: ${settings.dataSource.toString().split('.').last}',
+          );
           return;
         }
 
@@ -471,7 +512,10 @@ class _SearchPageState extends State<SearchPage> {
         }
 
         if (filteredData.isEmpty) {
-          setState(() => errorMsg = '没有可用的动车组数据\n当前数据源: ${settings.dataSource.toString().split('.').last}');
+          setState(
+            () => errorMsg =
+                '没有可用的动车组数据\n当前数据源: ${settings.dataSource.toString().split('.').last}',
+          );
           return;
         }
 
@@ -497,7 +541,8 @@ class _SearchPageState extends State<SearchPage> {
           if (latestDate == null) {
             setState(() {
               isLoading = false;
-              errorMsg = '无法解析车次日期\n当前数据源: ${settings.dataSource.toString().split('.').last}';
+              errorMsg =
+                  '无法解析车次日期\n当前数据源: ${settings.dataSource.toString().split('.').last}';
             });
             return;
           }
@@ -506,7 +551,10 @@ class _SearchPageState extends State<SearchPage> {
           final now = DateTime.now();
           final currentDateOnly = DateTime(now.year, now.month, now.day);
           final latestDateAtMidnight = DateTime(
-              latestDate.year, latestDate.month, latestDate.day);
+            latestDate.year,
+            latestDate.month,
+            latestDate.day,
+          );
 
           final difference = latestDateAtMidnight.difference(currentDateOnly);
           final absDays = difference.inDays.abs();
@@ -514,7 +562,8 @@ class _SearchPageState extends State<SearchPage> {
           if (absDays > 2) {
             setState(() {
               isLoading = false;
-              errorMsg ='车次过期! 可能调图后删除列车\n或者上游API无数据!\n可切换第二数据源尝试\n或者是车次有误\n当前数据源: ${settings.dataSource.toString().split('.').last}';
+              errorMsg =
+                  '车次过期! 可能调图后删除列车\n或者上游API无数据!\n可切换第二数据源尝试\n或者是车次有误\n当前数据源: ${settings.dataSource.toString().split('.').last}';
             });
             return;
           }
@@ -553,7 +602,10 @@ class _SearchPageState extends State<SearchPage> {
         final uniqueEmuNos = emuNos.toSet().toList();
 
         if (uniqueEmuNos.isEmpty) {
-          setState(() => errorMsg = 'API未返回车组号\n当前数据源: ${settings.dataSource.toString().split('.').last}');
+          setState(
+            () => errorMsg =
+                'API未返回车组号\n当前数据源: ${settings.dataSource.toString().split('.').last}',
+          );
           return;
         }
 
@@ -564,22 +616,18 @@ class _SearchPageState extends State<SearchPage> {
 
         if (settings.dataEmuSource == TrainEmuDataSource.moeFactory) {
           // ==================== moeFactory 数据源 ====================
-          final postUrl = 'https://rail.moefactory.com/api/emuSerialNumber/query';
+          final postUrl =
+              'https://rail.moefactory.com/api/emuSerialNumber/query';
 
           // 构建POST请求体
-          final Map<String, String> requestBody = {
-            'keyword': routeEmu,
-          };
+          final Map<String, String> requestBody = {'keyword': routeEmu};
 
           // 发送POST请求
-          emuResp = await http.post(
-            Uri.parse(postUrl),
-            body: requestBody,
-          ).timeout(Duration(seconds: 10));
+          emuResp = await http
+              .post(Uri.parse(postUrl), body: requestBody)
+              .timeout(Duration(seconds: 10));
 
-          if (emuResp.statusCode == 200 &&
-              emuResp.body.isNotEmpty) {
-
+          if (emuResp.statusCode == 200 && emuResp.body.isNotEmpty) {
             final Map<String, dynamic> response = json.decode(emuResp.body);
 
             // 检查响应code
@@ -600,12 +648,18 @@ class _SearchPageState extends State<SearchPage> {
             }
           }
         } else if (settings.dataEmuSource == TrainEmuDataSource.railGo) {
-          if (settings.dataSource == TrainDataSource.railGo){setState(() => errorMsg = 'RAILGO数据源已停用!请切换数据源!');}
+          if (settings.dataSource == TrainDataSource.railGo) {
+            setState(() => errorMsg = 'RAILGO数据源已停用!请切换数据源!');
+          }
           // ==================== railGo 数据源 ====================
-          emuResp = await http.get(
-            Uri.parse('https://emu.data.railgo.zenglingkun.cn/emu/$routeEmu'),
-            headers: headers,
-          ).timeout(Duration(seconds: 10));
+          emuResp = await http
+              .get(
+                Uri.parse(
+                  'https://emu.data.railgo.zenglingkun.cn/emu/$routeEmu',
+                ),
+                headers: headers,
+              )
+              .timeout(Duration(seconds: 10));
 
           if (emuResp.statusCode == 200 &&
               emuResp.body.isNotEmpty &&
@@ -621,13 +675,14 @@ class _SearchPageState extends State<SearchPage> {
               }
             }
           }
-
         } else {
           // ==================== rail.re 数据源 ====================
-          emuResp = await http.get(
-            Uri.parse('https://api.rail.re/emu/$routeEmu'),
-            headers: headers,
-          ).timeout(Duration(seconds: 10));
+          emuResp = await http
+              .get(
+                Uri.parse('https://api.rail.re/emu/$routeEmu'),
+                headers: headers,
+              )
+              .timeout(Duration(seconds: 10));
 
           if (emuResp.statusCode == 200 &&
               emuResp.body.isNotEmpty &&
@@ -650,17 +705,17 @@ class _SearchPageState extends State<SearchPage> {
           final cleanedEmuNo = cleanString(emuNo);
 
           List<Map<String, dynamic>> exactMatches = trainData
-              .where((r) =>
-          cleanString('${r['type_code']}${r['车组号']}') ==
-              cleanedEmuNo)
+              .where(
+                (r) =>
+                    cleanString('${r['type_code']}${r['车组号']}') == cleanedEmuNo,
+              )
               .toList();
 
           if (exactMatches.isEmpty) {
             final lastFour = extractLastFour(emuNo);
             if (lastFour != null) {
               exactMatches = trainData
-                  .where(
-                      (r) => extractLastFour(r['车组号']) == lastFour)
+                  .where((r) => extractLastFour(r['车组号']) == lastFour)
                   .toList();
             }
           }
@@ -670,8 +725,7 @@ class _SearchPageState extends State<SearchPage> {
           }
 
           for (final record in exactMatches) {
-            final bureau =
-            (record['配属路局'] ?? '').toString().trim();
+            final bureau = (record['配属路局'] ?? '').toString().trim();
 
             final stationinfo = await _getStationInfo(fullCode);
 
@@ -695,7 +749,6 @@ class _SearchPageState extends State<SearchPage> {
           }
         }
       }
-
       // ==================== 车号查询 ====================
       else if (searchType == 'trainId') {
         final cleanedInput = cleanString(input);
@@ -727,8 +780,7 @@ class _SearchPageState extends State<SearchPage> {
           final score = calculateMatchScore(input, number, model);
 
           if (hasFourDigits) {
-            final inputLastFour =
-            inputDigits.substring(inputDigits.length - 4);
+            final inputLastFour = inputDigits.substring(inputDigits.length - 4);
             final recordLastFour = extractLastFour(number);
             if (recordLastFour != inputLastFour) continue;
           }
@@ -737,8 +789,7 @@ class _SearchPageState extends State<SearchPage> {
         }
 
         if (scored.isEmpty) {
-          setState(() =>
-          errorMsg = hasFourDigits ? '未找到末四位匹配的车组' : '未找到匹配车组');
+          setState(() => errorMsg = hasFourDigits ? '未找到末四位匹配的车组' : '未找到匹配车组');
           return;
         }
 
@@ -769,43 +820,106 @@ class _SearchPageState extends State<SearchPage> {
         if (showRoutes) {
           final headers = {'User-Agent': 'Mozilla/5.0'};
 
-          await Future.wait(emuToRecord.keys.map((emuNo) async {
-            try {
-              final settings = Provider.of<AppSettings>(context, listen: false);
-              http.Response? resp;
+          await Future.wait(
+            emuToRecord.keys.map((emuNo) async {
+              try {
+                final settings = Provider.of<AppSettings>(
+                  context,
+                  listen: false,
+                );
+                http.Response? resp;
 
-              if (settings.dataEmuSource == TrainEmuDataSource.moeFactory) {
-                // ==================== moeFactory 数据源 ====================
-                final postUrl = 'https://rail.moefactory.com/api/emuSerialNumber/query';
+                if (settings.dataEmuSource == TrainEmuDataSource.moeFactory) {
+                  // ==================== moeFactory 数据源 ====================
+                  final postUrl =
+                      'https://rail.moefactory.com/api/emuSerialNumber/query';
 
-                // 构建POST请求体
-                final Map<String, String> requestBody = {
-                  'keyword': emuNo,
-                };
+                  // 构建POST请求体
+                  final Map<String, String> requestBody = {'keyword': emuNo};
 
-                // 发送POST请求
-                resp = await http.post(
-                  Uri.parse(postUrl),
-                  headers: {
-                    ...headers,
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                  },
-                  body: requestBody,
-                ).timeout(Duration(seconds: 10));
+                  // 发送POST请求
+                  resp = await http
+                      .post(
+                        Uri.parse(postUrl),
+                        headers: {
+                          ...headers,
+                          'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: requestBody,
+                      )
+                      .timeout(Duration(seconds: 10));
 
-                if (resp.statusCode == 200 && resp.body.isNotEmpty) {
-                  final Map<String, dynamic> response = json.decode(resp.body);
+                  if (resp.statusCode == 200 && resp.body.isNotEmpty) {
+                    final Map<String, dynamic> response = json.decode(
+                      resp.body,
+                    );
 
-                  // 检查响应code
-                  if (response['code'] == 200) {
-                    // 获取data数组
-                    final List<dynamic> data = response['data'] ?? [];
+                    // 检查响应code
+                    if (response['code'] == 200) {
+                      // 获取data数组
+                      final List<dynamic> data = response['data'] ?? [];
 
-                    if (data.isNotEmpty) {
-                      // 取第一条数据
-                      final item = data[0];
-                      final trainNo = item['trainNumber']?.toString().trim() ?? '';
-                      final date = item['date']?.toString().trim() ?? '';
+                      if (data.isNotEmpty) {
+                        // 取第一条数据
+                        final item = data[0];
+                        final trainNo =
+                            item['trainNumber']?.toString().trim() ?? '';
+                        final date = item['date']?.toString().trim() ?? '';
+
+                        if (trainNo.isNotEmpty) {
+                          routeMap[emuNo] = '正在担当: $date\n本务车次: $trainNo';
+                          return;
+                        }
+                      }
+                    }
+                  }
+                } else if (settings.dataEmuSource ==
+                    TrainEmuDataSource.railGo) {
+                  if (settings.dataSource == TrainDataSource.railGo) {
+                    setState(() => errorMsg = 'RAILGO数据源已停用!请切换数据源!');
+                  }
+                  // ==================== railGo 数据源 ====================
+                  resp = await http
+                      .get(
+                        Uri.parse(
+                          'https://emu.data.railgo.zenglingkun.cn/emu/$emuNo',
+                        ),
+                        headers: headers,
+                      )
+                      .timeout(Duration(seconds: 10));
+
+                  if (resp.statusCode == 200 &&
+                      resp.body.isNotEmpty &&
+                      resp.body != '[]') {
+                    final emuData = json.decode(resp.body);
+                    if (emuData.isNotEmpty) {
+                      final item = emuData[0];
+                      final trainNo = item['train_no']?.toString().trim() ?? '';
+                      final date = item['date']?.toString() ?? '';
+
+                      if (trainNo.isNotEmpty) {
+                        routeMap[emuNo] = '正在担当: $date\n本务车次: $trainNo';
+                        return;
+                      }
+                    }
+                  }
+                } else {
+                  // ==================== rail.re 数据源 ====================
+                  resp = await http
+                      .get(
+                        Uri.parse('https://api.rail.re/emu/$emuNo'),
+                        headers: headers,
+                      )
+                      .timeout(Duration(seconds: 10));
+
+                  if (resp.statusCode == 200 &&
+                      resp.body.isNotEmpty &&
+                      resp.body != '[]') {
+                    final emuData = json.decode(resp.body);
+                    if (emuData.isNotEmpty) {
+                      final item = emuData[0];
+                      final trainNo = item['train_no']?.toString().trim() ?? '';
+                      final date = item['date']?.toString() ?? '';
 
                       if (trainNo.isNotEmpty) {
                         routeMap[emuNo] = '正在担当: $date\n本务车次: $trainNo';
@@ -814,59 +928,11 @@ class _SearchPageState extends State<SearchPage> {
                     }
                   }
                 }
-              }
-              else if (settings.dataEmuSource == TrainEmuDataSource.railGo) {
-                if (settings.dataSource == TrainDataSource.railGo){setState(() => errorMsg = 'RAILGO数据源已停用!请切换数据源!');}
-                // ==================== railGo 数据源 ====================
-                resp = await http.get(
-                  Uri.parse('https://emu.data.railgo.zenglingkun.cn/emu/$emuNo'),
-                  headers: headers,
-                ).timeout(Duration(seconds: 10));
+              } catch (_) {}
 
-                if (resp.statusCode == 200 &&
-                    resp.body.isNotEmpty &&
-                    resp.body != '[]') {
-                  final emuData = json.decode(resp.body);
-                  if (emuData.isNotEmpty) {
-                    final item = emuData[0];
-                    final trainNo = item['train_no']?.toString().trim() ?? '';
-                    final date = item['date']?.toString() ?? '';
-
-                    if (trainNo.isNotEmpty) {
-                      routeMap[emuNo] = '正在担当: $date\n本务车次: $trainNo';
-                      return;
-                    }
-                  }
-                }
-              }
-              else {
-                // ==================== rail.re 数据源 ====================
-                resp = await http.get(
-                  Uri.parse('https://api.rail.re/emu/$emuNo'),
-                  headers: headers,
-                ).timeout(Duration(seconds: 10));
-
-                if (resp.statusCode == 200 &&
-                    resp.body.isNotEmpty &&
-                    resp.body != '[]') {
-                  final emuData = json.decode(resp.body);
-                  if (emuData.isNotEmpty) {
-                    final item = emuData[0];
-                    final trainNo = item['train_no']?.toString().trim() ?? '';
-                    final date = item['date']?.toString() ?? '';
-
-                    if (trainNo.isNotEmpty) {
-                      routeMap[emuNo] = '正在担当: $date\n本务车次: $trainNo';
-                      return;
-                    }
-                  }
-                }
-              }
-            } catch (_) {
-            }
-
-            routeMap[emuNo] = null;
-          }));
+              routeMap[emuNo] = null;
+            }),
+          );
         }
 
         // ================= 构建结果 =================
@@ -916,7 +982,13 @@ class _SearchPageState extends State<SearchPage> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(width: 80, child: Text('$label:', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500))),
+          SizedBox(
+            width: 80,
+            child: Text(
+              '$label:',
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            ),
+          ),
           const SizedBox(width: 8),
           Expanded(child: Text(value, style: const TextStyle(fontSize: 14))),
         ],
@@ -944,57 +1016,108 @@ class _SearchPageState extends State<SearchPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('${result.model}-${result.number}',
-                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      Text(
+                        '${result.model}-${result.number}',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       if (searchType == 'bureau')
-                        Text(result.bureauFullName,
-                            style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurface.withAlpha(150))),
+                        Text(
+                          result.bureauFullName,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withAlpha(150),
+                          ),
+                        ),
                       if (result.isCoupledTrain)
-                        Text('可能为重联列车',
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: Theme.of(context).colorScheme.primary,
-                              fontStyle: FontStyle.italic,
-                            )),
+                        Text(
+                          '可能为重联列车',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Theme.of(context).colorScheme.primary,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
 
                       if (result.isAmbiguousMatch)
-                        Text('存在多个匹配结果，请核对车号',
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: Theme.of(context).colorScheme.error,
-                              fontStyle: FontStyle.italic,
-                            )),
+                        Text(
+                          '存在多个匹配结果，请核对车号',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Theme.of(context).colorScheme.error,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
                       if (result.score != null) ...[
                         const SizedBox(height: 4),
-                        Row(children: [
-                          Container(
-                            width: 60, height: 6,
-                            decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(3)),
-                            child: FractionallySizedBox(
-                              alignment: Alignment.centerLeft,
-                              widthFactor: result.score!.clamp(0.0, 1.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: result.score! >= 0.8 ? Colors.green : result.score! >= 0.5 ? Colors.orange : Colors.red,
-                                  borderRadius: BorderRadius.circular(3),
+                        Row(
+                          children: [
+                            Container(
+                              width: 60,
+                              height: 6,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                                borderRadius: BorderRadius.circular(3),
+                              ),
+                              child: FractionallySizedBox(
+                                alignment: Alignment.centerLeft,
+                                widthFactor: result.score!.clamp(0.0, 1.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: result.score! >= 0.8
+                                        ? Colors.green
+                                        : result.score! >= 0.5
+                                        ? Colors.orange
+                                        : Colors.red,
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text('${(result.score! * 100).toInt()}%',
-                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold,
-                                  color: result.score! >= 0.8 ? Colors.green : result.score! >= 0.6 ? Colors.orange : Colors.red)),
-                          if (result.rank != null) ...[
                             const SizedBox(width: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                              decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary.withAlpha(20), borderRadius: BorderRadius.circular(4)),
-                              child: Text('#${result.rank!}',
-                                  style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold)),
+                            Text(
+                              '${(result.score! * 100).toInt()}%',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: result.score! >= 0.8
+                                    ? Colors.green
+                                    : result.score! >= 0.6
+                                    ? Colors.orange
+                                    : Colors.red,
+                              ),
                             ),
+                            if (result.rank != null) ...[
+                              const SizedBox(width: 8),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.primary.withAlpha(20),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Text(
+                                  '#${result.rank!}',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ],
-                        ]),
+                        ),
                       ],
                     ],
                   ),
@@ -1011,27 +1134,52 @@ class _SearchPageState extends State<SearchPage> {
               children: [
                 if (result.bureau.isNotEmpty && searchType != 'bureau')
                   _buildInfoRow('配属路局', result.bureauFullName),
-                if (result.depot != null && result.depot!.isNotEmpty) _buildInfoRow('配属动车所', result.depot!),
-                if (result.manufacturer != null && result.manufacturer!.isNotEmpty) _buildInfoRow('生产厂家', result.manufacturer!),
-                if (result.stationinfo != null) _buildInfoRow('运行交路', result.stationinfo!),
-                if (result.remarks != null && result.remarks!.isNotEmpty) _buildInfoRow('备注', result.remarks!),
+                if (result.depot != null && result.depot!.isNotEmpty)
+                  _buildInfoRow('配属动车所', result.depot!),
+                if (result.manufacturer != null &&
+                    result.manufacturer!.isNotEmpty)
+                  _buildInfoRow('生产厂家', result.manufacturer!),
+                if (result.stationinfo != null)
+                  _buildInfoRow('运行交路', result.stationinfo!),
+                if (result.remarks != null && result.remarks!.isNotEmpty)
+                  _buildInfoRow('备注', result.remarks!),
               ],
             ),
             if (result.routeInfo != null && result.routeInfo!.isNotEmpty) ...[
               const SizedBox(height: 8),
               Container(
                 padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary.withAlpha(20), borderRadius: BorderRadius.circular(6)),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary.withAlpha(20),
+                  borderRadius: BorderRadius.circular(6),
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: result.routeInfo!.split('\n').map((line) => Text(line,
-                      style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface.withAlpha(200)))).toList(),
+                  children: result.routeInfo!
+                      .split('\n')
+                      .map(
+                        (line) => Text(
+                          line,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withAlpha(200),
+                          ),
+                        ),
+                      )
+                      .toList(),
                 ),
               ),
             ],
             const SizedBox(height: 8),
-            Text('查询时间: ${result.queryTime}',
-                style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurface.withAlpha(150))),
+            Text(
+              '查询时间: ${result.queryTime}',
+              style: TextStyle(
+                fontSize: 12,
+                color: Theme.of(context).colorScheme.onSurface.withAlpha(150),
+              ),
+            ),
           ],
         ),
       ),
@@ -1046,7 +1194,12 @@ class _SearchPageState extends State<SearchPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          IconButton(icon: const Icon(Icons.chevron_left), onPressed: _currentPage > 1 && !_loadingPage ? () => _goToPage(_currentPage - 1) : null),
+          IconButton(
+            icon: const Icon(Icons.chevron_left),
+            onPressed: _currentPage > 1 && !_loadingPage
+                ? () => _goToPage(_currentPage - 1)
+                : null,
+          ),
           const SizedBox(width: 12),
           SizedBox(
             width: 60,
@@ -1055,7 +1208,12 @@ class _SearchPageState extends State<SearchPage> {
               keyboardType: TextInputType.number,
               textAlign: TextAlign.center,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)), contentPadding: const EdgeInsets.symmetric(vertical: 8)),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                contentPadding: const EdgeInsets.symmetric(vertical: 8),
+              ),
               onSubmitted: (v) async {
                 final p = int.tryParse(v);
                 if (p != null && p >= 1 && p <= _totalPages) {
@@ -1071,9 +1229,17 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
           const SizedBox(width: 8),
-          Text('/ $_totalPages 页（共 $_totalResults 条）', style: Theme.of(context).textTheme.titleMedium),
+          Text(
+            '/ $_totalPages 页（共 $_totalResults 条）',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
           const SizedBox(width: 12),
-          IconButton(icon: const Icon(Icons.chevron_right), onPressed: _currentPage < _totalPages && !_loadingPage ? () => _goToPage(_currentPage + 1) : null),
+          IconButton(
+            icon: const Icon(Icons.chevron_right),
+            onPressed: _currentPage < _totalPages && !_loadingPage
+                ? () => _goToPage(_currentPage + 1)
+                : null,
+          ),
         ],
       ),
     );
@@ -1082,8 +1248,9 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     final int displayedCount = _searchResults.length;
-    final int totalCount =
-    searchType == 'bureau' ? _totalResults : displayedCount;
+    final int totalCount = searchType == 'bureau'
+        ? _totalResults
+        : displayedCount;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -1091,78 +1258,91 @@ class _SearchPageState extends State<SearchPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(children: [
-              if (searchType == 'trainCode')
-                DropdownButton<String>(
-                  value: prefix,
-                  items: ['G', 'D', 'C']
-                      .map((v) => DropdownMenuItem(
-                      value: v,
-                      child: Text(v,
-                          style: const TextStyle(fontSize: 18))))
-                      .toList(),
-                  onChanged: (v) => setState(() => prefix = v!),
-                ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: TextField(
-                  controller: controller,
-                  keyboardType: TextInputType.text,
-                  inputFormatters: searchType == 'trainCode'
-                      ? [
-                    FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(4),
-                    TextInputFormatter.withFunction((old, newV) =>
-                    newV.text.startsWith('0') &&
-                        newV.text.length > 1
-                        ? old
-                        : newV)
-                  ]
-                      : [],
-                  decoration: InputDecoration(
-                    labelText: searchType == 'trainCode'
-                        ? '输入车次数字（1-4位）'
-                        : searchType == 'trainId'
-                        ? '输入车号'
-                        : '输入路局名称',
-                    hintText: searchType == 'trainCode'
-                        ? '如: 31'
-                        : searchType == 'trainId'
-                        ? '如: CR400AF-AZ-2311'
-                        : '如: 上局 或 上海铁路局',
-                    border: const OutlineInputBorder(),
-                    filled: true,
+            Row(
+              children: [
+                if (searchType == 'trainCode')
+                  DropdownButton<String>(
+                    value: prefix,
+                    items: ['G', 'D', 'C']
+                        .map(
+                          (v) => DropdownMenuItem(
+                            value: v,
+                            child: Text(
+                              v,
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (v) => setState(() => prefix = v!),
                   ),
-                  onSubmitted: (_) => _performSearch(),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: TextField(
+                    controller: controller,
+                    keyboardType: TextInputType.text,
+                    inputFormatters: searchType == 'trainCode'
+                        ? [
+                            FilteringTextInputFormatter.digitsOnly,
+                            LengthLimitingTextInputFormatter(4),
+                            TextInputFormatter.withFunction(
+                              (old, newV) =>
+                                  newV.text.startsWith('0') &&
+                                      newV.text.length > 1
+                                  ? old
+                                  : newV,
+                            ),
+                          ]
+                        : [],
+                    decoration: InputDecoration(
+                      labelText: searchType == 'trainCode'
+                          ? '输入车次数字（1-4位）'
+                          : searchType == 'trainId'
+                          ? '输入车号'
+                          : '输入路局名称',
+                      hintText: searchType == 'trainCode'
+                          ? '如: 31'
+                          : searchType == 'trainId'
+                          ? '如: CR400AF-AZ-2311'
+                          : '如: 上局 或 上海铁路局',
+                      border: const OutlineInputBorder(),
+                      filled: true,
+                    ),
+                    onSubmitted: (_) => _performSearch(),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              ElevatedButton(
-                onPressed: isLoading ? null : _performSearch,
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(80, 56),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                const SizedBox(width: 12),
+                ElevatedButton(
+                  onPressed: isLoading ? null : _performSearch,
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(80, 56),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(isLoading ? '查询中...' : '查询'),
                 ),
-                child: Text(isLoading ? '查询中...' : '查询'),
-              ),
-            ]),
+              ],
+            ),
             const SizedBox(height: 20),
 
             SegmentedButton<String>(
               segments: const [
                 ButtonSegment(
-                    value: 'trainCode',
-                    label: Text('车次查询'),
-                    icon: Icon(Icons.numbers)),
+                  value: 'trainCode',
+                  label: Text('车次查询'),
+                  icon: Icon(Icons.numbers),
+                ),
                 ButtonSegment(
-                    value: 'trainId',
-                    label: Text('车号查询'),
-                    icon: Icon(Icons.confirmation_number)),
+                  value: 'trainId',
+                  label: Text('车号查询'),
+                  icon: Icon(Icons.confirmation_number),
+                ),
                 ButtonSegment(
-                    value: 'bureau',
-                    label: Text('路局查询'),
-                    icon: Icon(Icons.business)),
+                  value: 'bureau',
+                  label: Text('路局查询'),
+                  icon: Icon(Icons.business),
+                ),
               ],
               selected: {searchType},
               onSelectionChanged: (s) => setState(() {
@@ -1173,12 +1353,13 @@ class _SearchPageState extends State<SearchPage> {
                 _resetPagination();
               }),
               style: SegmentedButton.styleFrom(
-                backgroundColor:
-                Theme.of(context).colorScheme.surfaceContainerHighest,
-                selectedBackgroundColor:
-                Theme.of(context).colorScheme.primary,
-                selectedForegroundColor:
-                Theme.of(context).colorScheme.onPrimary,
+                backgroundColor: Theme.of(
+                  context,
+                ).colorScheme.surfaceContainerHighest,
+                selectedBackgroundColor: Theme.of(context).colorScheme.primary,
+                selectedForegroundColor: Theme.of(
+                  context,
+                ).colorScheme.onPrimary,
               ),
             ),
 
@@ -1190,26 +1371,31 @@ class _SearchPageState extends State<SearchPage> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                   side: BorderSide(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .outlineVariant),
+                    color: Theme.of(context).colorScheme.outlineVariant,
+                  ),
                 ),
-                child: Column(children: [
-                  CheckboxListTile(
-                    title: const Text('显示交路信息'),
-                    subtitle: const Text('启用后将应用3秒冷却时间'),
-                    value: showRoutes,
-                    onChanged: (v) => setState(() => showRoutes = v!),
-                    dense: true,
-                    controlAffinity: ListTileControlAffinity.leading,
-                  ),
-                  const Padding(
-                    padding:
-                    EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: Text('不显示交路信息时无冷却时间限制',
-                        style: TextStyle(fontSize: 12)),
-                  ),
-                ]),
+                child: Column(
+                  children: [
+                    CheckboxListTile(
+                      title: const Text('显示交路信息'),
+                      subtitle: const Text('启用后将应用3秒冷却时间'),
+                      value: showRoutes,
+                      onChanged: (v) => setState(() => showRoutes = v!),
+                      dense: true,
+                      controlAffinity: ListTileControlAffinity.leading,
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      child: Text(
+                        '不显示交路信息时无冷却时间限制',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ),
+                  ],
+                ),
               ),
 
             const SizedBox(height: 20),
@@ -1222,26 +1408,28 @@ class _SearchPageState extends State<SearchPage> {
                 color: Theme.of(context).colorScheme.errorContainer,
                 child: Padding(
                   padding: const EdgeInsets.all(12),
-                  child: Row(children: [
-                    const Icon(Icons.error_outline),
-                    const SizedBox(width: 12),
-                    Expanded(child: Text(errorMsg)),
-                    IconButton(
-                        onPressed: () =>
-                            setState(() => errorMsg = ''),
-                        icon: const Icon(Icons.close)),
-                  ]),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.error_outline),
+                      const SizedBox(width: 12),
+                      Expanded(child: Text(errorMsg)),
+                      IconButton(
+                        onPressed: () => setState(() => errorMsg = ''),
+                        icon: const Icon(Icons.close),
+                      ),
+                    ],
+                  ),
                 ),
               ),
 
             if (_searchResults.isNotEmpty) ...[
               Container(
-                padding:
-                const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 12,
+                ),
                 decoration: BoxDecoration(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .surfaceContainerHighest,
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
@@ -1253,10 +1441,9 @@ class _SearchPageState extends State<SearchPage> {
                       searchType == 'bureau'
                           ? '$_currentBureauSearch 共 $totalCount 条（当前 $displayedCount 条）'
                           : '共找到 $totalCount 条结果',
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleSmall
-                          ?.copyWith(fontWeight: FontWeight.w600),
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ],
                 ),
@@ -1265,8 +1452,7 @@ class _SearchPageState extends State<SearchPage> {
 
               if (searchType == 'bureau') _buildPaginationControls(),
 
-              for (final result in _searchResults)
-                _buildResultCard(result),
+              for (final result in _searchResults) _buildResultCard(result),
 
               if (_loadingPage)
                 const Center(child: CircularProgressIndicator()),
@@ -1274,63 +1460,67 @@ class _SearchPageState extends State<SearchPage> {
 
             const SizedBox(height: 40),
 
-            if (!isLoading &&
-                errorMsg.isEmpty &&
-                _searchResults.isEmpty)
+            if (!isLoading && errorMsg.isEmpty && _searchResults.isEmpty)
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 40),
-                child: Column(children: [
-                  Icon(
+                child: Column(
+                  children: [
+                    Icon(
                       searchType == 'bureau'
                           ? Icons.business
                           : Icons.train_outlined,
-                      size: 64),
-                  const SizedBox(height: 16),
-                  Text(
-                    searchType == 'trainCode'
-                        ? '请输入车次数字进行查询\n（例如：25）'
-                        : searchType == 'trainId'
-                        ? '请输入车号进行查询'
-                        : '请输入路局名称或点击下方简称查询',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  if (searchType == 'trainCode') ...[
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: ['G', 'D', 'C']
-                          .map((p) => Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 4),
-                        child: FilterChip(
-                            label: Text(p),
-                            selected: prefix == p,
-                            onSelected: (s) => s
-                                ? setState(() => prefix = p)
-                                : null),
-                      ))
-                          .toList(),
+                      size: 64,
                     ),
-                  ],
-                  if (searchType == 'bureau') ...[
-                    const SizedBox(height: 20),
-                    const Text('支持的路局简称:'),
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 4,
-                      alignment: WrapAlignment.center,
-                      children: _getCommonBureauCodes().map((code) {
-                        final full = _getBureauFullName(code);
-                        return GestureDetector(
-                          onTap: () => _handleBureauChipTap(code),
-                          child: Chip(label: Text(full)),
-                        );
-                      }).toList(),
+                    const SizedBox(height: 16),
+                    Text(
+                      searchType == 'trainCode'
+                          ? '请输入车次数字进行查询\n（例如：25）'
+                          : searchType == 'trainId'
+                          ? '请输入车号进行查询'
+                          : '请输入路局名称或点击下方简称查询',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 16),
                     ),
+                    if (searchType == 'trainCode') ...[
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: ['G', 'D', 'C']
+                            .map(
+                              (p) => Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 4,
+                                ),
+                                child: FilterChip(
+                                  label: Text(p),
+                                  selected: prefix == p,
+                                  onSelected: (s) =>
+                                      s ? setState(() => prefix = p) : null,
+                                ),
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ],
+                    if (searchType == 'bureau') ...[
+                      const SizedBox(height: 20),
+                      const Text('支持的路局简称:'),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 4,
+                        alignment: WrapAlignment.center,
+                        children: _getCommonBureauCodes().map((code) {
+                          final full = _getBureauFullName(code);
+                          return GestureDetector(
+                            onTap: () => _handleBureauChipTap(code),
+                            child: Chip(label: Text(full)),
+                          );
+                        }).toList(),
+                      ),
+                    ],
                   ],
-                ]),
+                ),
               ),
           ],
         ),

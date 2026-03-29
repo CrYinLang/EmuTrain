@@ -80,11 +80,11 @@ class Journey {
       } else {
         // 普通列车：找到对应站点的时间
         final fromStationData = allStations.firstWhere(
-              (s) => s.stationName == fromStation,
+          (s) => s.stationName == fromStation,
           orElse: () => allStations.first,
         );
         final toStationData = allStations.firstWhere(
-              (s) => s.stationName == toStation,
+          (s) => s.stationName == toStation,
           orElse: () => allStations.last,
         );
 
@@ -130,7 +130,7 @@ class Journey {
       stations: allStations,
       isStation: isStation,
       seatType: seatType,
-      seatInfo: seatInfo,  // 传递座位信息文本
+      seatInfo: seatInfo, // 传递座位信息文本
     );
   }
 
@@ -149,7 +149,7 @@ class Journey {
       'stations': stations.map((s) => s.toMap()).toList(),
       'isStation': isStation,
       'seatType': seatType,
-      'seatInfo': seatInfo,  // 保存座位信息文本
+      'seatInfo': seatInfo, // 保存座位信息文本
     };
   }
 
@@ -181,7 +181,7 @@ class Journey {
         stations: stations,
         isStation: map['isStation'] as bool? ?? false,
         seatType: map['seatType']?.toString() ?? '',
-        seatInfo: map['seatInfo']?.toString() ?? '',  // 解析座位信息文本
+        seatInfo: map['seatInfo']?.toString() ?? '', // 解析座位信息文本
       );
     } catch (e) {
       return Journey(
@@ -234,7 +234,9 @@ class Journey {
       }
 
       // 普通列车的原有逻辑
-      final fromIndex = stations.indexWhere((s) => s.stationName == fromStation);
+      final fromIndex = stations.indexWhere(
+        (s) => s.stationName == fromStation,
+      );
       final toIndex = stations.indexWhere((s) => s.stationName == toStation);
 
       if (fromIndex == -1 || toIndex == -1) return '--';
@@ -248,7 +250,8 @@ class Journey {
       if (startTime == null || endTime == null) return '--';
 
       // 计算天数差
-      final dayDiff = toStationData.dayDifference - fromStationData.dayDifference;
+      final dayDiff =
+          toStationData.dayDifference - fromStationData.dayDifference;
 
       int minutes = endTime.difference(startTime).inMinutes;
       minutes += dayDiff * 24 * 60; // 加上跨天的时间
@@ -306,9 +309,7 @@ class Journey {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is Journey &&
-              runtimeType == other.runtimeType &&
-              id == other.id;
+      other is Journey && runtimeType == other.runtimeType && id == other.id;
 
   @override
   int get hashCode => id.hashCode;
@@ -356,7 +357,11 @@ class Journey {
   String get status {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    final travelDay = DateTime(travelDate.year, travelDate.month, travelDate.day);
+    final travelDay = DateTime(
+      travelDate.year,
+      travelDate.month,
+      travelDate.day,
+    );
 
     if (travelDay.isBefore(today)) {
       return '已过期';
@@ -444,11 +449,11 @@ class StationDetail {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is StationDetail &&
-              runtimeType == other.runtimeType &&
-              stationName == other.stationName &&
-              arrivalTime == other.arrivalTime &&
-              departureTime == other.departureTime;
+      other is StationDetail &&
+          runtimeType == other.runtimeType &&
+          stationName == other.stationName &&
+          arrivalTime == other.arrivalTime &&
+          departureTime == other.departureTime;
 
   @override
   int get hashCode =>
@@ -481,8 +486,13 @@ class JourneyValidator {
   static bool isValidJourney(Map<String, dynamic> map) {
     try {
       final requiredFields = [
-        'id', 'trainCode', 'fromStation', 'toStation',
-        'departureTime', 'arrivalTime', 'travelDate'
+        'id',
+        'trainCode',
+        'fromStation',
+        'toStation',
+        'departureTime',
+        'arrivalTime',
+        'travelDate',
       ];
 
       for (final field in requiredFields) {

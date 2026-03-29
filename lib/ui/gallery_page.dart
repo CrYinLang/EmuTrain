@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../train_model.dart';
 import '../main.dart';
+import '../train_model.dart';
 
 class GalleryPage extends StatefulWidget {
   const GalleryPage({super.key});
@@ -48,49 +48,39 @@ class _GalleryPageState extends State<GalleryPage> {
   static const _fullGalleryUrl = 'https://china-emu.cn/Trains/ALL/';
 
   final Map<int, List<TrainInfo>> _tabData = {
-    0: [ // 热门车型
+    0: [
+      // 热门车型
       TrainInfo(
         model: 'CR450AF',
         number: '0201',
         title: 'CR450AF-0201',
-        infoItems: {
-          '生产厂家': '中车青岛四方',
-          '备注': '450级别动车组',
-          '类型': '实验-实验中',
-        },
+        infoItems: {'生产厂家': '中车青岛四方', '备注': '450级别动车组', '类型': '实验-实验中'},
       ),
       TrainInfo(
         model: 'CR450BF',
         number: '0501',
         title: 'CR450BF-0501',
-        infoItems: {
-          '生产厂家': '长春轨道客车',
-          '备注': '450级别动车组',
-          '类型': '实验-实验中',
-        },
+        infoItems: {'生产厂家': '长春轨道客车', '备注': '450级别动车组', '类型': '实验-实验中'},
       ),
       TrainInfo(
         model: 'CR400AF-J',
         number: '2808',
         title: 'CR400AF-J-2808',
+        infoItems: {'生产厂家': '中车青岛四方', '备注': '复兴号350级别高速综合检测列车', '类型': '检测-上线'},
+      ),
+    ],
+    1: [
+      // 检测列车
+      TrainInfo(
+        model: 'CR400BF-J',
+        number: '0001',
+        title: 'CR400BF-J-0001',
         infoItems: {
-          '生产厂家': '中车青岛四方',
+          '代管路局': '沈阳铁路局',
+          '生产厂家': '长春轨道客车',
           '备注': '复兴号350级别高速综合检测列车',
           '类型': '检测-上线',
         },
-      ),
-    ],
-    1: [ // 检测列车
-      TrainInfo(
-          model: 'CR400BF-J',
-          number: '0001',
-          title: 'CR400BF-J-0001',
-          infoItems: {
-            '代管路局': '沈阳铁路局',
-            '生产厂家': '长春轨道客车',
-            '备注': '复兴号350级别高速综合检测列车',
-            '类型': '检测-上线',
-          }
       ),
       TrainInfo(
         model: 'CR400AF-J',
@@ -118,11 +108,7 @@ class _GalleryPageState extends State<GalleryPage> {
         model: 'CR400AF-J',
         number: '2808',
         title: 'CR400AF-J-2808',
-        infoItems: {
-          '生产厂家': '中车青岛四方',
-          '备注': '复兴号350级别高速综合检测列车',
-          '类型': '检测-上线',
-        },
+        infoItems: {'生产厂家': '中车青岛四方', '备注': '复兴号350级别高速综合检测列车', '类型': '检测-上线'},
       ),
       TrainInfo(
         model: 'CRH380AJ',
@@ -255,112 +241,120 @@ class _GalleryPageState extends State<GalleryPage> {
           '备注': '和谐号350级别高速综合检测列车，CRH380A新头型实验列车',
           '类型': '检测-上线',
         },
-      )
-    ],
-    2: [ // 其他车型
-      TrainInfo(
-          model: 'CRH380AN',
-          number: '0206',
-          title: 'CRH380AN-0206',
-          infoItems: {
-            '配属路局': '成都铁路局',
-            '配属动车所': '成都东',
-            '生产厂家': '南车青岛四方',
-            '备注': '永磁电机实验动车组',
-            '类型': '客运-上线',
-          }
-      ),TrainInfo(
-          model: 'CR400AF',
-          number: '0207',
-          title: 'CR400AF-0207',
-          infoItems: {
-            '配属路局': '北京铁路局',
-            '配属动车所': '北京西',
-            '生产厂家': '南车青岛四方',
-            '备注': '350km/h中国标准动车组样车',
-            '类型': '客运-上线',
-          }
-      ),TrainInfo(
-          model: 'CR400BF',
-          number: '0507',
-          title: 'CR400BF-0507',
-          infoItems: {
-            '配属路局': '广州铁路局',
-            '配属动车所': '广州南',
-            '生产厂家': '长春轨道客车',
-            '备注': '350km/h中国标准动车组样车，白眉，橡胶风挡',
-            '类型': '客运-上线',
-          }
-      ),TrainInfo(
-          model: 'CR400AF-C',
-          number: '2214',
-          title: 'CR400AF-C-2214',
-          infoItems: {
-            '配属路局': '北京铁路局',
-            '配属动车所': '雄安',
-            '生产厂家': '南车青岛四方',
-            '备注': '真正意义上的智能动车，具有自动驾驶功能，仅一列',
-            '类型': '客运-上线',
-          }
-      ),TrainInfo(
-          model: 'CRH2A',
-          number: '2460',
-          title: 'CRH2A-2460',
-          infoItems: {
-            '配属路局': '昆明铁路局',
-            '配属动车所': '昆明南',
-            '生产厂家': '南车青岛四方',
-            '备注': 'CRH2G新头型实验动车组',
-            '类型': '客运-上线',
-          }
-      ),TrainInfo(
-          model: 'CRH380AL',
-          number: '2541',
-          title: 'CRH380AL-2541',
-          infoItems: {
-            '配属路局': '南昌铁路局',
-            '配属动车所': '厦门北',
-            '生产厂家': '中车青岛四方',
-            '备注': '冲高动车组,最快可达486.1KM,曾编组号CRH380A-2541L',
-            '类型': '客运-上线',
-          }
-      ),TrainInfo(
-          model: 'CRH2A',
-          number: '4020',
-          title: 'CRH2A-4020',
-          infoItems: {
-            '配属路局': '成都铁路局',
-            '配属动车所': '成都东',
-            '生产厂家': '南车青岛四方',
-            '备注': '2022年6月4日发生事故，头车及7车出轨受损，现已改造为货运动车组。前两节车厢无窗户',
-            '类型': '货运-上线',
-          }
       ),
     ],
-    3: [ // 特殊涂装
+    2: [
+      // 其他车型
       TrainInfo(
-          model: 'CR400BF-Z',
-          number: '0524',
-          title: 'CR400BF-Z-0524',
-          infoItems: {
-            '配属路局': '上海铁路局',
-            '配属动车所': '杭州西',
-            '生产厂家': '长春轨道客车',
-            '备注': '杭州亚运涂装',
-            '类型': '客运-上线',
-          }
+        model: 'CRH380AN',
+        number: '0206',
+        title: 'CRH380AN-0206',
+        infoItems: {
+          '配属路局': '成都铁路局',
+          '配属动车所': '成都东',
+          '生产厂家': '南车青岛四方',
+          '备注': '永磁电机实验动车组',
+          '类型': '客运-上线',
+        },
       ),
       TrainInfo(
-          model: 'CR400BF-C',
-          number: '5162',
-          title: 'CR400BF-C-5162',
-          infoItems: {
-            '配属路局': '北京铁路局',
-            '配属动车所': '北京北',
-            '生产厂家': '长春轨道客车',
-            '备注': '冬奥涂装',
-            '类型': '客运-上线',
-          }
+        model: 'CR400AF',
+        number: '0207',
+        title: 'CR400AF-0207',
+        infoItems: {
+          '配属路局': '北京铁路局',
+          '配属动车所': '北京西',
+          '生产厂家': '南车青岛四方',
+          '备注': '350km/h中国标准动车组样车',
+          '类型': '客运-上线',
+        },
+      ),
+      TrainInfo(
+        model: 'CR400BF',
+        number: '0507',
+        title: 'CR400BF-0507',
+        infoItems: {
+          '配属路局': '广州铁路局',
+          '配属动车所': '广州南',
+          '生产厂家': '长春轨道客车',
+          '备注': '350km/h中国标准动车组样车，白眉，橡胶风挡',
+          '类型': '客运-上线',
+        },
+      ),
+      TrainInfo(
+        model: 'CR400AF-C',
+        number: '2214',
+        title: 'CR400AF-C-2214',
+        infoItems: {
+          '配属路局': '北京铁路局',
+          '配属动车所': '雄安',
+          '生产厂家': '南车青岛四方',
+          '备注': '真正意义上的智能动车，具有自动驾驶功能，仅一列',
+          '类型': '客运-上线',
+        },
+      ),
+      TrainInfo(
+        model: 'CRH2A',
+        number: '2460',
+        title: 'CRH2A-2460',
+        infoItems: {
+          '配属路局': '昆明铁路局',
+          '配属动车所': '昆明南',
+          '生产厂家': '南车青岛四方',
+          '备注': 'CRH2G新头型实验动车组',
+          '类型': '客运-上线',
+        },
+      ),
+      TrainInfo(
+        model: 'CRH380AL',
+        number: '2541',
+        title: 'CRH380AL-2541',
+        infoItems: {
+          '配属路局': '南昌铁路局',
+          '配属动车所': '厦门北',
+          '生产厂家': '中车青岛四方',
+          '备注': '冲高动车组,最快可达486.1KM,曾编组号CRH380A-2541L',
+          '类型': '客运-上线',
+        },
+      ),
+      TrainInfo(
+        model: 'CRH2A',
+        number: '4020',
+        title: 'CRH2A-4020',
+        infoItems: {
+          '配属路局': '成都铁路局',
+          '配属动车所': '成都东',
+          '生产厂家': '南车青岛四方',
+          '备注': '2022年6月4日发生事故，头车及7车出轨受损，现已改造为货运动车组。前两节车厢无窗户',
+          '类型': '货运-上线',
+        },
+      ),
+    ],
+    3: [
+      // 特殊涂装
+      TrainInfo(
+        model: 'CR400BF-Z',
+        number: '0524',
+        title: 'CR400BF-Z-0524',
+        infoItems: {
+          '配属路局': '上海铁路局',
+          '配属动车所': '杭州西',
+          '生产厂家': '长春轨道客车',
+          '备注': '杭州亚运涂装',
+          '类型': '客运-上线',
+        },
+      ),
+      TrainInfo(
+        model: 'CR400BF-C',
+        number: '5162',
+        title: 'CR400BF-C-5162',
+        infoItems: {
+          '配属路局': '北京铁路局',
+          '配属动车所': '北京北',
+          '生产厂家': '长春轨道客车',
+          '备注': '冬奥涂装',
+          '类型': '客运-上线',
+        },
       ),
     ],
   };
@@ -394,9 +388,7 @@ class _GalleryPageState extends State<GalleryPage> {
             child: Column(
               children: [
                 _buildGalleryNavbar(),
-                Expanded(
-                  child: _buildCurrentTabContent(),
-                ),
+                Expanded(child: _buildCurrentTabContent()),
               ],
             ),
           ),
@@ -406,9 +398,7 @@ class _GalleryPageState extends State<GalleryPage> {
             decoration: BoxDecoration(
               color: Theme.of(context).cardColor,
               border: Border(
-                top: BorderSide(
-                  color: Theme.of(context).dividerColor,
-                ),
+                top: BorderSide(color: Theme.of(context).dividerColor),
               ),
               boxShadow: [
                 BoxShadow(
@@ -448,8 +438,10 @@ class _GalleryPageState extends State<GalleryPage> {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
-          children: List.generate(_tabTitles.length, (index) =>
-              _buildNavItem(_tabTitles[index], index, _tabIcons[index])
+          children: List.generate(
+            _tabTitles.length,
+            (index) =>
+                _buildNavItem(_tabTitles[index], index, _tabIcons[index]),
           ),
         ),
       ),
@@ -568,10 +560,10 @@ class _GalleryPageState extends State<GalleryPage> {
               children: [
                 // 车型图标
                 TrainIconWidget(
-                    model: train.model,
-                    number: train.number,
-                    size: 40,
-                    backgroundColor: Colors.transparent
+                  model: train.model,
+                  number: train.number,
+                  size: 40,
+                  backgroundColor: Colors.transparent,
                 ),
                 const SizedBox(width: 12),
 
@@ -588,8 +580,7 @@ class _GalleryPageState extends State<GalleryPage> {
                 ),
 
                 // 路局图标
-                if (settings.showBureauIcons)
-                  _buildBureauIconForTrain(train),
+                if (settings.showBureauIcons) _buildBureauIconForTrain(train),
               ],
             ),
 
@@ -638,10 +629,7 @@ class _GalleryPageState extends State<GalleryPage> {
     // 从 infoItems 中获取路局信息
     String? bureau = train.infoItems['配属路局'] ?? train.infoItems['代管路局'];
     if (bureau != null && bureau.isNotEmpty) {
-      return BureauIconWidget(
-        bureau: bureau,
-        size: 32,
-      );
+      return BureauIconWidget(bureau: bureau, size: 32);
     }
     return const SizedBox.shrink();
   }

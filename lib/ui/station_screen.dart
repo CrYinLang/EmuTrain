@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -100,10 +101,10 @@ class _StationScreenState extends State<StationScreen> {
 
   // 获取特定方向的数据
   Future<void> _fetchDirectionData(
-      String direction,
-      int cursor,
-      List<dynamic> resultList,
-      ) async {
+    String direction,
+    int cursor,
+    List<dynamic> resultList,
+  ) async {
     final url = Uri.parse(
       'https://rail.moefactory.com/api/station/getBigScreenInfo',
     );
@@ -390,20 +391,20 @@ class _StationScreenState extends State<StationScreen> {
                   ),
                   child: _loading
                       ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation(Colors.white),
-                    ),
-                  )
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation(Colors.white),
+                          ),
+                        )
                       : const Text(
-                    '显示车站大屏',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                          '显示车站大屏',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ),
               ),
             ),
@@ -449,27 +450,27 @@ class _StationScreenState extends State<StationScreen> {
             Expanded(
               child: _currentPageData.isEmpty
                   ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.train, size: 64, color: Colors.grey),
-                    const SizedBox(height: 16),
-                    Text(
-                      '暂无车次信息',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Theme.of(context).hintColor,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.train, size: 64, color: Colors.grey),
+                          const SizedBox(height: 16),
+                          Text(
+                            '暂无车次信息',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Theme.of(context).hintColor,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-              )
+                    )
                   : ListView.builder(
-                itemCount: _currentPageData.length,
-                itemBuilder: (context, index) {
-                  return _buildTrainCard(_currentPageData[index]);
-                },
-              ),
+                      itemCount: _currentPageData.length,
+                      itemBuilder: (context, index) {
+                        return _buildTrainCard(_currentPageData[index]);
+                      },
+                    ),
             ),
         ],
       ),
@@ -626,68 +627,68 @@ class _StationSelectorState extends State<StationSelector> {
                 ? const Center(child: CircularProgressIndicator())
                 : _filtered.isEmpty
                 ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.train, size: 64, color: Colors.grey),
-                  const SizedBox(height: 16),
-                  Text(
-                    '未找到相关车站',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Theme.of(context).hintColor,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.train, size: 64, color: Colors.grey),
+                        const SizedBox(height: 16),
+                        Text(
+                          '未找到相关车站',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Theme.of(context).hintColor,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-            )
+                  )
                 : ListView.builder(
-              itemCount: _filtered.length,
-              itemBuilder: (context, index) {
-                final station = _filtered[index];
-                final code = station['code'] ?? station['telecode'] ?? '';
-                final name = station['name'] ?? '';
-                final telecode = station['telecode'] ?? '';
-                final city = station['city'] ?? '';
-                final selected = code == widget.selectedCode;
-                return ListTile(
-                  leading: Icon(
-                    Icons.fireplace_outlined,
-                    color: selected
-                        ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).hintColor,
+                    itemCount: _filtered.length,
+                    itemBuilder: (context, index) {
+                      final station = _filtered[index];
+                      final code = station['code'] ?? station['telecode'] ?? '';
+                      final name = station['name'] ?? '';
+                      final telecode = station['telecode'] ?? '';
+                      final city = station['city'] ?? '';
+                      final selected = code == widget.selectedCode;
+                      return ListTile(
+                        leading: Icon(
+                          Icons.fireplace_outlined,
+                          color: selected
+                              ? Theme.of(context).colorScheme.primary
+                              : Theme.of(context).hintColor,
+                        ),
+                        title: Text(
+                          '$name站',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            color: selected
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context).colorScheme.onSurface,
+                          ),
+                        ),
+                        subtitle: Text(
+                          '$city市 电报码($telecode)',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Theme.of(context).hintColor,
+                          ),
+                        ),
+                        trailing: selected
+                            ? const Icon(Icons.check_circle, color: Colors.blue)
+                            : null,
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          widget.onSelected({
+                            'code': code,
+                            'name': name,
+                            'telecode': telecode,
+                            'city': city,
+                          });
+                        },
+                      );
+                    },
                   ),
-                  title: Text(
-                    '$name站',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      color: selected
-                          ? Theme.of(context).colorScheme.primary
-                          : Theme.of(context).colorScheme.onSurface,
-                    ),
-                  ),
-                  subtitle: Text(
-                    '$city市 电报码($telecode)',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Theme.of(context).hintColor,
-                    ),
-                  ),
-                  trailing: selected
-                      ? const Icon(Icons.check_circle, color: Colors.blue)
-                      : null,
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    widget.onSelected({
-                      'code': code,
-                      'name': name,
-                      'telecode': telecode,
-                      'city': city,
-                    });
-                  },
-                );
-              },
-            ),
           ),
         ],
       ),

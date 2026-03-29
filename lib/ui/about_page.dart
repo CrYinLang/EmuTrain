@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../main.dart';
 
 class AboutPage extends StatelessWidget {
@@ -64,7 +65,8 @@ class AboutPage extends StatelessWidget {
         String additionalText = '';
         bool hasNewVersion = false;
 
-        if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+        if (snapshot.connectionState == ConnectionState.done &&
+            snapshot.hasData) {
           final versionInfo = snapshot.data!;
           final remoteBuild = versionInfo['Build']?.toString() ?? '';
           final currentBuild = Vars.build;
@@ -76,13 +78,15 @@ class AboutPage extends StatelessWidget {
 
             if (remoteBuildNum > currentBuildNum) {
               hasNewVersion = true;
-              additionalText = '\n\n发现新版本${versionInfo['Version']}，更新内容：\n${versionInfo['describe'] ?? '修复了一些问题'}';
+              additionalText =
+                  '\n\n发现新版本${versionInfo['Version']}，更新内容：\n${versionInfo['describe'] ?? '修复了一些问题'}';
             }
           }
 
           // 添加远程公告
           if (!hasNewVersion) {
-            final remoteAnnouncement = versionInfo['Announcement']?.toString() ?? '';
+            final remoteAnnouncement =
+                versionInfo['Announcement']?.toString() ?? '';
             if (remoteAnnouncement.isNotEmpty) {
               additionalText = '\n\n$remoteAnnouncement';
             }
@@ -190,11 +194,11 @@ class AboutPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: isDark
             ? Color.fromARGB(
-          128, // 0.5 透明度对应 128
-          (surfaceColor.r * 255).round(),
-          (surfaceColor.g * 255).round(),
-          (surfaceColor.b * 255).round(),
-        )
+                128, // 0.5 透明度对应 128
+                (surfaceColor.r * 255).round(),
+                (surfaceColor.g * 255).round(),
+                (surfaceColor.b * 255).round(),
+              )
             : surfaceColor,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
@@ -208,11 +212,7 @@ class AboutPage extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(
-            icon,
-            color: theme.colorScheme.primary,
-            size: 20,
-          ),
+          Icon(icon, color: theme.colorScheme.primary, size: 20),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -254,22 +254,22 @@ class AboutPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: isDark
             ? Color.fromARGB(
-          51, // 0.2 透明度对应 51
-          (errorContainer.r * 255).round(),
-          (errorContainer.g * 255).round(),
-          (errorContainer.b * 255).round(),
-        )
+                51, // 0.2 透明度对应 51
+                (errorContainer.r * 255).round(),
+                (errorContainer.g * 255).round(),
+                (errorContainer.b * 255).round(),
+              )
             : errorContainer,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: isDark
               ? errorContainer
               : Color.fromARGB(
-            51, // 0.2 透明度对应 51
-            (error.r * 255).round(),
-            (error.g * 255).round(),
-            (error.b * 255).round(),
-          ),
+                  51, // 0.2 透明度对应 51
+                  (error.r * 255).round(),
+                  (error.g * 255).round(),
+                  (error.b * 255).round(),
+                ),
         ),
       ),
       child: Column(
@@ -277,11 +277,7 @@ class AboutPage extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.copyright,
-                color: Colors.red,
-                size: 20,
-              ),
+              Icon(Icons.copyright, color: Colors.red, size: 20),
               const SizedBox(width: 8),
               Text(
                 '版权声明',
@@ -309,10 +305,7 @@ class AboutPage extends StatelessWidget {
               children: [
                 Text(
                   '请联系: ',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: onErrorContainer,
-                  ),
+                  style: TextStyle(fontSize: 14, color: onErrorContainer),
                 ),
                 const SizedBox(width: 4),
                 Text(
@@ -349,5 +342,4 @@ class AboutPage extends StatelessWidget {
       ),
     );
   }
-
 }

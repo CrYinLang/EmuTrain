@@ -1,19 +1,19 @@
 // journey.dart
 
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:path_provider/path_provider.dart';
 import 'package:android_intent_plus/android_intent.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../journey_provider.dart';
-import 'linemap.dart';
 import '../journey_model.dart';
+import '../journey_provider.dart';
 import '../tool.dart';
+import 'linemap.dart';
 import 'travel_screen.dart';
 
 class AddJourneyPage extends StatefulWidget {
@@ -23,7 +23,8 @@ class AddJourneyPage extends StatefulWidget {
   State<AddJourneyPage> createState() => _AddJourneyPageState();
 }
 
-class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProviderStateMixin {
+class _AddJourneyPageState extends State<AddJourneyPage>
+    with SingleTickerProviderStateMixin {
   DateTime? _selectedDate;
   final _trainNumberCtrl = TextEditingController();
   bool _loading = false;
@@ -94,7 +95,9 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
           debugPrint('已加载更新版本: ${versionData['StationBuild']}');
         } catch (e) {
           // 如果更新文件损坏，回退到默认资源
-          final jsonString = await rootBundle.loadString('assets/stations.json');
+          final jsonString = await rootBundle.loadString(
+            'assets/stations.json',
+          );
           stationsList = json.decode(jsonString);
           debugPrint('更新文件损坏，使用默认资源: $e');
         }
@@ -167,17 +170,13 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
     }
   }
 
-  String get dateText =>
-      _selectedDate == null
-          ? "选择日期"
-          : "${_selectedDate!.year}-${_selectedDate!.month.toString().padLeft(
-          2, '0')}-${_selectedDate!.day.toString().padLeft(2, '0')}";
+  String get dateText => _selectedDate == null
+      ? "选择日期"
+      : "${_selectedDate!.year}-${_selectedDate!.month.toString().padLeft(2, '0')}-${_selectedDate!.day.toString().padLeft(2, '0')}";
 
-  String get _formattedDate =>
-      _selectedDate == null
-          ? ""
-          : "${_selectedDate!.year}${_selectedDate!.month.toString().padLeft(
-          2, '0')}${_selectedDate!.day.toString().padLeft(2, '0')}";
+  String get _formattedDate => _selectedDate == null
+      ? ""
+      : "${_selectedDate!.year}${_selectedDate!.month.toString().padLeft(2, '0')}${_selectedDate!.day.toString().padLeft(2, '0')}";
 
   void _formatInput(String value) {
     if (value.isEmpty) return;
@@ -266,17 +265,16 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
   }
 
   Future<String> _getBenWu(String trainCode, String date) async {
-
     if (!RegExp(r'^[GDCS]', caseSensitive: false).hasMatch(trainCode)) {
       return '';
     }
 
     final url = Uri.parse('https://rail.moefactory.com/api/trainNumber/query');
 
-    final resp1 = await http.post(url, body: {
-      "trainNumber": trainCode,
-      "date": date
-    });
+    final resp1 = await http.post(
+      url,
+      body: {"trainNumber": trainCode, "date": date},
+    );
 
     final Map<String, dynamic> responseData = jsonDecode(resp1.body);
 
@@ -287,21 +285,27 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
       if (dataList.isNotEmpty) {
         final int trainIndex = dataList[0]['trainIndex'];
 
-        final url2 = Uri.parse('https://rail.moefactory.com/api/trainDetails/query');
+        final url2 = Uri.parse(
+          'https://rail.moefactory.com/api/trainDetails/query',
+        );
 
-        final resp2 = await http.post(url2, body: {
-          "trainIndex": trainIndex.toString(),
-          "date": date
-        });
+        final resp2 = await http.post(
+          url2,
+          body: {"trainIndex": trainIndex.toString(), "date": date},
+        );
 
         final Map<String, dynamic> responseData2 = jsonDecode(resp2.body);
 
         // 检查响应码
         if (responseData2['code'] == 200) {
-          final String? trainModel = responseData2['data']['routing']['trainModel'];
+          final String? trainModel =
+              responseData2['data']['routing']['trainModel'];
 
           if (trainModel != null && trainModel.isNotEmpty) {
-            String result = trainModel.substring(0, trainModel.length > 14 ? 14 : trainModel.length);
+            String result = trainModel.substring(
+              0,
+              trainModel.length > 14 ? 14 : trainModel.length,
+            );
 
             final commaIndex = result.indexOf(',');
             final chineseCommaIndex = result.indexOf('，');
@@ -347,8 +351,7 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
 
     try {
       final stationDay =
-          '${_formattedDate.substring(0, 4)}-${_formattedDate.substring(
-          4, 6)}-${_formattedDate.substring(6, 8)}';
+          '${_formattedDate.substring(0, 4)}-${_formattedDate.substring(4, 6)}-${_formattedDate.substring(6, 8)}';
 
       // 同时请求余票查询和价格查询
       final ticketFuture = http.get(
@@ -381,7 +384,8 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
           if (ticketResultData != null &&
               ticketResultData.containsKey('result')) {
             final results = ticketResultData['result'] as List<dynamic>?;
-            final stationMap =ticketResultData['map'] as Map<String, dynamic>? ?? {};
+            final stationMap =
+                ticketResultData['map'] as Map<String, dynamic>? ?? {};
 
             // 将价格数据转换为便于查询的 Map
             final priceMap = _buildPriceMap(priceList);
@@ -423,14 +427,14 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
   Map<String, String> _getApiHeaders() {
     return {
       'User-Agent':
-      'Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Mobile/15E148 Safari/604.1',
+          'Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Mobile/15E148 Safari/604.1',
       'Accept': 'application/json, text/plain, */*',
       'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
       'Accept-Encoding': 'gzip, deflate, br',
       'Connection': 'keep-alive',
       'Referer': 'https://kyfw.12306.cn/otn/leftTicket/init',
       'Cookie':
-      '_jc_save_fromStation=$_fromCode; _jc_save_toStation=$_toCode; _jc_save_fromDate=$_formattedDate; _jc_save_toDate=$_formattedDate;',
+          '_jc_save_fromStation=$_fromCode; _jc_save_toStation=$_toCode; _jc_save_fromDate=$_formattedDate; _jc_save_toDate=$_formattedDate;',
     };
   }
 
@@ -452,7 +456,10 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
   }
 
   // 合并余票和价格数据
-  Map<String, dynamic> _mergePriceData(Map<String, dynamic> trainInfo,Map<String, Map<String, dynamic>> priceMap,) {
+  Map<String, dynamic> _mergePriceData(
+    Map<String, dynamic> trainInfo,
+    Map<String, Map<String, dynamic>> priceMap,
+  ) {
     final trainCode = trainInfo['station_train_code'] as String?;
     final priceInfo = trainCode != null ? priceMap[trainCode] : null;
 
@@ -546,7 +553,10 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
   }
 
   // 添加解析车次字符串的方法
-  Map<String, dynamic>? _parseTrainString(String trainStr,Map<String, dynamic> stationMap,) {
+  Map<String, dynamic>? _parseTrainString(
+    String trainStr,
+    Map<String, dynamic> stationMap,
+  ) {
     try {
       // 多重解码处理
       String decodedStr = trainStr;
@@ -675,7 +685,7 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'User-Agent':
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
       'Referer': 'https://m.ctrip.com/',
       'Origin': 'https://m.ctrip.com',
     };
@@ -693,21 +703,20 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
           final List<dynamic> stopList = data['StopList'];
           return stopList
               .map(
-                (stop) =>
-            {
-              'stationNo': stop['StationNo'] ?? '',
-              'stationName': _cleanStationName(stop['StationName'])                                                                             ,
-              'arriveTime': stop['ArriveTime'] ?? '--:--',
-              'departTime': stop['DepartTime'] ?? '--:--',
-              'stayTime': stop['StayWayStationTime'] ?? '0',
-              'DayDifference': stop['DayDifference'] ?? 0,
-              'telCode': stop['TelCode'] ?? '',
-              'isFirst': stop['StationNo'] == '01',
-              'isLast':
-              stop['StationNo'] ==
-                  stopList.length.toString().padLeft(2, '0'),
-            },
-          )
+                (stop) => {
+                  'stationNo': stop['StationNo'] ?? '',
+                  'stationName': _cleanStationName(stop['StationName']),
+                  'arriveTime': stop['ArriveTime'] ?? '--:--',
+                  'departTime': stop['DepartTime'] ?? '--:--',
+                  'stayTime': stop['StayWayStationTime'] ?? '0',
+                  'DayDifference': stop['DayDifference'] ?? 0,
+                  'telCode': stop['TelCode'] ?? '',
+                  'isFirst': stop['StationNo'] == '01',
+                  'isLast':
+                      stop['StationNo'] ==
+                      stopList.length.toString().padLeft(2, '0'),
+                },
+              )
               .toList();
         } else if (data['RetCode'] != 1) {
           throw Exception(
@@ -737,12 +746,11 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
     final result = await showModalBottomSheet<Map<String, String>>(
       context: context,
       isScrollControlled: true,
-      builder: (context) =>
-          StationSelectorModal(
-            stations: _allStations,
-            selectedCode: selectedCode,
-            title: isFrom ? '选择出发站' : '选择到达站',
-          ),
+      builder: (context) => StationSelectorModal(
+        stations: _allStations,
+        selectedCode: selectedCode,
+        title: isFrom ? '选择出发站' : '选择到达站',
+      ),
     );
     if (result != null && mounted) {
       setState(() {
@@ -849,19 +857,12 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         decoration: BoxDecoration(
                           border: Border.all(
-                            color: Theme
-                                .of(
+                            color: Theme.of(
                               context,
-                            )
-                                .colorScheme
-                                .outline
-                                .withValues(alpha: 0.5),
+                            ).colorScheme.outline.withValues(alpha: 0.5),
                           ),
                           borderRadius: BorderRadius.circular(12),
-                          color: Theme
-                              .of(context)
-                              .colorScheme
-                              .surface,
+                          color: Theme.of(context).colorScheme.surface,
                         ),
                         alignment: Alignment.centerLeft,
                         child: Row(
@@ -869,10 +870,7 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                             Icon(
                               Icons.calendar_today,
                               size: 20,
-                              color: Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .primary,
+                              color: Theme.of(context).colorScheme.primary,
                             ),
                             const SizedBox(width: 8),
                             Text(
@@ -880,16 +878,10 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                               style: TextStyle(
                                 fontSize: 16,
                                 color: _selectedDate == null
-                                    ? Theme
-                                    .of(
-                                  context,
-                                )
-                                    .colorScheme
-                                    .onSurfaceVariant
-                                    : Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .onSurface,
+                                    ? Theme.of(
+                                        context,
+                                      ).colorScheme.onSurfaceVariant
+                                    : Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
                           ],
@@ -906,10 +898,7 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                 width: double.infinity,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  color: Theme
-                      .of(context)
-                      .colorScheme
-                      .surfaceContainerHighest,
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 ),
                 child: SegmentedButton<int>(
                   segments: const [
@@ -927,24 +916,15 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                   selected: {_searchMode},
                   onSelectionChanged: (Set<int> s) => _switchMode(s.first),
                   style: SegmentedButton.styleFrom(
-                    backgroundColor: Theme
-                        .of(
+                    backgroundColor: Theme.of(
                       context,
-                    )
-                        .colorScheme
-                        .surfaceContainerHighest,
-                    selectedBackgroundColor: Theme
-                        .of(
+                    ).colorScheme.surfaceContainerHighest,
+                    selectedBackgroundColor: Theme.of(
                       context,
-                    )
-                        .colorScheme
-                        .primary,
-                    selectedForegroundColor: Theme
-                        .of(
+                    ).colorScheme.primary,
+                    selectedForegroundColor: Theme.of(
                       context,
-                    )
-                        .colorScheme
-                        .onPrimary,
+                    ).colorScheme.onPrimary,
                     visualDensity: VisualDensity.compact,
                     minimumSize: const Size(0, 56),
                     padding: const EdgeInsets.symmetric(vertical: 8),
@@ -967,19 +947,15 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                         RegExp(r'[0-9GDCSKZTWPQgdcskztwpq1]'),
                       ),
                       TextInputFormatter.withFunction(
-                            (oldValue, newValue) =>
-                            newValue.copyWith(
-                              text: newValue.text.toUpperCase(),
-                            ),
+                        (oldValue, newValue) => newValue.copyWith(
+                          text: newValue.text.toUpperCase(),
+                        ),
                       ),
                     ],
                     decoration: InputDecoration(
                       hintText: "请输入车次",
                       hintStyle: TextStyle(
-                        color: Theme
-                            .of(context)
-                            .colorScheme
-                            .onSurfaceVariant,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
@@ -988,43 +964,28 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(
-                          color: Theme
-                              .of(context)
-                              .colorScheme
-                              .outline,
+                          color: Theme.of(context).colorScheme.outline,
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(
-                          color: Theme
-                              .of(context)
-                              .colorScheme
-                              .outline,
+                          color: Theme.of(context).colorScheme.outline,
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(
-                          color: Theme
-                              .of(context)
-                              .colorScheme
-                              .primary,
+                          color: Theme.of(context).colorScheme.primary,
                           width: 2,
                         ),
                       ),
                       filled: true,
-                      fillColor: Theme
-                          .of(context)
-                          .colorScheme
-                          .surface,
+                      fillColor: Theme.of(context).colorScheme.surface,
                     ),
                     style: TextStyle(
                       fontSize: 16,
-                      color: Theme
-                          .of(context)
-                          .colorScheme
-                          .onSurface,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                     maxLines: 1,
                   ),
@@ -1038,34 +999,28 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                   child: ElevatedButton(
                     onPressed: _loading ? null : _searchTrain,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme
-                          .of(context)
-                          .colorScheme
-                          .primary,
-                      foregroundColor: Theme
-                          .of(context)
-                          .colorScheme
-                          .onPrimary,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                     child: _loading
                         ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation(Colors.white),
-                      ),
-                    )
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation(Colors.white),
+                            ),
+                          )
                         : Text(
-                      '搜索车次',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                            '搜索车次',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -1088,16 +1043,10 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                             border: Border.all(
                               color: _fromCode != null
                                   ? Colors.blue
-                                  : Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .outline,
+                                  : Theme.of(context).colorScheme.outline,
                             ),
                             borderRadius: BorderRadius.circular(12),
-                            color: Theme
-                                .of(context)
-                                .colorScheme
-                                .surface,
+                            color: Theme.of(context).colorScheme.surface,
                           ),
                           alignment: Alignment.centerLeft,
                           child: Row(
@@ -1107,12 +1056,9 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                                 size: 20,
                                 color: _fromCode != null
                                     ? Colors.blue
-                                    : Theme
-                                    .of(
-                                  context,
-                                )
-                                    .colorScheme
-                                    .onSurfaceVariant,
+                                    : Theme.of(
+                                        context,
+                                      ).colorScheme.onSurfaceVariant,
                               ),
                               const SizedBox(width: 8),
                               Expanded(
@@ -1121,18 +1067,12 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: _fromCode != null
-                                        ? Theme
-                                        .of(
-                                      context,
-                                    )
-                                        .colorScheme
-                                        .onSurface
-                                        : Theme
-                                        .of(
-                                      context,
-                                    )
-                                        .colorScheme
-                                        .onSurfaceVariant,
+                                        ? Theme.of(
+                                            context,
+                                          ).colorScheme.onSurface
+                                        : Theme.of(
+                                            context,
+                                          ).colorScheme.onSurfaceVariant,
                                   ),
                                 ),
                               ),
@@ -1147,10 +1087,7 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                       child: Icon(
                         Icons.arrow_forward,
                         size: 20,
-                        color: Theme
-                            .of(context)
-                            .colorScheme
-                            .onSurfaceVariant,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                     Expanded(
@@ -1163,16 +1100,10 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                             border: Border.all(
                               color: _toCode != null
                                   ? Colors.red
-                                  : Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .outline,
+                                  : Theme.of(context).colorScheme.outline,
                             ),
                             borderRadius: BorderRadius.circular(12),
-                            color: Theme
-                                .of(context)
-                                .colorScheme
-                                .surface,
+                            color: Theme.of(context).colorScheme.surface,
                           ),
                           alignment: Alignment.centerLeft,
                           child: Row(
@@ -1182,12 +1113,9 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                                 size: 20,
                                 color: _toCode != null
                                     ? Colors.red
-                                    : Theme
-                                    .of(
-                                  context,
-                                )
-                                    .colorScheme
-                                    .onSurfaceVariant,
+                                    : Theme.of(
+                                        context,
+                                      ).colorScheme.onSurfaceVariant,
                               ),
                               const SizedBox(width: 8),
                               Expanded(
@@ -1196,18 +1124,12 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: _toCode != null
-                                        ? Theme
-                                        .of(
-                                      context,
-                                    )
-                                        .colorScheme
-                                        .onSurface
-                                        : Theme
-                                        .of(
-                                      context,
-                                    )
-                                        .colorScheme
-                                        .onSurfaceVariant,
+                                        ? Theme.of(
+                                            context,
+                                          ).colorScheme.onSurface
+                                        : Theme.of(
+                                            context,
+                                          ).colorScheme.onSurfaceVariant,
                                   ),
                                 ),
                               ),
@@ -1227,34 +1149,28 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                   child: ElevatedButton(
                     onPressed: _loading ? null : _searchStation,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme
-                          .of(context)
-                          .colorScheme
-                          .primary,
-                      foregroundColor: Theme
-                          .of(context)
-                          .colorScheme
-                          .onPrimary,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                     child: _loading
                         ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation(Colors.white),
-                      ),
-                    )
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation(Colors.white),
+                            ),
+                          )
                         : const Text(
-                      '搜索站点间车次',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                            '搜索站点间车次',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -1294,7 +1210,7 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
     return Column(
       children: List.generate(
         _trainResults.length,
-            (index) => _buildItem(index, false),
+        (index) => _buildItem(index, false),
       ),
     );
   }
@@ -1324,7 +1240,7 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
     return Column(
       children: List.generate(
         _stationResults.length,
-            (index) => _buildItem(index, true),
+        (index) => _buildItem(index, true),
       ),
     );
   }
@@ -1352,13 +1268,10 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
               progress: isExpanded
                   ? _anim
                   : Tween<double>(
-                begin: 0,
-                end: 1,
-              ).animate(AlwaysStoppedAnimation(0)),
-              color: Theme
-                  .of(context)
-                  .colorScheme
-                  .primary,
+                      begin: 0,
+                      end: 1,
+                    ).animate(AlwaysStoppedAnimation(0)),
+              color: Theme.of(context).colorScheme.primary,
             ),
             onTap: () => _toggleExpand(index, isStation),
           ),
@@ -1388,7 +1301,9 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
     String runTime = item['run_time']?.toString() ?? '--';
 
     // 检查是否是环线列车（始发站和终点站相同）
-    bool isCircularLine = _getStationName(item['from_station']) == _getStationName(item['to_station']);
+    bool isCircularLine =
+        _getStationName(item['from_station']) ==
+        _getStationName(item['to_station']);
 
     if (isStation && stopData.isNotEmpty) {
       final fromStationName = _fromName;
@@ -1406,13 +1321,21 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
             final lastArr = lastStop['arriveTime'] as String?;
 
             if (firstDep != null && lastArr != null) {
-              final firstDayDiff = _parseDayDifference(firstStop['DayDifference']);
-              final lastDayDiff = _parseDayDifference(lastStop['DayDifference']);
+              final firstDayDiff = _parseDayDifference(
+                firstStop['DayDifference'],
+              );
+              final lastDayDiff = _parseDayDifference(
+                lastStop['DayDifference'],
+              );
               final totalDayDiff = lastDayDiff - firstDayDiff;
 
               depTime = firstDep;
               arrTime = lastArr;
-              runTime = _calcRunTime(firstDep, lastArr, totalDayDiff.toString());
+              runTime = _calcRunTime(
+                firstDep,
+                lastArr,
+                totalDayDiff.toString(),
+              );
             }
           }
         } else {
@@ -1450,14 +1373,21 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
             final selectedArrTime = toArr ?? toDep ?? '--:--';
 
             // 计算跨天信息
-            final fromDayDiff = int.tryParse(fromStation['DayDifference']?.toString() ?? '0') ?? 0;
-            final toDayDiff = int.tryParse(toStation['DayDifference']?.toString() ?? '0') ?? 0;
+            final fromDayDiff =
+                int.tryParse(fromStation['DayDifference']?.toString() ?? '0') ??
+                0;
+            final toDayDiff =
+                int.tryParse(toStation['DayDifference']?.toString() ?? '0') ??
+                0;
             final dayOffset = (toDayDiff - fromDayDiff).abs();
 
             if (selectedDepTime != '--:--' && selectedArrTime != '--:--') {
               depTime = selectedDepTime;
               arrTime = selectedArrTime;
-              runTime = _calcRunTime(selectedDepTime,selectedArrTime,dayOffset.toString(),
+              runTime = _calcRunTime(
+                selectedDepTime,
+                selectedArrTime,
+                dayOffset.toString(),
               );
             }
           }
@@ -1467,17 +1397,17 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
       // 车次查询模式：对于环线列车也使用完整运行时间
       final firstStop =
           stopData.cast<Map<String, dynamic>?>().firstWhere(
-                (stop) => stop?['isFirst'] == true,
+            (stop) => stop?['isFirst'] == true,
             orElse: () => null,
           ) ??
-              stopData.first as Map<String, dynamic>?;
+          stopData.first as Map<String, dynamic>?;
 
       final lastStop =
           stopData.cast<Map<String, dynamic>?>().firstWhere(
-                (stop) => stop?['isLast'] == true,
+            (stop) => stop?['isLast'] == true,
             orElse: () => null,
           ) ??
-              stopData.last as Map<String, dynamic>?;
+          stopData.last as Map<String, dynamic>?;
 
       if (firstStop != null) {
         final firstArr = firstStop['arriveTime'] as String?;
@@ -1503,9 +1433,7 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
     }
 
     final bool expired = _isExpired(index, item, isStation);
-    final isDark = Theme
-        .of(context)
-        .brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final referencePrice =
         item['ze_price'] ?? item['zy_price'] ?? item['swz_price'];
 
@@ -1607,7 +1535,9 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                                 size: 16,
                                 color: expired
                                     ? Colors.grey.shade400
-                                    : (isDark ? Colors.grey.shade300 : Colors.grey),
+                                    : (isDark
+                                          ? Colors.grey.shade300
+                                          : Colors.grey),
                               ),
                               const SizedBox(width: 8),
                               Text(
@@ -1626,14 +1556,14 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                           Row(
                             children: [
                               Text(
-                                isStation
-                                    ? '区间时长: $runTime'
-                                    : '运行时长: $runTime',
+                                isStation ? '区间时长: $runTime' : '运行时长: $runTime',
                                 style: TextStyle(
                                   fontSize: 13,
                                   color: expired
                                       ? Colors.grey.shade400
-                                      : (isDark ? Colors.grey.shade300 : Colors.grey.shade600),
+                                      : (isDark
+                                            ? Colors.grey.shade300
+                                            : Colors.grey.shade600),
                                 ),
                               ),
                               if (isStation &&
@@ -1686,7 +1616,9 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                         size: 24,
                         color: expired
                             ? Colors.grey.shade400
-                            : (isDark ? Colors.blue.shade300 : Colors.blue.shade300),
+                            : (isDark
+                                  ? Colors.blue.shade300
+                                  : Colors.blue.shade300),
                       ),
                     ],
                   ),
@@ -1711,10 +1643,7 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                 Expanded(
                   child: Text(
                     '信息仅供参考,合理安排时间行程\n买票请上12306,发货请上95306',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey.shade600,
-                    ),
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -1739,9 +1668,11 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                         );
                       } else if (snapshot.hasData && snapshot.data != '未知') {
                         return Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
                           ),
+                          decoration: BoxDecoration(),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -1750,7 +1681,9 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                                 snapshot.data!,
                                 style: TextStyle(
                                   fontSize: 16,
-                                  color: Theme.of(context).colorScheme.onSurface,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -1759,11 +1692,17 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                         );
                       } else {
                         return Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.grey.shade100,
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.grey.shade300, width: 1),
+                            border: Border.all(
+                              color: Colors.grey.shade300,
+                              width: 1,
+                            ),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -1823,7 +1762,9 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                     backgroundColor: expired
                         ? Colors.grey.shade300
                         : Theme.of(context).colorScheme.primary,
-                    foregroundColor: expired ? Colors.grey.shade400 : Colors.white,
+                    foregroundColor: expired
+                        ? Colors.grey.shade400
+                        : Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -1857,7 +1798,6 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
     );
   }
 
-
   Widget _buildSeatList(Map<String, dynamic> item) {
     // 座位映射
     final Map<String, String> seatMapping = {
@@ -1879,25 +1819,29 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
 
     // 价格映射
     final Map<String, String> priceMapping = {
-      'swz_num': item['swz_price']?.toString() ??
-          item['tz_price']?.toString() ?? '--',
+      'swz_num':
+          item['swz_price']?.toString() ?? item['tz_price']?.toString() ?? '--',
       'zy_num': item['zy_price']?.toString() ?? '--',
       'ze_num': item['ze_price']?.toString() ?? '--',
       'gr_num': item['gr_price']?.toString() ?? '--',
-      'rw_num': item['rw_price']?.toString() ??
-          item['srrb_price']?.toString() ?? '--',
+      'rw_num':
+          item['rw_price']?.toString() ??
+          item['srrb_price']?.toString() ??
+          '--',
       'yw_num': item['yw_price']?.toString() ?? '--',
       'rz_num': item['rz_price']?.toString() ?? '--',
       'yz_num': item['yz_price']?.toString() ?? '--',
-      'wz_num': item['wz_price']?.toString() ?? item['ze_price']?.toString() ??
-          '--',
-      'tz_num': item['tz_price']?.toString() ?? item['swz_price']?.toString() ??
-          '--',
+      'wz_num':
+          item['wz_price']?.toString() ?? item['ze_price']?.toString() ?? '--',
+      'tz_num':
+          item['tz_price']?.toString() ?? item['swz_price']?.toString() ?? '--',
       'qt_num': item['qt_price']?.toString() ?? '--',
-      'gg_num': item['gg_price']?.toString() ?? item['zy_price']?.toString() ??
+      'gg_num':
+          item['gg_price']?.toString() ?? item['zy_price']?.toString() ?? '--',
+      'srrb_num':
+          item['srrb_price']?.toString() ??
+          item['rw_price']?.toString() ??
           '--',
-      'srrb_num': item['srrb_price']?.toString() ??
-          item['rw_price']?.toString() ?? '--',
       'yb_num': item['yb_price']?.toString() ?? '--',
     };
 
@@ -1936,16 +1880,15 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
     final bool hasAvailableTickets = _hasAvailableTickets(seatInfo);
 
     // 检查是否有动卧
-    final bool hasMotorSleeper = priceMapping['srrb_num'] != null &&
+    final bool hasMotorSleeper =
+        priceMapping['srrb_num'] != null &&
         priceMapping['srrb_num'] != '--' &&
         priceMapping['srrb_num'] != '0';
 
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Theme
-            .of(context)
-            .dividerColor),
+        border: Border.all(color: Theme.of(context).dividerColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1954,11 +1897,7 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Theme
-                  .of(context)
-                  .colorScheme
-                  .primary
-                  .withAlpha(30),
+              color: Theme.of(context).colorScheme.primary.withAlpha(30),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(12),
                 topRight: Radius.circular(12),
@@ -1968,10 +1907,7 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
               children: [
                 Icon(
                   Icons.event_seat,
-                  color: Theme
-                      .of(context)
-                      .colorScheme
-                      .primary,
+                  color: Theme.of(context).colorScheme.primary,
                   size: 20,
                 ),
                 const SizedBox(width: 8),
@@ -1980,27 +1916,23 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Theme
-                        .of(context)
-                        .colorScheme
-                        .primary,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
                 if (!hasAvailableTickets) ...[
                   const SizedBox(width: 8),
                   Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 2),
+                      horizontal: 8,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.red,
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: const Text(
                       '无票',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.white,
-                      ),
+                      style: TextStyle(fontSize: 12, color: Colors.white),
                     ),
                   ),
                 ],
@@ -2012,120 +1944,131 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
           Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
-              children: seatCategories.map((category) {
-                final categorySeats = category['seats'] as List<String>;
-                final categoryColor = category['color'] as Color;
+              children: seatCategories
+                  .map((category) {
+                    final categorySeats = category['seats'] as List<String>;
+                    final categoryColor = category['color'] as Color;
 
-                // 过滤：只显示有价格的座位类型
-                final seatsWithPrice = categorySeats.where((seatCode) {
-                  final price = priceMapping[seatCode];
-                  return price != null && price != '--' && price != '0';
-                }).toList();
+                    // 过滤：只显示有价格的座位类型
+                    final seatsWithPrice = categorySeats.where((seatCode) {
+                      final price = priceMapping[seatCode];
+                      return price != null && price != '--' && price != '0';
+                    }).toList();
 
-                // 特殊处理：卧铺类别中，软卧和动卧不能同时存在
-                if (category['name'] == '卧铺') {
-                  final hasSoftSleeper = seatsWithPrice.contains('rw_num');
-                  final hasMotorSleeper = seatsWithPrice.contains('srrb_num');
+                    // 特殊处理：卧铺类别中，软卧和动卧不能同时存在
+                    if (category['name'] == '卧铺') {
+                      final hasSoftSleeper = seatsWithPrice.contains('rw_num');
+                      final hasMotorSleeper = seatsWithPrice.contains(
+                        'srrb_num',
+                      );
 
-                  // 如果同时存在软卧和动卧，优先显示动卧，隐藏软卧
-                  if (hasSoftSleeper && hasMotorSleeper) {
-                    seatsWithPrice.remove('rw_num');
-                  }
-                }
+                      // 如果同时存在软卧和动卧，优先显示动卧，隐藏软卧
+                      if (hasSoftSleeper && hasMotorSleeper) {
+                        seatsWithPrice.remove('rw_num');
+                      }
+                    }
 
-                // 如果该类别下所有座位都没有价格，则不显示整个类别
-                if (seatsWithPrice.isEmpty) {
-                  return const SizedBox.shrink();
-                }
+                    // 如果该类别下所有座位都没有价格，则不显示整个类别
+                    if (seatsWithPrice.isEmpty) {
+                      return const SizedBox.shrink();
+                    }
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // 类别标题
-                    Row(
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(width: 4, height: 16, color: categoryColor),
-                        const SizedBox(width: 8),
-                        Text(
-                          category['name'] as String,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.grey.shade700,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-
-                    // 座位列表 - 只显示有价格的座位，无票的用红色标识
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: seatsWithPrice.map((seatCode) {
-                        final seatName = seatMapping[seatCode] ?? seatCode;
-                        final seatValue = seatInfo[seatCode]?.toString() ??
-                            '无票';
-                        final seatPrice = priceMapping[seatCode] ?? '--';
-                        final isAvailable = _isSeatAvailable(
-                            seatInfo[seatCode]);
-
-                        // 清理座位值显示
-                        String displayValue = seatValue;
-                        if (!isAvailable) {
-                          displayValue = '无票';
-                        }
-
-                        return Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: categoryColor.withAlpha(30),
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: categoryColor.withAlpha(100),
+                        // 类别标题
+                        Row(
+                          children: [
+                            Container(
+                              width: 4,
+                              height: 16,
+                              color: categoryColor,
                             ),
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                seatName,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: categoryColor,
+                            const SizedBox(width: 8),
+                            Text(
+                              category['name'] as String,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.grey.shade700,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+
+                        // 座位列表 - 只显示有价格的座位，无票的用红色标识
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: seatsWithPrice.map((seatCode) {
+                            final seatName = seatMapping[seatCode] ?? seatCode;
+                            final seatValue =
+                                seatInfo[seatCode]?.toString() ?? '无票';
+                            final seatPrice = priceMapping[seatCode] ?? '--';
+                            final isAvailable = _isSeatAvailable(
+                              seatInfo[seatCode],
+                            );
+
+                            // 清理座位值显示
+                            String displayValue = seatValue;
+                            if (!isAvailable) {
+                              displayValue = '无票';
+                            }
+
+                            return Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: categoryColor.withAlpha(30),
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: categoryColor.withAlpha(100),
                                 ),
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                displayValue,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: isAvailable
-                                      ? categoryColor
-                                      : Colors.red[300],
-                                ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    seatName,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: categoryColor,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    displayValue,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: isAvailable
+                                          ? categoryColor
+                                          : Colors.red[300],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    '¥$seatPrice',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: categoryColor.withAlpha(150),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                '¥$seatPrice',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: categoryColor.withAlpha(150),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                    const SizedBox(height: 16),
-                  ],
-                );
-              })
-                  .where((categoryWidget) =>
-              categoryWidget is! SizedBox || categoryWidget.child != null)
+                            );
+                          }).toList(),
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+                    );
+                  })
+                  .where(
+                    (categoryWidget) =>
+                        categoryWidget is! SizedBox ||
+                        categoryWidget.child != null,
+                  )
                   .toList(),
             ),
           ),
@@ -2304,7 +2247,7 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
 
     // 找到用户查询的车站
     final queryStop = stopData.cast<Map<String, dynamic>?>().firstWhere(
-          (stop) => stop?['isCurrent'] == true,
+      (stop) => stop?['isCurrent'] == true,
       orElse: () => null,
     );
 
@@ -2321,7 +2264,7 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
 
     // 找到终点站
     final lastStop = stopData.cast<Map<String, dynamic>?>().firstWhere(
-          (stop) => stop?['isLast'] == true,
+      (stop) => stop?['isLast'] == true,
       orElse: () => null,
     );
 
@@ -2404,13 +2347,17 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
           ),
         ),
       );
-
     } catch (e) {
       _showSnack('打开线路走向图失败: $e');
     }
   }
 
-  Widget _buildStopSection(int index, List<dynamic> stops, bool loading, bool isStation) {
+  Widget _buildStopSection(
+    int index,
+    List<dynamic> stops,
+    bool loading,
+    bool isStation,
+  ) {
     if (loading) return const Center(child: CircularProgressIndicator());
     if (stops.isEmpty) {
       return GestureDetector(
@@ -2433,7 +2380,13 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
     return _buildStopList(stops, trainDate, item);
   }
 
-  Widget _buildStopList(List<dynamic> stops, DateTime trainDate, Map<String, dynamic> journey, {bool isSelectable = false, Function(int)? onStationTap}) {
+  Widget _buildStopList(
+    List<dynamic> stops,
+    DateTime trainDate,
+    Map<String, dynamic> journey, {
+    bool isSelectable = false,
+    Function(int)? onStationTap,
+  }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
@@ -2487,8 +2440,12 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
           bool isToStation = false;
 
           // 获取当前journey的fromStation和toStation
-          final currentFromStation = _normalizeStationName(journey['from_station']?.toString() ?? '');
-          final currentToStation = _normalizeStationName(journey['to_station']?.toString() ?? '');
+          final currentFromStation = _normalizeStationName(
+            journey['from_station']?.toString() ?? '',
+          );
+          final currentToStation = _normalizeStationName(
+            journey['to_station']?.toString() ?? '',
+          );
           final currentStationName = _normalizeStationName(name);
 
           // 只有当车站名称完全匹配时才显示标识
@@ -2506,7 +2463,9 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
             int firstOccurrenceIndex = -1;
             for (int i = 0; i < stops.length; i++) {
               final station = stops[i] as Map<String, dynamic>;
-              final stationName = _normalizeStationName(station['stationName']?.toString() ?? '');
+              final stationName = _normalizeStationName(
+                station['stationName']?.toString() ?? '',
+              );
               if (stationName == currentStationName) {
                 firstOccurrenceIndex = i;
                 break;
@@ -2541,32 +2500,37 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
           }
 
           return GestureDetector(
-            onTap: isSelectable ? () {
-              if (onStationTap != null) {
-                onStationTap(index);
-              }
-            } : null,
+            onTap: isSelectable
+                ? () {
+                    if (onStationTap != null) {
+                      onStationTap(index);
+                    }
+                  }
+                : null,
             child: Container(
               decoration: BoxDecoration(
                 color: passed
                     ? Colors.orange.withAlpha(30)
                     : (isFromStation || isToStation
-                    ? Colors.blue.withAlpha(30)
-                    : terminal
-                    ? Colors.green.withAlpha(30)
-                    : Theme.of(context).colorScheme.surface),
+                          ? Colors.blue.withAlpha(30)
+                          : terminal
+                          ? Colors.green.withAlpha(30)
+                          : Theme.of(context).colorScheme.surface),
                 border: index < stops.length - 1
                     ? Border(
-                  bottom: BorderSide(
-                    color: Theme.of(context).dividerColor,
-                    width: 1,
-                  ),
-                )
+                        bottom: BorderSide(
+                          color: Theme.of(context).dividerColor,
+                          width: 1,
+                        ),
+                      )
                     : null,
                 borderRadius: getBorderRadius(),
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 16,
+                ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -2579,10 +2543,10 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                         color: passed
                             ? Colors.orange
                             : (isFromStation || isToStation
-                            ? Colors.blue
-                            : terminal
-                            ? Colors.green
-                            : Colors.black),
+                                  ? Colors.blue
+                                  : terminal
+                                  ? Colors.green
+                                  : Colors.black),
                         shape: BoxShape.circle,
                       ),
                       child: Text(
@@ -2609,7 +2573,9 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w500,
-                                        color: Theme.of(context).colorScheme.onSurface,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.onSurface,
                                       ),
                                     ),
                                     if (passed) ...[
@@ -2621,7 +2587,9 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                                         ),
                                         decoration: BoxDecoration(
                                           color: Colors.orange,
-                                          borderRadius: BorderRadius.circular(4),
+                                          borderRadius: BorderRadius.circular(
+                                            4,
+                                          ),
                                         ),
                                         child: const Text(
                                           '已过时',
@@ -2643,13 +2611,17 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                                           color: isDark
                                               ? Colors.purple.withAlpha(76)
                                               : Colors.purple.shade100,
-                                          borderRadius: BorderRadius.circular(4),
+                                          borderRadius: BorderRadius.circular(
+                                            4,
+                                          ),
                                         ),
                                         child: Text(
                                           '+$dayDiff天',
                                           style: TextStyle(
                                             fontSize: 10,
-                                            color: Theme.of(context).colorScheme.onSurface,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.onSurface,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
@@ -2706,7 +2678,12 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              _timeBlock('到达', first ? '--' : arr, passed, first),
+                              _timeBlock(
+                                '到达',
+                                first ? '--' : arr,
+                                passed,
+                                first,
+                              ),
                               if (stay > 0)
                                 Column(
                                   children: [
@@ -2726,8 +2703,8 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                                           color: passed
                                               ? Colors.orange.shade700
                                               : (isDark
-                                              ? Colors.green.shade300
-                                              : Colors.green.shade600),
+                                                    ? Colors.green.shade300
+                                                    : Colors.green.shade600),
                                         ),
                                         const SizedBox(width: 2),
                                         Text(
@@ -2738,8 +2715,8 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                                             color: passed
                                                 ? Colors.orange.shade700
                                                 : (isDark
-                                                ? Colors.green.shade300
-                                                : Colors.green.shade600),
+                                                      ? Colors.green.shade300
+                                                      : Colors.green.shade600),
                                           ),
                                         ),
                                       ],
@@ -2763,18 +2740,14 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
   }
 
   Widget _timeBlock(String label, String time, bool passed, bool isTerminal) {
-    final isDark = Theme
-        .of(context)
-        .brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: TextStyle(fontSize: 11, color: Theme
-              .of(context)
-              .hintColor),
+          style: TextStyle(fontSize: 11, color: Theme.of(context).hintColor),
         ),
         const SizedBox(height: 4),
         Text(
@@ -2786,17 +2759,19 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                 ? Colors.orange.shade700
                 : isTerminal
                 ? (isDark ? Colors.green.shade300 : Colors.green.shade600)
-                : Theme
-                .of(context)
-                .colorScheme
-                .onSurface,
+                : Theme.of(context).colorScheme.onSurface,
           ),
         ),
       ],
     );
   }
 
-  bool _isTimePassed(DateTime trainDate, String? timeString, int dayDiff,bool isLast,) {
+  bool _isTimePassed(
+    DateTime trainDate,
+    String? timeString,
+    int dayDiff,
+    bool isLast,
+  ) {
     if (timeString == null || timeString.isEmpty || timeString == '--:--') {
       return false;
     }
@@ -2830,7 +2805,11 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
     }
   }
 
-  void _handleSelect(int index, Map<String, dynamic> train, bool isStation) async {
+  void _handleSelect(
+    int index,
+    Map<String, dynamic> train,
+    bool isStation,
+  ) async {
     if (!_hasDetails(index, isStation)) {
       await _fetchDetails(index, isStation);
     }
@@ -2842,13 +2821,15 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
           context: context,
           builder: (context) => AlertDialog(
             title: const Text('添加行程'),
-            content: Text('是否添加 ${train['station_train_code']} 次列车？\n点击12306按钮跳转软件自行购票'),
+            content: Text(
+              '是否添加 ${train['station_train_code']} 次列车？\n点击12306按钮跳转软件自行购票',
+            ),
             actions: [
               TextButton(
-                onPressed: () =>{
-                    _launchTicketApp(),
-                    Navigator.of(context).pop(),
-                  },
+                onPressed: () => {
+                  _launchTicketApp(),
+                  Navigator.of(context).pop(),
+                },
                 child: const Text('12306'),
               ),
               TextButton(
@@ -2897,7 +2878,6 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setDialogState) {
-
           void handleStationTap(int index) {
             final station = stopData[index] as Map<String, dynamic>;
             final stationName = station['stationName']?.toString() ?? '';
@@ -2914,8 +2894,11 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                 selectedTo = null;
               } else if (selectedTo == null) {
                 // 第二次选择：选择下车站（必须在上车站之后）
-                final fromIndex = stopData.indexWhere((s) =>
-                (s as Map<String, dynamic>)['stationName'] == selectedFrom);
+                final fromIndex = stopData.indexWhere(
+                  (s) =>
+                      (s as Map<String, dynamic>)['stationName'] ==
+                      selectedFrom,
+                );
 
                 if (index > fromIndex) {
                   // 下车站在上车站之后，允许选择
@@ -2944,8 +2927,10 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
               return true;
             } else if (selectedTo == null) {
               // 已经选择了上车站，下车站必须在上车站之后且未过期
-              final fromIndex = stopData.indexWhere((s) =>
-              (s as Map<String, dynamic>)['stationName'] == selectedFrom);
+              final fromIndex = stopData.indexWhere(
+                (s) =>
+                    (s as Map<String, dynamic>)['stationName'] == selectedFrom,
+              );
               return index > fromIndex;
             } else {
               // 已经选择了两个车站，所有未过期车站都可重新选择
@@ -3024,7 +3009,9 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Theme.of(context).dividerColor),
+                        border: Border.all(
+                          color: Theme.of(context).dividerColor,
+                        ),
                       ),
                       child: ListView.builder(
                         shrinkWrap: true,
@@ -3036,7 +3023,11 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                           final name = stop['stationName']?.toString() ?? '';
                           final arr = stop['arriveTime']?.toString() ?? '--:--';
                           final dep = stop['departTime']?.toString() ?? '--:--';
-                          final stay = int.tryParse(stop['stayTime']?.toString() ?? '0') ?? 0;
+                          final stay =
+                              int.tryParse(
+                                stop['stayTime']?.toString() ?? '0',
+                              ) ??
+                              0;
 
                           final isSelected = isStationSelected(index);
                           final isExpired = isStationExpired(index);
@@ -3058,7 +3049,9 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
 
                           // 在车站列表项的构建中添加跨天显示
                           return GestureDetector(
-                            onTap: isSelectable ? () => handleStationTap(index) : null,
+                            onTap: isSelectable
+                                ? () => handleStationTap(index)
+                                : null,
                             child: Container(
                               decoration: BoxDecoration(
                                 color: isExpired
@@ -3068,15 +3061,18 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                                     : Colors.transparent,
                                 border: index < stopData.length - 1
                                     ? Border(
-                                  bottom: BorderSide(
-                                    color: Theme.of(context).dividerColor,
-                                    width: 0.5,
-                                  ),
-                                )
+                                        bottom: BorderSide(
+                                          color: Theme.of(context).dividerColor,
+                                          width: 0.5,
+                                        ),
+                                      )
                                     : null,
                               ),
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                  horizontal: 16,
+                                ),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -3105,7 +3101,8 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                                     const SizedBox(width: 12),
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Row(
                                             children: [
@@ -3116,11 +3113,14 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                                                       name,
                                                       style: TextStyle(
                                                         fontSize: 16,
-                                                        fontWeight: FontWeight.w500,
+                                                        fontWeight:
+                                                            FontWeight.w500,
                                                         color: isExpired
                                                             ? Colors.orange[200]
                                                             : isSelectable
-                                                            ? Theme.of(context).colorScheme.onSurface
+                                                            ? Theme.of(context)
+                                                                  .colorScheme
+                                                                  .onSurface
                                                             : Colors.grey,
                                                       ),
                                                     ),
@@ -3128,34 +3128,54 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                                                     // 添加跨天标识
                                                     if (dayDiff > 0)
                                                       Container(
-                                                        margin: const EdgeInsets.only(left: 8),
-                                                        padding: const EdgeInsets.symmetric(
-                                                          horizontal: 6,
-                                                          vertical: 2,
-                                                        ),
+                                                        margin:
+                                                            const EdgeInsets.only(
+                                                              left: 8,
+                                                            ),
+                                                        padding:
+                                                            const EdgeInsets.symmetric(
+                                                              horizontal: 6,
+                                                              vertical: 2,
+                                                            ),
                                                         decoration: BoxDecoration(
-                                                          color: Colors.purple.withAlpha(76),
-                                                          borderRadius: BorderRadius.circular(4),
+                                                          color: Colors.purple
+                                                              .withAlpha(76),
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                4,
+                                                              ),
                                                         ),
                                                         child: Text(
                                                           '+$dayDiff天',
                                                           style: TextStyle(
                                                             fontSize: 10,
-                                                            color: Theme.of(context).colorScheme.onSurface,
+                                                            color:
+                                                                Theme.of(
+                                                                      context,
+                                                                    )
+                                                                    .colorScheme
+                                                                    .onSurface,
                                                           ),
                                                         ),
                                                       ),
 
                                                     if (isExpired)
                                                       Container(
-                                                        margin: const EdgeInsets.only(left: 8),
-                                                        padding: const EdgeInsets.symmetric(
-                                                          horizontal: 6,
-                                                          vertical: 2,
-                                                        ),
+                                                        margin:
+                                                            const EdgeInsets.only(
+                                                              left: 8,
+                                                            ),
+                                                        padding:
+                                                            const EdgeInsets.symmetric(
+                                                              horizontal: 6,
+                                                              vertical: 2,
+                                                            ),
                                                         decoration: BoxDecoration(
                                                           color: Colors.red,
-                                                          borderRadius: BorderRadius.circular(4),
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                4,
+                                                              ),
                                                         ),
                                                         child: const Text(
                                                           '已过',
@@ -3171,39 +3191,49 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                                               // 选择标识
                                               if (selectionType == 'from')
                                                 Container(
-                                                  padding: const EdgeInsets.symmetric(
-                                                    horizontal: 8,
-                                                    vertical: 4,
-                                                  ),
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 8,
+                                                        vertical: 4,
+                                                      ),
                                                   decoration: BoxDecoration(
                                                     color: Colors.green,
-                                                    borderRadius: BorderRadius.circular(4),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          4,
+                                                        ),
                                                   ),
                                                   child: const Text(
                                                     '上车站',
                                                     style: TextStyle(
                                                       color: Colors.white,
                                                       fontSize: 12,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
                                                   ),
                                                 ),
                                               if (selectionType == 'to')
                                                 Container(
-                                                  padding: const EdgeInsets.symmetric(
-                                                    horizontal: 8,
-                                                    vertical: 4,
-                                                  ),
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 8,
+                                                        vertical: 4,
+                                                      ),
                                                   decoration: BoxDecoration(
                                                     color: Colors.orange,
-                                                    borderRadius: BorderRadius.circular(4),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          4,
+                                                        ),
                                                   ),
                                                   child: const Text(
                                                     '下车站',
                                                     style: TextStyle(
                                                       color: Colors.white,
                                                       fontSize: 12,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
                                                   ),
                                                 ),
@@ -3211,13 +3241,16 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                                           ),
                                           const SizedBox(height: 4),
                                           Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
                                                 '到达: $arr',
                                                 style: TextStyle(
                                                   fontSize: 12,
-                                                  color: isExpired ? Colors.grey : Colors.grey.shade600,
+                                                  color: isExpired
+                                                      ? Colors.grey
+                                                      : Colors.grey.shade600,
                                                 ),
                                               ),
                                               if (stay > 0)
@@ -3225,14 +3258,18 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                                                   '停站: $stay分',
                                                   style: TextStyle(
                                                     fontSize: 12,
-                                                    color: isExpired ? Colors.grey : Colors.grey.shade600,
+                                                    color: isExpired
+                                                        ? Colors.grey
+                                                        : Colors.grey.shade600,
                                                   ),
                                                 ),
                                               Text(
                                                 '发车: $dep',
                                                 style: TextStyle(
                                                   fontSize: 12,
-                                                  color: isExpired ? Colors.grey : Colors.grey.shade600,
+                                                  color: isExpired
+                                                      ? Colors.grey
+                                                      : Colors.grey.shade600,
                                                 ),
                                               ),
                                             ],
@@ -3287,15 +3324,15 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
               ElevatedButton(
                 onPressed: (selectedFrom != null && selectedTo != null)
                     ? () {
-                  Navigator.of(context).pop();
-                  _addJourney(
-                    index,
-                    train,
-                    false,
-                    fromStation: selectedFrom,
-                    toStation: selectedTo,
-                  );
-                }
+                        Navigator.of(context).pop();
+                        _addJourney(
+                          index,
+                          train,
+                          false,
+                          fromStation: selectedFrom,
+                          toStation: selectedTo,
+                        );
+                      }
                     : null,
                 child: const Text('确认添加'),
               ),
@@ -3321,7 +3358,13 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
     }
   }
 
-  void _addJourney(int index, Map<String, dynamic> train, bool isStation, {String? fromStation, String? toStation,}) {
+  void _addJourney(
+    int index,
+    Map<String, dynamic> train,
+    bool isStation, {
+    String? fromStation,
+    String? toStation,
+  }) {
     if (_isExpired(index, train, isStation)) {
       _showSnack('车次已过期，无法添加');
       return;
@@ -3351,15 +3394,22 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
       actualToStation = _toName ?? train['to_station']?.toString() ?? '';
     } else {
       // 车次查询模式：使用用户选择的区间或默认站点
-      actualFromStation = fromStation ?? train['from_station']?.toString() ?? '';
+      actualFromStation =
+          fromStation ?? train['from_station']?.toString() ?? '';
       actualToStation = toStation ?? train['to_station']?.toString() ?? '';
     }
 
     // 验证站点是否存在
-    final fromExists = stationList.any((s) =>
-    (s as Map<String, dynamic>)['stationName']?.toString() == actualFromStation);
-    final toExists = stationList.any((s) =>
-    (s as Map<String, dynamic>)['stationName']?.toString() == actualToStation);
+    final fromExists = stationList.any(
+      (s) =>
+          (s as Map<String, dynamic>)['stationName']?.toString() ==
+          actualFromStation,
+    );
+    final toExists = stationList.any(
+      (s) =>
+          (s as Map<String, dynamic>)['stationName']?.toString() ==
+          actualToStation,
+    );
 
     if (!fromExists || !toExists) {
       _showSnack('选择的站点不存在于该车次中');
@@ -3368,10 +3418,12 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
 
     // 计算实际日期（考虑跨天）
     if (!isStation && fromStation != null) {
-      final fromStationData = stationList.cast<Map<String, dynamic>?>().firstWhere(
+      final fromStationData = stationList
+          .cast<Map<String, dynamic>?>()
+          .firstWhere(
             (stop) => stop?['stationName'] == fromStation,
-        orElse: () => null,
-      );
+            orElse: () => null,
+          );
 
       if (fromStationData != null) {
         final dayDiffValue = fromStationData['DayDifference'];
@@ -3412,7 +3464,7 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
     required String actualToStation,
   }) {
     String? selectedSeatType = 'wz_num';
-    String seatInfo = '';  // 改为字符串类型
+    String seatInfo = ''; // 改为字符串类型
     final TextEditingController seatInfoController = TextEditingController();
 
     showDialog(
@@ -3507,14 +3559,14 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                     border: const OutlineInputBorder(),
                     suffixIcon: selectedSeatType != 'wz_num'
                         ? IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () {
-                        setState(() {
-                          seatInfo = '';
-                          seatInfoController.clear();
-                        });
-                      },
-                    )
+                            icon: const Icon(Icons.clear),
+                            onPressed: () {
+                              setState(() {
+                                seatInfo = '';
+                                seatInfoController.clear();
+                              });
+                            },
+                          )
                         : null,
                   ),
                   onChanged: (value) {
@@ -3564,7 +3616,7 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
                     actualFromStation: actualFromStation,
                     actualToStation: actualToStation,
                     seatType: selectedSeatType!,
-                    seatInfo: seatInfo,  // 传递文本格式的座位信息
+                    seatInfo: seatInfo, // 传递文本格式的座位信息
                   );
 
                   Navigator.pop(context);
@@ -3587,7 +3639,7 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
     required String actualFromStation,
     required String actualToStation,
     required String seatType,
-    required String seatInfo,  // 改为字符串参数
+    required String seatInfo, // 改为字符串参数
   }) {
     final journey = Journey.fromMapWithStations(
       trainInfo: train,
@@ -3597,7 +3649,7 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
       fromStation: actualFromStation,
       toStation: actualToStation,
       seatType: seatType,
-      seatInfo: seatInfo,  // 传递座位信息文本
+      seatInfo: seatInfo, // 传递座位信息文本
     );
 
     if (mounted) {
@@ -3622,9 +3674,11 @@ class _AddJourneyPageState extends State<AddJourneyPage> with SingleTickerProvid
       final seatName = seatTypeNames[seatType] ?? '未知座位';
       final infoText = seatType == 'wz_num' ? '' : ' ($seatInfo)';
 
-      _showSnack('已添加 ${train['station_train_code']} 次列车 '
-          '($actualFromStation -> $actualToStation) '
-          '$seatName$infoText');
+      _showSnack(
+        '已添加 ${train['station_train_code']} 次列车 '
+        '($actualFromStation -> $actualToStation) '
+        '$seatName$infoText',
+      );
 
       // 延迟返回主页
       Future.delayed(const Duration(milliseconds: 800), () {

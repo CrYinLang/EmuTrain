@@ -1,7 +1,9 @@
 // journey_provider.dart
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
+
 import 'journey_model.dart';
 
 class JourneyProvider extends ChangeNotifier {
@@ -24,9 +26,12 @@ class JourneyProvider extends ChangeNotifier {
         final List<dynamic> journeysList = json.decode(journeysJson);
         _journeys.clear();
         _journeys.addAll(
-            journeysList.map((journeyMap) =>
-                Journey.fromStorageMap(journeyMap as Map<String, dynamic>)
-            ).toList()
+          journeysList
+              .map(
+                (journeyMap) =>
+                    Journey.fromStorageMap(journeyMap as Map<String, dynamic>),
+              )
+              .toList(),
         );
         notifyListeners();
       }
@@ -42,7 +47,7 @@ class JourneyProvider extends ChangeNotifier {
     try {
       final prefs = await SharedPreferences.getInstance();
       final String journeysJson = json.encode(
-          _journeys.map((journey) => journey.toMap()).toList()
+        _journeys.map((journey) => journey.toMap()).toList(),
       );
       await prefs.setString(_storageKey, journeysJson);
     } catch (e) {
@@ -79,8 +84,14 @@ class JourneyProvider extends ChangeNotifier {
   void sortByDateTime() {
     _journeys.sort((a, b) {
       // 1. 创建完整的日期时间对象进行比较
-      final DateTime dateTimeA = _combineDateAndTime(a.travelDate, a.departureTime);
-      final DateTime dateTimeB = _combineDateAndTime(b.travelDate, b.departureTime);
+      final DateTime dateTimeA = _combineDateAndTime(
+        a.travelDate,
+        a.departureTime,
+      );
+      final DateTime dateTimeB = _combineDateAndTime(
+        b.travelDate,
+        b.departureTime,
+      );
 
       // 2. 比较完整的日期时间
       return dateTimeA.compareTo(dateTimeB);
@@ -96,13 +107,7 @@ class JourneyProvider extends ChangeNotifier {
       final hour = int.parse(parts[0]);
       final minute = int.parse(parts[1]);
 
-      return DateTime(
-          date.year,
-          date.month,
-          date.day,
-          hour,
-          minute
-      );
+      return DateTime(date.year, date.month, date.day, hour, minute);
     }
 
     // 如果解析失败，返回原始日期

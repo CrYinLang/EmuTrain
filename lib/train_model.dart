@@ -34,8 +34,10 @@ class TrainModelUtils {
     if (modelC == 'CRH6A') {
       int? num = int.tryParse(cleanedNumber.replaceAll(RegExp(r'[^0-9]'), ''));
       if (num != null) {
-        if ((num >= 401 && num <= 408) || (num >= 602 && num <= 610) ||
-            num == 420 || num == 421) {
+        if ((num >= 401 && num <= 408) ||
+            (num >= 602 && num <= 610) ||
+            num == 420 ||
+            num == 421) {
           return 'CRH6-2';
         }
       }
@@ -115,7 +117,8 @@ class TrainModelUtils {
     }
     if (modelC == 'CRH5G') return 'CRH5A';
 
-    if (modelC == 'CRH2E' && cleanedNumber == '2461' || cleanedNumber == '2462') return 'CRH2E-H';
+    if (modelC == 'CRH2E' && cleanedNumber == '2461' || cleanedNumber == '2462')
+      return 'CRH2E-H';
     if (modelC == 'CRH2G') return 'CRH2E-H';
     if (modelC == 'CRH2B') return 'CRH2BE';
     if (modelC == 'CRH2E') return 'CRH2BE';
@@ -126,31 +129,48 @@ class TrainModelUtils {
     if (modelC == 'CRH6F' && cleanedNumber == '0001') return 'CRH6-2';
     if (modelC == 'CR400BF' && cleanedNumber == '0031') return 'CR400BF-0031';
     if (modelC == 'CR400BF-G' && cleanedNumber == '0051') return 'CR400BF-0031';
-    if (modelC == 'CR400BF-C' && cleanedNumber == '5162') return 'CR400BF-C-5162';
-    if (modelC == 'CR400BF-J' && cleanedNumber == '0001') return 'CR400BF-J-0001';
-    if (modelC == 'CR400BF-J' && cleanedNumber == '0003') return 'CR400BF-J-0003';
-    if (modelC == 'CR400BF-Z' && cleanedNumber == '0524') return 'CR400BF-Z-0524';
+    if (modelC == 'CR400BF-C' && cleanedNumber == '5162')
+      return 'CR400BF-C-5162';
+    if (modelC == 'CR400BF-J' && cleanedNumber == '0001')
+      return 'CR400BF-J-0001';
+    if (modelC == 'CR400BF-J' && cleanedNumber == '0003')
+      return 'CR400BF-J-0003';
+    if (modelC == 'CR400BF-Z' && cleanedNumber == '0524')
+      return 'CR400BF-Z-0524';
 
     if (modelC == 'CRH6A-A') return 'CRH6A';
     if (modelC == 'CRH6A-AZ') return 'CRH6A';
 
-    if (modelC == 'CR400AF-Z' || modelC == 'CR400AF-AZ' || modelC == 'CR400AF-BZ' ||
-        modelC == 'CR400AF-S' || modelC == 'CR400AF-AS' || modelC == 'CR400AF-BS' ||
-        modelC == 'CR400AF-AE' || modelC == 'CR400AF-C') {
+    if (modelC == 'CR400AF-Z' ||
+        modelC == 'CR400AF-AZ' ||
+        modelC == 'CR400AF-BZ' ||
+        modelC == 'CR400AF-S' ||
+        modelC == 'CR400AF-AS' ||
+        modelC == 'CR400AF-BS' ||
+        modelC == 'CR400AF-AE' ||
+        modelC == 'CR400AF-C') {
       return 'CR400AF-SZE';
     }
-    if (modelC == 'CR400BF-S' || modelC == 'CR400BF-AS' || modelC == 'CR400BF-BS' ||
+    if (modelC == 'CR400BF-S' ||
+        modelC == 'CR400BF-AS' ||
+        modelC == 'CR400BF-BS' ||
         modelC == 'CR400BF-GS') {
       return 'CR400BF-S';
     }
-    if (modelC == 'CR400BF-Z' || modelC == 'CR400BF-AZ' || modelC == 'CR400BF-BZ' ||
+    if (modelC == 'CR400BF-Z' ||
+        modelC == 'CR400BF-AZ' ||
+        modelC == 'CR400BF-BZ' ||
         modelC == 'CR400BF-GZ') {
       return 'CR400BF-Z';
     }
-    if (modelC == 'CR400AF-A' || modelC == 'CR400AF-B' || modelC == 'CR400AF-G') {
+    if (modelC == 'CR400AF-A' ||
+        modelC == 'CR400AF-B' ||
+        modelC == 'CR400AF-G') {
       return 'CR400AF';
     }
-    if (modelC == 'CR400BF-A' || modelC == 'CR400BF-B' || modelC == 'CR400BF-G') {
+    if (modelC == 'CR400BF-A' ||
+        modelC == 'CR400BF-B' ||
+        modelC == 'CR400BF-G') {
       return 'CR400BF';
     }
 

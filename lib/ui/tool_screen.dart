@@ -1,9 +1,9 @@
 // tool_screen.dart
 import 'package:flutter/material.dart';
 
+import 'about_page.dart';
 import 'gallery_page.dart';
 import 'station_screen.dart';
-import 'about_page.dart';
 
 class ToolScreen extends StatelessWidget {
   const ToolScreen({super.key});
@@ -57,9 +57,7 @@ class ToolScreen extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => const AboutPage(),
-                    ),
+                    MaterialPageRoute(builder: (context) => const AboutPage()),
                   );
                 },
               ),

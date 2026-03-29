@@ -364,10 +364,9 @@ class _SettingsScreenState extends State<SettingsScreen>
                             '设置应用启动时显示的首页',
                             style: TextStyle(
                               fontSize: 12,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurface
-                                  .withOpacity(0.7),
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurface.withOpacity(0.7),
                             ),
                           ),
                         ],
@@ -377,10 +376,15 @@ class _SettingsScreenState extends State<SettingsScreen>
                   DropdownButton<String>(
                     value: _defaultHomePage,
                     items: ['旅途', '搜索']
-                        .map((v) => DropdownMenuItem(
-                      value: v,
-                      child: Text(v, style: const TextStyle(fontSize: 16)),
-                    ))
+                        .map(
+                          (v) => DropdownMenuItem(
+                            value: v,
+                            child: Text(
+                              v,
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        )
                         .toList(),
                     onChanged: (v) async {
                       if (v != null) {

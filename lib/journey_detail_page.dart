@@ -1,6 +1,7 @@
 // journey_detail_page.dart
 
 import 'package:flutter/material.dart';
+
 import 'journey_model.dart';
 import 'ui/linemap.dart';
 
@@ -148,7 +149,12 @@ class __JourneyDetailContentState extends State<_JourneyDetailContent>
     }
   }
 
-  String _getStationStatus(StationDetail station, Journey journey, bool isFrom, bool isTo) {
+  String _getStationStatus(
+    StationDetail station,
+    Journey journey,
+    bool isFrom,
+    bool isTo,
+  ) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final travelDay = DateTime(
@@ -236,10 +242,7 @@ class __JourneyDetailContentState extends State<_JourneyDetailContent>
     if (seatType.isEmpty) {
       return Text(
         '未选择座位',
-        style: TextStyle(
-          fontSize: 16,
-          color: Theme.of(context).hintColor,
-        ),
+        style: TextStyle(fontSize: 16, color: Theme.of(context).hintColor),
       );
     }
 
@@ -251,10 +254,7 @@ class __JourneyDetailContentState extends State<_JourneyDetailContent>
 
     return Text(
       displayText,
-      style: const TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
-      ),
+      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
     );
   }
 
@@ -265,13 +265,21 @@ class __JourneyDetailContentState extends State<_JourneyDetailContent>
       return journey.stations.length;
     }
 
-    final fromIndex = journey.stations.indexWhere((station) =>
-    _normalizeStationName(station.stationName) == _normalizeStationName(journey.fromStation));
-    final toIndex = journey.stations.indexWhere((station) =>
-    _normalizeStationName(station.stationName) == _normalizeStationName(journey.toStation));
+    final fromIndex = journey.stations.indexWhere(
+      (station) =>
+          _normalizeStationName(station.stationName) ==
+          _normalizeStationName(journey.fromStation),
+    );
+    final toIndex = journey.stations.indexWhere(
+      (station) =>
+          _normalizeStationName(station.stationName) ==
+          _normalizeStationName(journey.toStation),
+    );
 
     final startIndex = fromIndex >= 0 ? fromIndex : 0;
-    final endIndex = toIndex >= 0 && toIndex >= startIndex ? toIndex : journey.stations.length - 1;
+    final endIndex = toIndex >= 0 && toIndex >= startIndex
+        ? toIndex
+        : journey.stations.length - 1;
 
     return endIndex - startIndex + 1;
   }
@@ -296,7 +304,11 @@ class __JourneyDetailContentState extends State<_JourneyDetailContent>
     );
   }
 
-  Widget _buildDialogInfoRow(String label, String value, {bool isBoldRed = false}) {
+  Widget _buildDialogInfoRow(
+    String label,
+    String value, {
+    bool isBoldRed = false,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
@@ -313,9 +325,9 @@ class __JourneyDetailContentState extends State<_JourneyDetailContent>
               value,
               style: isBoldRed
                   ? const TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.red,
-              )
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                    )
                   : null,
             ),
           ),
@@ -333,13 +345,13 @@ class __JourneyDetailContentState extends State<_JourneyDetailContent>
 
     // 获取起始终到区间的站点索引
     final fromIndex = journey.stations.indexWhere(
-          (station) =>
-      _normalizeStationName(station.stationName) ==
+      (station) =>
+          _normalizeStationName(station.stationName) ==
           _normalizeStationName(journey.fromStation),
     );
     final toIndex = journey.stations.indexWhere(
-          (station) =>
-      _normalizeStationName(station.stationName) ==
+      (station) =>
+          _normalizeStationName(station.stationName) ==
           _normalizeStationName(journey.toStation),
     );
 
@@ -532,8 +544,15 @@ class __JourneyDetailContentState extends State<_JourneyDetailContent>
                   final isFrom = station.stationName == journey.fromStation;
                   final isTo = station.stationName == journey.toStation;
                   final relativeDayDiff = station.dayDifference - baseDayDiff;
-                  final stationStatus = _getStationStatus(station, journey, isFrom, isTo);
-                  final stationStatusColor = _getStationStatusColor(stationStatus);
+                  final stationStatus = _getStationStatus(
+                    station,
+                    journey,
+                    isFrom,
+                    isTo,
+                  );
+                  final stationStatusColor = _getStationStatusColor(
+                    stationStatus,
+                  );
 
                   return Container(
                     margin: const EdgeInsets.only(bottom: 8),
@@ -580,7 +599,9 @@ class __JourneyDetailContentState extends State<_JourneyDetailContent>
                                   vertical: 2,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: stationStatusColor.withValues(alpha: 0.2),
+                                  color: stationStatusColor.withValues(
+                                    alpha: 0.2,
+                                  ),
                                   borderRadius: BorderRadius.circular(4),
                                 ),
                                 child: Text(
@@ -613,7 +634,9 @@ class __JourneyDetailContentState extends State<_JourneyDetailContent>
                                           : FontWeight.normal,
                                       color: isFrom || isTo
                                           ? Colors.blue.shade700
-                                          : Theme.of(context).colorScheme.onSurface,
+                                          : Theme.of(
+                                              context,
+                                            ).colorScheme.onSurface,
                                     ),
                                   ),
                                   if (isFrom) ...[
@@ -660,7 +683,8 @@ class __JourneyDetailContentState extends State<_JourneyDetailContent>
                               ),
                               const SizedBox(height: 4),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     '到达: ${station.arrivalTime}',

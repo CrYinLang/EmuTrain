@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
@@ -11,7 +12,11 @@ class UpdateService {
   static Future<Map<String, dynamic>?> checkForUpdate() async {
     try {
       final response = await http
-          .get(Uri.parse('https://gitee.com/CrYinLang/EmuTrain/raw/master/${Vars.urlServer}.json'))
+          .get(
+            Uri.parse(
+              'https://gitee.com/CrYinLang/EmuTrain/raw/master/${Vars.urlServer}.json',
+            ),
+          )
           .timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
@@ -27,7 +32,6 @@ class UpdateService {
 
 /// ================= 对外调用入口 =================
 class UpdateUI {
-
   static Future<void> showAppUpdateFlow(BuildContext context) async {
     showDialog(
       context: context,
@@ -152,7 +156,8 @@ class AppUpdateResultDialog extends StatelessWidget {
 
       if (remoteBuild > currentBuild) {
         hasUpdate = true;
-        resultMessage = '发现新版本\n\n'
+        resultMessage =
+            '发现新版本\n\n'
             '当前版本: $currentVersion ($currentBuild)\n'
             '最新版本: $newVersion ($remoteBuild)\n\n'
             '更新时间: $updateTime\n\n'
@@ -160,7 +165,8 @@ class AppUpdateResultDialog extends StatelessWidget {
         resultColor = Colors.orange;
         resultIcon = Icons.system_update;
       } else {
-        resultMessage = '已是最新版本\n\n'
+        resultMessage =
+            '已是最新版本\n\n'
             '当前版本: $currentVersion ($currentBuild)\n'
             '最新版本: $newVersion ($remoteBuild)';
       }
@@ -186,7 +192,10 @@ class AppUpdateResultDialog extends StatelessWidget {
                 const SizedBox(height: 20),
                 Text(
                   hasUpdate ? '发现新版本' : '检查完成',
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
@@ -196,7 +205,9 @@ class AppUpdateResultDialog extends StatelessWidget {
                   width: double.infinity,
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: SelectableText(
@@ -223,7 +234,10 @@ class AppUpdateResultDialog extends StatelessWidget {
                             }
                           },
                           icon: const Icon(Icons.group, size: 20),
-                          label: const Text('QQ群下载', style: TextStyle(fontSize: 14)),
+                          label: const Text(
+                            'QQ群下载',
+                            style: TextStyle(fontSize: 14),
+                          ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blue,
                             foregroundColor: Colors.white,
@@ -241,7 +255,10 @@ class AppUpdateResultDialog extends StatelessWidget {
                             }
                           },
                           icon: const Icon(Icons.code, size: 20),
-                          label: const Text('Gitee下载', style: TextStyle(fontSize: 14)),
+                          label: const Text(
+                            'Gitee下载',
+                            style: TextStyle(fontSize: 14),
+                          ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.green,
                             foregroundColor: Colors.white,
@@ -264,7 +281,10 @@ class AppUpdateResultDialog extends StatelessWidget {
                             }
                           },
                           icon: const Icon(Icons.cloud_download, size: 20),
-                          label: const Text('Github', style: TextStyle(fontSize: 14)),
+                          label: const Text(
+                            'Github',
+                            style: TextStyle(fontSize: 14),
+                          ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.grey,
                             foregroundColor: Colors.white,
@@ -279,7 +299,10 @@ class AppUpdateResultDialog extends StatelessWidget {
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 12),
                           ),
-                          child: const Text('关闭', style: TextStyle(fontSize: 14)),
+                          child: const Text(
+                            '关闭',
+                            style: TextStyle(fontSize: 14),
+                          ),
                         ),
                       ),
                     ],
@@ -354,7 +377,10 @@ class StationUpdateResultDialog extends StatelessWidget {
                 const SizedBox(height: 20),
                 Text(
                   hasUpdate ? '发现数据库新版本' : '已是最新版本',
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
@@ -371,7 +397,11 @@ class StationUpdateResultDialog extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Icon(Icons.arrow_forward, size: 20, color: Theme.of(context).colorScheme.onSurface),
+                      Icon(
+                        Icons.arrow_forward,
+                        size: 20,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
                       const SizedBox(width: 8),
                       Text(
                         'V$remoteBuild',
@@ -406,33 +436,46 @@ class StationUpdateResultDialog extends StatelessWidget {
                             );
 
                             try {
-                              String stationDataUrl = 'https://gitee.com/CrYinLang/EmuTrain/raw/master/${Vars.stationData}.json';
+                              String stationDataUrl =
+                                  'https://gitee.com/CrYinLang/EmuTrain/raw/master/${Vars.stationData}.json';
 
                               // 下载文件内容
-                              final response = await http.get(Uri.parse(stationDataUrl));
+                              final response = await http.get(
+                                Uri.parse(stationDataUrl),
+                              );
 
                               if (response.statusCode == 200) {
-                                final directory = await getApplicationDocumentsDirectory();
+                                final directory =
+                                    await getApplicationDocumentsDirectory();
 
-                                final file = File('${directory.path}/statiosns.json');
+                                final file = File(
+                                  '${directory.path}/statiosns.json',
+                                );
                                 await file.writeAsString(response.body);
 
-                                final versionFile = File('${directory.path}/stationVer.json');
+                                final versionFile = File(
+                                  '${directory.path}/stationVer.json',
+                                );
                                 final versionData = {
                                   "StationBuild": remoteBuild.toString(),
-                                  "file": "stations.json"
+                                  "file": "stations.json",
                                 };
-                                await versionFile.writeAsString(json.encode(versionData));
-                                await Vars.setStationBuild(remoteBuild.toString());
+                                await versionFile.writeAsString(
+                                  json.encode(versionData),
+                                );
+                                await Vars.setStationBuild(
+                                  remoteBuild.toString(),
+                                );
 
                                 if (context.mounted) {
-                                  Navigator.of(context, rootNavigator: true).pop();
+                                  Navigator.of(
+                                    context,
+                                    rootNavigator: true,
+                                  ).pop();
                                   Navigator.pop(context);
 
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('车站数据更新成功！'),
-                                    ),
+                                    const SnackBar(content: Text('车站数据更新成功！')),
                                   );
                                 }
                               } else {
@@ -440,7 +483,10 @@ class StationUpdateResultDialog extends StatelessWidget {
                               }
                             } catch (e) {
                               if (context.mounted) {
-                                Navigator.of(context, rootNavigator: true).pop(); // 关闭下载弹窗
+                                Navigator.of(
+                                  context,
+                                  rootNavigator: true,
+                                ).pop(); // 关闭下载弹窗
 
                                 // 显示错误提示
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -452,7 +498,10 @@ class StationUpdateResultDialog extends StatelessWidget {
                               }
                             }
                           },
-                          label: const Text('升级', style: TextStyle(fontSize: 14)),
+                          label: const Text(
+                            '升级',
+                            style: TextStyle(fontSize: 14),
+                          ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blue,
                             foregroundColor: Colors.white,
@@ -471,7 +520,10 @@ class StationUpdateResultDialog extends StatelessWidget {
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 12),
                           ),
-                          child: const Text('关闭', style: TextStyle(fontSize: 14)),
+                          child: const Text(
+                            '关闭',
+                            style: TextStyle(fontSize: 14),
+                          ),
                         ),
                       ),
                     ],
@@ -546,7 +598,10 @@ class TrainUpdateResultDialog extends StatelessWidget {
                 const SizedBox(height: 20),
                 Text(
                   hasUpdate ? '发现数据库新版本' : '已是最新版本',
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
@@ -563,7 +618,11 @@ class TrainUpdateResultDialog extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Icon(Icons.arrow_forward, size: 20, color: Theme.of(context).colorScheme.onSurface),
+                      Icon(
+                        Icons.arrow_forward,
+                        size: 20,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
                       const SizedBox(width: 8),
                       Text(
                         'V$remoteBuild',
@@ -598,33 +657,46 @@ class TrainUpdateResultDialog extends StatelessWidget {
                             );
 
                             try {
-                              String trainDataUrl = 'https://gitee.com/CrYinLang/EmuTrain/raw/master/${Vars.trainData}.json';
+                              String trainDataUrl =
+                                  'https://gitee.com/CrYinLang/EmuTrain/raw/master/${Vars.trainData}.json';
 
                               // 下载文件内容
-                              final response = await http.get(Uri.parse(trainDataUrl));
+                              final response = await http.get(
+                                Uri.parse(trainDataUrl),
+                              );
 
                               if (response.statusCode == 200) {
-                                final directory = await getApplicationDocumentsDirectory();
+                                final directory =
+                                    await getApplicationDocumentsDirectory();
 
-                                final file = File('${directory.path}/train.json');
+                                final file = File(
+                                  '${directory.path}/train.json',
+                                );
                                 await file.writeAsString(response.body);
 
-                                final versionFile = File('${directory.path}/trainVer.json');
+                                final versionFile = File(
+                                  '${directory.path}/trainVer.json',
+                                );
                                 final versionData = {
                                   "TrainBuild": remoteBuild.toString(),
-                                  "file": "train.json"
+                                  "file": "train.json",
                                 };
-                                await versionFile.writeAsString(json.encode(versionData));
-                                await Vars.setTrainBuild(remoteBuild.toString());
+                                await versionFile.writeAsString(
+                                  json.encode(versionData),
+                                );
+                                await Vars.setTrainBuild(
+                                  remoteBuild.toString(),
+                                );
 
                                 if (context.mounted) {
-                                  Navigator.of(context, rootNavigator: true).pop();
+                                  Navigator.of(
+                                    context,
+                                    rootNavigator: true,
+                                  ).pop();
                                   Navigator.pop(context);
 
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('车站数据更新成功！'),
-                                    ),
+                                    const SnackBar(content: Text('车站数据更新成功！')),
                                   );
                                 }
                               } else {
@@ -632,7 +704,10 @@ class TrainUpdateResultDialog extends StatelessWidget {
                               }
                             } catch (e) {
                               if (context.mounted) {
-                                Navigator.of(context, rootNavigator: true).pop(); // 关闭下载弹窗
+                                Navigator.of(
+                                  context,
+                                  rootNavigator: true,
+                                ).pop(); // 关闭下载弹窗
 
                                 // 显示错误提示
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -644,7 +719,10 @@ class TrainUpdateResultDialog extends StatelessWidget {
                               }
                             }
                           },
-                          label: const Text('升级', style: TextStyle(fontSize: 14)),
+                          label: const Text(
+                            '升级',
+                            style: TextStyle(fontSize: 14),
+                          ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blue,
                             foregroundColor: Colors.white,
@@ -663,7 +741,10 @@ class TrainUpdateResultDialog extends StatelessWidget {
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 12),
                           ),
-                          child: const Text('关闭', style: TextStyle(fontSize: 14)),
+                          child: const Text(
+                            '关闭',
+                            style: TextStyle(fontSize: 14),
+                          ),
                         ),
                       ),
                     ],

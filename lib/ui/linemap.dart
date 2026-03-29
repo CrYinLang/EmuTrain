@@ -1,9 +1,10 @@
 // linemap.dart
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'dart:math';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../journey_model.dart';
@@ -21,10 +22,7 @@ class LineMapDialog extends StatelessWidget {
         child: Material(
           borderRadius: BorderRadius.circular(16),
           child: Container(
-            constraints: const BoxConstraints(
-              maxWidth: 600,
-              maxHeight: 700,
-            ),
+            constraints: const BoxConstraints(maxWidth: 600, maxHeight: 700),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -127,8 +125,10 @@ class _LineMapContentState extends State<LineMapContent> {
 
       if (prevStation['hasLocation'] == true &&
           currentStation['hasLocation'] == true) {
-        final dx = (currentStation['relativeX'] - prevStation['relativeX']) * 100;
-        final dy = (currentStation['relativeY'] - prevStation['relativeY']) * 100;
+        final dx =
+            (currentStation['relativeX'] - prevStation['relativeX']) * 100;
+        final dy =
+            (currentStation['relativeY'] - prevStation['relativeY']) * 100;
         final segmentLength = sqrt(dx * dx + dy * dy);
 
         bool isEasy = await _getSetting('show_real_train_map');
@@ -150,14 +150,16 @@ class _LineMapContentState extends State<LineMapContent> {
 
       if (prevStation['hasLocation'] == true &&
           currentStation['hasLocation'] == true) {
-        final dx = (currentStation['relativeX'] - prevStation['relativeX']) * 100;
-        final dy = (currentStation['relativeY'] - prevStation['relativeY']) * 100;
+        final dx =
+            (currentStation['relativeX'] - prevStation['relativeX']) * 100;
+        final dy =
+            (currentStation['relativeY'] - prevStation['relativeY']) * 100;
         final segmentLength = sqrt(dx * dx + dy * dy);
 
         if (segmentLength > 30) {
           anomalies.add(
-              '${prevStation['name']} → ${currentStation['name']}: '
-                  '${segmentLength.toStringAsFixed(2)}单位'
+            '${prevStation['name']} → ${currentStation['name']}: '
+            '${segmentLength.toStringAsFixed(2)}单位',
           );
         }
       }
@@ -205,7 +207,6 @@ class _LineMapContentState extends State<LineMapContent> {
           }
         });
       });
-
     } catch (e) {
       try {
         final fallbackData = _createFallbackStationData();
@@ -218,7 +219,9 @@ class _LineMapContentState extends State<LineMapContent> {
           filteredStations,
         );
 
-        final positionedFiltered = _calculateEvenPositions(filteredWithLocation);
+        final positionedFiltered = _calculateEvenPositions(
+          filteredWithLocation,
+        );
 
         setState(() {
           _fullRouteStations = positionedFiltered;
@@ -256,11 +259,11 @@ class _LineMapContentState extends State<LineMapContent> {
               children: [
                 const Text('检测到以下异常线段，可能影响显示效果：'),
                 const SizedBox(height: 12),
-                ...anomalies.map((anomaly) =>
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2),
-                      child: Text('• $anomaly'),
-                    )
+                ...anomalies.map(
+                  (anomaly) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 2),
+                    child: Text('• $anomaly'),
+                  ),
                 ),
                 const SizedBox(height: 16),
                 const Text(
@@ -418,13 +421,14 @@ class _LineMapContentState extends State<LineMapContent> {
   }
 
   Future<List<Map<String, dynamic>>> _fetchStationsFromApi(
-      String trainNumber,
-      ) async {
+    String trainNumber,
+  ) async {
     try {
       bool real = await _getSetting('show_real_train_map');
-      final url = Uri.parse(real
-          ? 'https://rail.moefactory.com/api/trainDetails/queryTrainRoutes'
-          : ''
+      final url = Uri.parse(
+        real
+            ? 'https://rail.moefactory.com/api/trainDetails/queryTrainRoutes'
+            : '',
       );
 
       final response = await http.post(url, body: {"trainNumber": trainNumber});
@@ -464,7 +468,9 @@ class _LineMapContentState extends State<LineMapContent> {
     return fallbackStations;
   }
 
-  Future<List<Map<String, dynamic>>> _matchStationsWithLocalData(List<Map<String, dynamic>> apiStations,) async {
+  Future<List<Map<String, dynamic>>> _matchStationsWithLocalData(
+    List<Map<String, dynamic>> apiStations,
+  ) async {
     try {
       final jsonString = await rootBundle.loadString('assets/stations.json');
       final List<dynamic> allStations = json.decode(jsonString);
@@ -552,11 +558,17 @@ class _LineMapContentState extends State<LineMapContent> {
   }
 
   // 计算相对位置
-  List<Map<String, dynamic>> _calculateRelativePositions(List<Map<String, dynamic>> stations) {
+  List<Map<String, dynamic>> _calculateRelativePositions(
+    List<Map<String, dynamic>> stations,
+  ) {
     if (stations.isEmpty) return [];
-    final validStations = stations.where((s) => s['hasLocation'] == true).toList();
+    final validStations = stations
+        .where((s) => s['hasLocation'] == true)
+        .toList();
 
-    if (validStations.isEmpty) {return _calculateEvenPositions(stations);}
+    if (validStations.isEmpty) {
+      return _calculateEvenPositions(stations);
+    }
 
     double minLng = double.infinity;
     double maxLng = -double.infinity;

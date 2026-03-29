@@ -1,21 +1,21 @@
 // lib/main.dart
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:http/http.dart' as http;
-
 import 'dart:convert';
 import 'dart:io';
 
-import 'ui/travel_screen.dart';
-import 'ui/settings.dart';
-import 'ui/tool_screen.dart';
-import 'ui/search_page.dart';
-import 'update.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'journey_provider.dart';
 import 'train_model.dart';
+import 'ui/search_page.dart';
+import 'ui/settings.dart';
+import 'ui/tool_screen.dart';
+import 'ui/travel_screen.dart';
+import 'update.dart';
 
 // ==================== 应用常量 ====================
 class Vars {
@@ -31,6 +31,7 @@ class Vars {
 
   static bool _isStationBuildInitialized = false;
   static String _stationBuild = defaultStationBuild;
+
   static String get stationBuild {
     if (!_isStationBuildInitialized) {
       _initializeStationBuild();
@@ -40,6 +41,7 @@ class Vars {
 
   static bool _isTrainBuildInitialized = false;
   static String _trainBuild = defaultTrainBuild;
+
   static String get trainBuild {
     if (!_isTrainBuildInitialized) {
       _initializeTrainBuild();
@@ -111,8 +113,11 @@ class Vars {
 
   static Future<Map<String, dynamic>?> fetchVersionInfo() async {
     final response = await http
-        .get(Uri.parse(
-            'https://gitee.com/CrYinLang/EmuTrain/raw/master/$urlServer.json'))
+        .get(
+          Uri.parse(
+            'https://gitee.com/CrYinLang/EmuTrain/raw/master/$urlServer.json',
+          ),
+        )
         .timeout(const Duration(seconds: 10));
     if (response.statusCode == 200) return json.decode(response.body);
     return null;
@@ -120,12 +125,16 @@ class Vars {
 
   static Future<Map<String, dynamic>?> fetchCommand() async {
     final response = await http
-        .get(Uri.parse(
-            'https://gitee.com/CrYinLang/EmuTrain/raw/master/$commandServer.json'))
+        .get(
+          Uri.parse(
+            'https://gitee.com/CrYinLang/EmuTrain/raw/master/$commandServer.json',
+          ),
+        )
         .timeout(const Duration(seconds: 10));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      if (data is List && data.isNotEmpty) return data[0] as Map<String, dynamic>;
+      if (data is List && data.isNotEmpty)
+        return data[0] as Map<String, dynamic>;
       if (data is Map<String, dynamic>) return data;
     }
     return null;
@@ -135,18 +144,10 @@ class Vars {
 // ==================== 数据源枚举 ====================
 
 /// 车次查询数据源
-enum TrainDataSource {
-  railRe,
-  railGo,
-  official12306,
-}
+enum TrainDataSource { railRe, railGo, official12306 }
 
 /// 车号/交路查询数据源
-enum TrainEmuDataSource {
-  railRe,
-  railGo,
-  moeFactory,
-}
+enum TrainEmuDataSource { railRe, railGo, moeFactory }
 
 // ==================== 设置管理 ====================
 class AppSettings extends ChangeNotifier {
@@ -161,7 +162,9 @@ class AppSettings extends ChangeNotifier {
   bool _isLoading = false;
 
   ThemeMode get themeMode => _themeMode;
+
   bool get midnightMode => _midnightMode;
+
   bool get isLoading => _isLoading;
 
   // ---------- 图标显示 ----------
@@ -169,10 +172,12 @@ class AppSettings extends ChangeNotifier {
   bool _showBureauIcons = true;
 
   bool get showTrainIcons => _showTrainIcons;
+
   bool get showBureauIcons => _showBureauIcons;
 
   // ---------- 自动更新 ----------
   bool _showAutoUpdate = true;
+
   bool get showAutoUpdate => _showAutoUpdate;
 
   // ---------- 远程控制 ----------
@@ -180,6 +185,7 @@ class AppSettings extends ChangeNotifier {
   bool _showRemoteMessages = true;
 
   String? get commandMessage => _commandMessage;
+
   bool get showRemoteMessages => _showRemoteMessages;
 
   // ---------- 数据源 ----------
@@ -187,21 +193,28 @@ class AppSettings extends ChangeNotifier {
   TrainEmuDataSource _dataEmuSource = TrainEmuDataSource.railRe;
 
   TrainDataSource get dataSource => _dataSource;
+
   TrainEmuDataSource get dataEmuSource => _dataEmuSource;
 
   String get dataSourceDisplayName {
     switch (_dataSource) {
-      case TrainDataSource.railRe:      return 'Rail.re';
-      case TrainDataSource.railGo:      return 'RailGo';
-      case TrainDataSource.official12306: return '12306官方';
+      case TrainDataSource.railRe:
+        return 'Rail.re';
+      case TrainDataSource.railGo:
+        return 'RailGo';
+      case TrainDataSource.official12306:
+        return '12306官方';
     }
   }
 
   String get dataEmuSourceDisplayName {
     switch (_dataEmuSource) {
-      case TrainEmuDataSource.railRe:     return 'Rail.re';
-      case TrainEmuDataSource.railGo:     return 'RailGo';
-      case TrainEmuDataSource.moeFactory: return 'MoeFactory';
+      case TrainEmuDataSource.railRe:
+        return 'Rail.re';
+      case TrainEmuDataSource.railGo:
+        return 'RailGo';
+      case TrainEmuDataSource.moeFactory:
+        return 'MoeFactory';
     }
   }
 
@@ -216,8 +229,7 @@ class AppSettings extends ChangeNotifier {
     }
   }
 
-  String get dataEmuSourceDescription =>
-      '第三方数据源，提供更全面的车型信息';
+  String get dataEmuSourceDescription => '第三方数据源，提供更全面的车型信息';
 
   Future<void> setDataSource(TrainDataSource source) async {
     if (_dataSource == source) return;
@@ -241,8 +253,9 @@ class AppSettings extends ChangeNotifier {
     notifyListeners();
     try {
       final prefs = await SharedPreferences.getInstance();
-      _themeMode =
-          (prefs.getBool('isDark') ?? true) ? ThemeMode.dark : ThemeMode.light;
+      _themeMode = (prefs.getBool('isDark') ?? true)
+          ? ThemeMode.dark
+          : ThemeMode.light;
       _midnightMode = prefs.getBool('midnightMode') ?? false;
       _showTrainIcons = prefs.getBool('showTrainIcons') ?? true;
       _showBureauIcons = prefs.getBool('showBureauIcons') ?? true;
@@ -251,12 +264,15 @@ class AppSettings extends ChangeNotifier {
 
       // 数据源
       final dataSourceIndex = prefs.getInt('dataSource') ?? 0;
-      _dataSource = TrainDataSource.values[
-          dataSourceIndex.clamp(0, TrainDataSource.values.length - 1)];
+      _dataSource = TrainDataSource
+          .values[dataSourceIndex.clamp(0, TrainDataSource.values.length - 1)];
 
       final dataEmuSourceIndex = prefs.getInt('dataEmuSource') ?? 0;
-      _dataEmuSource = TrainEmuDataSource.values[
-          dataEmuSourceIndex.clamp(0, TrainEmuDataSource.values.length - 1)];
+      _dataEmuSource =
+          TrainEmuDataSource.values[dataEmuSourceIndex.clamp(
+            0,
+            TrainEmuDataSource.values.length - 1,
+          )];
     } catch (_) {
       _setDefaultValues();
     } finally {
@@ -480,11 +496,16 @@ class _MainScreenState extends State<MainScreen> {
 
   String get _currentPageTitle {
     switch (_currentIndex) {
-      case 0:  return '行程';
-      case 1:  return '搜索';
-      case 2:  return '其他';
-      case 3:  return '设置';
-      default: return 'EmuTrain';
+      case 0:
+        return '行程';
+      case 1:
+        return '搜索';
+      case 2:
+        return '其他';
+      case 3:
+        return '设置';
+      default:
+        return 'EmuTrain';
     }
   }
 
@@ -508,9 +529,9 @@ class _MainScreenState extends State<MainScreen> {
             unselectedItemColor: Colors.grey,
             onTap: (index) => setState(() => _currentIndex = index),
             items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.home),   label: '旅途'),
+              BottomNavigationBarItem(icon: Icon(Icons.home), label: '旅途'),
               BottomNavigationBarItem(icon: Icon(Icons.search), label: '搜索'),
-              BottomNavigationBarItem(icon: Icon(Icons.build),  label: '其他'),
+              BottomNavigationBarItem(icon: Icon(Icons.build), label: '其他'),
               BottomNavigationBarItem(icon: Icon(Icons.settings), label: '设置'),
             ],
           ),
@@ -521,11 +542,16 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget _buildCurrentPage() {
     switch (_currentIndex) {
-      case 0:  return const TravelScreen();
-      case 1:  return const SearchPage();   // ← search_page
-      case 2:  return const ToolScreen();
-      case 3:  return const SettingsScreen();
-      default: return const TravelScreen();
+      case 0:
+        return const TravelScreen();
+      case 1:
+        return const SearchPage(); // ← search_page
+      case 2:
+        return const ToolScreen();
+      case 3:
+        return const SettingsScreen();
+      default:
+        return const TravelScreen();
     }
   }
 }
@@ -633,9 +659,10 @@ class TrainIconWidget extends StatelessWidget {
             Text(
               model,
               style: TextStyle(
-                  fontSize: size * 0.2,
-                  color: Colors.grey[600],
-                  fontWeight: FontWeight.bold),
+                fontSize: size * 0.2,
+                color: Colors.grey[600],
+                fontWeight: FontWeight.bold,
+              ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -741,8 +768,11 @@ class BureauIconWidget extends StatelessWidget {
         borderRadius: borderRadius ?? BorderRadius.circular(size / 8),
         color: Colors.grey[200],
       ),
-      child: Icon(Icons.account_balance,
-          size: size * 0.6, color: Colors.grey[600]),
+      child: Icon(
+        Icons.account_balance,
+        size: size * 0.6,
+        color: Colors.grey[600],
+      ),
     );
   }
 

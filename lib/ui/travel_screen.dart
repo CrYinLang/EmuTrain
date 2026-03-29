@@ -3,10 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'journey.dart';
-import '../journey_provider.dart';
-import '../journey_model.dart';
 import '../journey_detail_page.dart';
+import '../journey_model.dart';
+import '../journey_provider.dart';
+import 'journey.dart';
 
 class TravelScreen extends StatelessWidget {
   const TravelScreen({super.key});
@@ -24,9 +24,9 @@ class TravelScreen extends StatelessWidget {
                   if (value == 'sort') {
                     // 改为调用时间排序方法
                     provider.sortByDateTime();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('已按出发时间排序'))
-                    );
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(const SnackBar(content: Text('已按出发时间排序')));
                   } else if (value == 'clear') {
                     showDialog(
                       context: context,
@@ -346,9 +346,7 @@ class _JourneyCardState extends State<JourneyCard> {
                         context: context,
                         builder: (context) => AlertDialog(
                           title: const Text('确认删除'),
-                          content: Text(
-                            '确定要删除 ${journey.trainCode} 次列车吗？',
-                          ),
+                          content: Text('确定要删除 ${journey.trainCode} 次列车吗？'),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.pop(context),
@@ -490,14 +488,22 @@ class _JourneyCardState extends State<JourneyCard> {
                           }
 
                           // 获取起始终到区间的站点索引
-                          final fromIndex = journey.stations.indexWhere((station) =>
-                          _normalizeStationName(station.stationName) == _normalizeStationName(journey.fromStation));
-                          final toIndex = journey.stations.indexWhere((station) =>
-                          _normalizeStationName(station.stationName) == _normalizeStationName(journey.toStation));
+                          final fromIndex = journey.stations.indexWhere(
+                            (station) =>
+                                _normalizeStationName(station.stationName) ==
+                                _normalizeStationName(journey.fromStation),
+                          );
+                          final toIndex = journey.stations.indexWhere(
+                            (station) =>
+                                _normalizeStationName(station.stationName) ==
+                                _normalizeStationName(journey.toStation),
+                          );
 
                           // 确保索引有效且起始站索引小于终点站索引
                           final startIndex = fromIndex >= 0 ? fromIndex : 0;
-                          final endIndex = toIndex >= 0 && toIndex >= startIndex ? toIndex : journey.stations.length - 1;
+                          final endIndex = toIndex >= 0 && toIndex >= startIndex
+                              ? toIndex
+                              : journey.stations.length - 1;
 
                           // 计算区间站点数量
                           final intervalCount = endIndex - startIndex + 1;
