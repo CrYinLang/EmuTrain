@@ -74,7 +74,7 @@ class TrainModelUtils {
       int? num = int.tryParse(cleanedNumber.replaceAll(RegExp(r'[^0-9]'), ''));
       if (num != null) {
         if ((num >= 1229 && num <= 1233)) {
-          return 'CRH1E-NG';
+          return 'CRH1A-A';
         }
       }
     }
@@ -82,20 +82,21 @@ class TrainModelUtils {
     if (modelC == 'CRH6F') {
       int? num = int.tryParse(cleanedNumber.replaceAll(RegExp(r'[^0-9]'), ''));
       if (num != null && num >= 409 && num <= 413) {
-        return 'CRH6A';
+        return 'CRH6F';
       }
       if (num != null && num >= 430 && num <= 435) {
-        return 'CRH6A';
+        return 'CRH6F';
       }
     }
 
     if (modelC == 'CRH6F-A') return 'CRH6A';
 
     if (modelC.contains('CRH6F')) {
-      return 'CRH6F';
+      return 'CRH6A';
     }
 
     // 列车图标模型映射规则
+    if (modelC == 'CRH1B') return 'CRH1A';
     if (modelC == 'CRH3A' && cleanedNumber == '0302') return 'CRH3A-YC';
     if (modelC == 'CRH3A' && cleanedNumber == '0502') return 'CRH3A-YC';
     if (modelC == 'CRH380AL' || modelC == 'CRH380AN') return 'CRH380A';
@@ -117,8 +118,7 @@ class TrainModelUtils {
     }
     if (modelC == 'CRH5G') return 'CRH5A';
 
-    if (modelC == 'CRH2E' && cleanedNumber == '2461' || cleanedNumber == '2462')
-      return 'CRH2E-H';
+    if (modelC == 'CRH2E' && cleanedNumber == '2461' || cleanedNumber == '2462') return 'CRH2E-H';
     if (modelC == 'CRH2G') return 'CRH2E-H';
     if (modelC == 'CRH2B') return 'CRH2BE';
     if (modelC == 'CRH2E') return 'CRH2BE';
@@ -129,14 +129,10 @@ class TrainModelUtils {
     if (modelC == 'CRH6F' && cleanedNumber == '0001') return 'CRH6-2';
     if (modelC == 'CR400BF' && cleanedNumber == '0031') return 'CR400BF-0031';
     if (modelC == 'CR400BF-G' && cleanedNumber == '0051') return 'CR400BF-0031';
-    if (modelC == 'CR400BF-C' && cleanedNumber == '5162')
-      return 'CR400BF-C-5162';
-    if (modelC == 'CR400BF-J' && cleanedNumber == '0001')
-      return 'CR400BF-J-0001';
-    if (modelC == 'CR400BF-J' && cleanedNumber == '0003')
-      return 'CR400BF-J-0003';
-    if (modelC == 'CR400BF-Z' && cleanedNumber == '0524')
-      return 'CR400BF-Z-0524';
+    if (modelC == 'CR400BF-C' && cleanedNumber == '5162') return 'CR400BF-C-5162';
+    if (modelC == 'CR400BF-J' && cleanedNumber == '0001')return 'CR400BF-J-0001';
+    if (modelC == 'CR400BF-J' && cleanedNumber == '0003') return 'CR400BF-J-0003';
+    if (modelC == 'CR400BF-Z' && cleanedNumber == '0524') return 'CR400BF-Z-0524';
 
     if (modelC == 'CRH6A-A') return 'CRH6A';
     if (modelC == 'CRH6A-AZ') return 'CRH6A';

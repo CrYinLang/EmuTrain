@@ -4,6 +4,19 @@ import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 
+/// 轨迹点：经纬度 + 对应速度（用于将来按速度着色）
+class TrackPoint {
+  final double latitude;
+  final double longitude;
+  final double speedKmh;
+
+  const TrackPoint({
+    required this.latitude,
+    required this.longitude,
+    required this.speedKmh,
+  });
+}
+
 class SpeedService extends ChangeNotifier {
   // ── 单例 ──────────────────────────────────────────────────────
   static final SpeedService _instance = SpeedService._internal();
@@ -17,6 +30,9 @@ class SpeedService extends ChangeNotifier {
   double avgSpeedKmh = 0.0;
   double _speedAccumulator = 0.0;
   int _speedSampleCount = 0;
+
+  /// 历史轨迹点列表，每次 GPS 更新追加一个
+  final List<TrackPoint> trackPoints = [];
 
   Position? _lastPosition;
   bool isTracking = false;
@@ -75,6 +91,7 @@ class SpeedService extends ChangeNotifier {
     speedKmh = 0.0;
     _speedAccumulator = 0.0;
     _speedSampleCount = 0;
+    trackPoints.clear(); // 新一次记录，清空旧轨迹
     notifyListeners();
 
     LocationSettings locationSettings;
@@ -174,6 +191,13 @@ class SpeedService extends ChangeNotifier {
     debugInfo = '更新#$_updateCount | ${speedMs.toStringAsFixed(2)} m/s';
     if (currentSpeedKmh > maxSpeedKmh) maxSpeedKmh = currentSpeedKmh;
     statusMsg = '正在测速';
+
+    // 追加轨迹点
+    trackPoints.add(TrackPoint(
+      latitude: position.latitude,
+      longitude: position.longitude,
+      speedKmh: currentSpeedKmh,
+    ));
 
     notifyListeners();
   }

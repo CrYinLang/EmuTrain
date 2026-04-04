@@ -64,9 +64,14 @@ class _GalleryPageState extends State<GalleryPage> {
       ),
       TrainInfo(
         model: 'CR400AF-J',
-        number: '2808',
+        number: '2808', 
         title: 'CR400AF-J-2808',
-        infoItems: {'生产厂家': '中车青岛四方', '备注': '复兴号350级别高速综合检测列车', '类型': '检测-上线'},
+        infoItems: {
+          '代管路局': '济南铁路局',
+          '生产厂家': '中车青岛四方',
+          '备注': '复兴号350级别高速综合检测列车',
+          '类型': '检测-上线',
+        },
       ),
     ],
     1: [
@@ -108,7 +113,12 @@ class _GalleryPageState extends State<GalleryPage> {
         model: 'CR400AF-J',
         number: '2808',
         title: 'CR400AF-J-2808',
-        infoItems: {'生产厂家': '中车青岛四方', '备注': '复兴号350级别高速综合检测列车', '类型': '检测-上线'},
+        infoItems: {
+          '代管路局': '济南铁路局',
+          '生产厂家': '中车青岛四方',
+          '备注': '复兴号350级别高速综合检测列车',
+          '类型': '检测-上线',
+        },
       ),
       TrainInfo(
         model: 'CRH380AJ',
@@ -140,6 +150,28 @@ class _GalleryPageState extends State<GalleryPage> {
           '代管路局': '武汉铁路局',
           '生产厂家': '南车青岛四方',
           '备注': '和谐号380级别高速综合检测列车',
+          '类型': '检测-上线',
+        },
+      ),
+      TrainInfo(
+        model: 'CRH380AJ',
+        number: '2808',
+        title: 'CRH380AJ-2808',
+        infoItems: {
+          '代管路局': '成都铁路局',
+          '生产厂家': '中车青岛四方',
+          '备注': '和谐号高速综合检测列车,公务车（软卧车），原车组号CRH380A-2808',
+          '类型': '检测-上线',
+        },
+      ),
+      TrainInfo(
+        model: 'CRH380AJ',
+        number: '2818',
+        title: 'CRH380AJ-2818',
+        infoItems: {
+          '代管路局': '北京铁路局',
+          '生产厂家': '中车青岛四方',
+          '备注': '和谐号高速综合检测列车，原车号CRH380A-2818',
           '类型': '检测-上线',
         },
       ),
@@ -254,7 +286,6 @@ class _GalleryPageState extends State<GalleryPage> {
           '配属动车所': '成都东',
           '生产厂家': '南车青岛四方',
           '备注': '永磁电机实验动车组',
-          '类型': '客运-上线',
         },
       ),
       TrainInfo(
@@ -266,7 +297,6 @@ class _GalleryPageState extends State<GalleryPage> {
           '配属动车所': '北京西',
           '生产厂家': '南车青岛四方',
           '备注': '350km/h中国标准动车组样车',
-          '类型': '客运-上线',
         },
       ),
       TrainInfo(
@@ -278,7 +308,17 @@ class _GalleryPageState extends State<GalleryPage> {
           '配属动车所': '广州南',
           '生产厂家': '长春轨道客车',
           '备注': '350km/h中国标准动车组样车，白眉，橡胶风挡',
-          '类型': '客运-上线',
+        },
+      ),
+      TrainInfo(
+        model: 'CR400BF',
+        number: '5033',
+        title: 'CR400BF-5033',
+        infoItems: {
+          "配属路局": "北京铁路局",
+          "配属动车所": "大厂",
+          "生产厂家": "中车长客股份",
+          '备注': '你懂的',
         },
       ),
       TrainInfo(
@@ -290,7 +330,6 @@ class _GalleryPageState extends State<GalleryPage> {
           '配属动车所': '雄安',
           '生产厂家': '南车青岛四方',
           '备注': '真正意义上的智能动车，具有自动驾驶功能，仅一列',
-          '类型': '客运-上线',
         },
       ),
       TrainInfo(
@@ -302,7 +341,6 @@ class _GalleryPageState extends State<GalleryPage> {
           '配属动车所': '昆明南',
           '生产厂家': '南车青岛四方',
           '备注': 'CRH2G新头型实验动车组',
-          '类型': '客运-上线',
         },
       ),
       TrainInfo(
@@ -314,7 +352,6 @@ class _GalleryPageState extends State<GalleryPage> {
           '配属动车所': '厦门北',
           '生产厂家': '中车青岛四方',
           '备注': '冲高动车组,最快可达486.1KM,曾编组号CRH380A-2541L',
-          '类型': '客运-上线',
         },
       ),
       TrainInfo(
@@ -341,7 +378,6 @@ class _GalleryPageState extends State<GalleryPage> {
           '配属动车所': '杭州西',
           '生产厂家': '长春轨道客车',
           '备注': '杭州亚运涂装',
-          '类型': '客运-上线',
         },
       ),
       TrainInfo(
@@ -353,7 +389,6 @@ class _GalleryPageState extends State<GalleryPage> {
           '配属动车所': '北京北',
           '生产厂家': '长春轨道客车',
           '备注': '冬奥涂装',
-          '类型': '客运-上线',
         },
       ),
     ],
