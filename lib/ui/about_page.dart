@@ -43,7 +43,7 @@ class AboutPage extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Text(
-          '我懒得说了你自己研究吧,你有没有感觉这个有点眼熟?',
+          '这个软合并了之前两个软件,可以看交路,记录旅途等',
           style: TextStyle(
             fontSize: 16,
             color: theme.colorScheme.onSurfaceVariant,
@@ -61,7 +61,7 @@ class AboutPage extends StatelessWidget {
     return FutureBuilder<Map<String, dynamic>?>(
       future: Vars.fetchVersionInfo(),
       builder: (context, snapshot) {
-        const String baseText = '提示：新软件有bug请反馈';
+        const String baseText = '提示：有问题意见请反馈银狼';
         String additionalText = '';
         bool hasNewVersion = false;
 
@@ -170,7 +170,7 @@ class AboutPage extends StatelessWidget {
           context: context,
           icon: Icons.cloud_done,
           title: 'MoeFactory',
-          description: '车站大屏',
+          description: '车站大屏,车号数据等',
         ),
       ],
     );

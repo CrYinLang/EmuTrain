@@ -67,7 +67,7 @@ class ToolScreen extends StatelessWidget {
               child: ListTile(
                 leading: const Icon(Icons.av_timer, size: 32),
                 title: const Text('速度计'),
-                subtitle: const Text('实验性功能，可能不准'),
+                subtitle: const Text('实验性功能，可能不准,当个玩具，后期完善'),
                 trailing: const Icon(Icons.arrow_forward_ios),
                 onTap: () {
                   Navigator.push(

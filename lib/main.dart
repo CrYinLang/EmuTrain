@@ -20,15 +20,15 @@ import 'update.dart';
 
 // ==================== 应用常量 ====================
 class Vars {
-  static const String lastUpdate = '26-03-29-11-30';
+  static const String lastUpdate = '26-04-04-21-30';
   static const String version = '1.1.0.0';
   static const String build = '1100';
   static const String urlServer = 'version';
   static const String commandServer = 'remote';
   static const String stationData = 'assets/stations';
   static const String trainData = 'assets/train';
-  static String defaultStationBuild = '1';
-  static String defaultTrainBuild = '1';
+  static String defaultStationBuild = '2';
+  static String defaultTrainBuild = '2';
 
   static bool _isStationBuildInitialized = false;
   static String _stationBuild = defaultStationBuild;
@@ -225,7 +225,7 @@ class AppSettings extends ChangeNotifier {
       case TrainDataSource.railGo:
         return '第三方API，提供更丰富的数据，但可能缺少部分数据';
       case TrainDataSource.official12306:
-        return '官方数据源，最准确可靠，但可能城际和动集没有';
+        return '官方数据源，最准确可靠，但不显示重连，城际等';
     }
   }
 

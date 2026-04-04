@@ -206,6 +206,16 @@ class _SearchPageState extends State<SearchPage> {
     return bureauCode;
   }
 
+  List<String> _getAllCarTypes() {
+    final types = trainData
+        .map((r) => (r['type_code'] ?? '').toString().trim())
+        .where((t) => t.isNotEmpty)
+        .toSet()
+        .toList();
+    types.sort();
+    return types;
+  }
+
   List<String> _getCommonBureauCodes() {
     List<String> allBureauNames = TrainModelUtils.getBureauFullNames();
     return allBureauNames.map((name) => name.substring(0, 2)).toSet().toList();
@@ -268,6 +278,45 @@ class _SearchPageState extends State<SearchPage> {
     _allBureauRecords = matchedRecords;
     _totalResults = matchedRecords.length;
     _currentBureauSearch = bureauInput;
+
+    _loadBureauPage(1);
+  }
+
+  // ==================== 车型查询 ====================
+  Future<void> _searchByCarType(String carTypeInput) async {
+    if (carTypeInput.isEmpty) return;
+
+    setState(() {
+      isLoading = true;
+      errorMsg = '';
+      _searchResults.clear();
+      _resetPagination();
+    });
+
+    final pattern = carTypeInput.trim().toUpperCase();
+    final List<Map<String, dynamic>> matchedRecords = [];
+
+    for (var record in trainData) {
+      final typeCode = (record['type_code'] ?? '').toString().trim().toUpperCase();
+      if (typeCode == pattern) {
+        matchedRecords.add(record);
+      }
+    }
+
+    if (matchedRecords.isEmpty) {
+      setState(() {
+        isLoading = false;
+        errorMsg = '未找到车型 "$carTypeInput"，请检查输入是否正确';
+      });
+      return;
+    }
+
+    matchedRecords.sort((a, b) =>
+        (a['车组号'] ?? '').compareTo(b['车组号'] ?? ''));
+
+    _allBureauRecords = matchedRecords;
+    _totalResults = matchedRecords.length;
+    _currentBureauSearch = carTypeInput.trim().toUpperCase();
 
     _loadBureauPage(1);
   }
@@ -397,6 +446,8 @@ class _SearchPageState extends State<SearchPage> {
 
       if (searchType == 'bureau') {
         await _searchByBureau(input);
+      } else if (searchType == 'carType') {
+        await _searchByCarType(input);
       }
       // ==================== 车次查询 ====================
       else if (searchType == 'trainCode') {
@@ -1048,7 +1099,7 @@ class _SearchPageState extends State<SearchPage> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        if (searchType == 'bureau')
+                        if (searchType == 'bureau' || searchType == 'carType')
                           Text(
                             result.bureauFullName,
                             style: TextStyle(
@@ -1158,7 +1209,7 @@ class _SearchPageState extends State<SearchPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (result.bureau.isNotEmpty && searchType != 'bureau')
+                  if (result.bureau.isNotEmpty && searchType != 'bureau' && searchType != 'carType')
                     _buildInfoRow('配属路局', result.bureauFullName),
                   if (result.depot != null && result.depot!.isNotEmpty)
                     _buildInfoRow('配属动车所', result.depot!),
@@ -1280,7 +1331,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     final settings = Provider.of<AppSettings>(context);
     final int displayedCount = _searchResults.length;
-    final int totalCount = searchType == 'bureau'
+    final int totalCount = (searchType == 'bureau' || searchType == 'carType')
         ? _totalResults
         : displayedCount;
 
@@ -1331,6 +1382,8 @@ class _SearchPageState extends State<SearchPage> {
                           ? '输入车次数字（1-4位）'
                           : searchType == 'trainId'
                           ? '输入车号'
+                          : searchType == 'carType'
+                          ? '输入车型代号'
                           : '输入路局名称',
                       hintText: searchType == 'trainCode'
                           ? '如: 31'
@@ -1494,34 +1547,53 @@ class _SearchPageState extends State<SearchPage> {
               ),
 
             if (_searchResults.isNotEmpty) ...[
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 12,
-                ),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.info_outline, size: 16),
-                    const SizedBox(width: 8),
-                    Text(
-                      searchType == 'bureau'
-                          ? '$_currentBureauSearch 共 $totalCount 条（当前 $displayedCount 条）'
-                          : '共找到 $totalCount 条结果',
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w600,
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.info_outline, size: 16),
+                          const SizedBox(width: 8),
+                          Text(
+                            (searchType == 'bureau' || searchType == 'carType')
+                                ? '$_currentBureauSearch 共 $totalCount 条（当前 $displayedCount 条）'
+                                : '共找到 $totalCount 条结果',
+                            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    tooltip: '清除结果',
+                    onPressed: () {
+                      setState(() {
+                        _searchResults.clear();
+                        controller.clear();
+                        errorMsg = '';
+                        _resetPagination();
+                      });
+                    },
+                  ),
+                ],
               ),
               const SizedBox(height: 12),
 
-              if (searchType == 'bureau') _buildPaginationControls(),
+              if (searchType == 'bureau' || searchType == 'carType') _buildPaginationControls(),
 
               for (final result in _searchResults) _buildResultCard(result),
 
@@ -1573,6 +1645,25 @@ class _SearchPageState extends State<SearchPage> {
                               ),
                             )
                             .toList(),
+                      ),
+                    ],
+                    if (searchType == 'carType') ...[
+                      const SizedBox(height: 20),
+                      const Text('所有可查车型:'),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 4,
+                        alignment: WrapAlignment.center,
+                        children: _getAllCarTypes().map((model) {
+                          return GestureDetector(
+                            onTap: () {
+                              controller.text = model;
+                              _performSearch();
+                            },
+                            child: Chip(label: Text(model)),
+                          );
+                        }).toList(),
                       ),
                     ],
                     if (searchType == 'bureau') ...[

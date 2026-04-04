@@ -130,8 +130,10 @@ class TrainModelUtils {
     }
     if (modelC == 'CRH5G') return 'CRH5A';
 
-    if (modelC == 'CRH2E' && cleanedNumber == '2461' || cleanedNumber == '2462') return 'CRH2E-H';
-    if (modelC == 'CRH2G') return 'CRH2E-H';
+    if (modelC == 'CR200JD') return 'CR200JC';
+
+    if (modelC == 'CRH2E' && cleanedNumber == '2461' || cleanedNumber == '2462') return 'CRH2E-NG';
+    if (modelC == 'CRH2G') return 'CRH2E-NG';
     if (modelC == 'CRH2B') return 'CRH2BE';
     if (modelC == 'CRH2E') return 'CRH2BE';
     if (modelC == 'CRH380BL') return 'CRH380B';
