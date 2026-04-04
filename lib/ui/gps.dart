@@ -3,27 +3,6 @@ import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
-void main() {
-  runApp(const SpeedometerApp());
-}
-
-class SpeedometerApp extends StatelessWidget {
-  const SpeedometerApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: '速度计',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
-      ),
-      home: const SpeedometerPage(),
-      debugShowCheckedModeBanner: false,
-    );
-  }
-}
-
 class SpeedometerPage extends StatefulWidget {
   const SpeedometerPage({super.key});
 

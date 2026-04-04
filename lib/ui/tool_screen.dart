@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'about_page.dart';
 import 'gallery_page.dart';
 import 'station_screen.dart';
+import 'gps.dart';
 
 class ToolScreen extends StatelessWidget {
   const ToolScreen({super.key});
@@ -58,6 +59,20 @@ class ToolScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const AboutPage()),
+                  );
+                },
+              ),
+            ),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.av_timer, size: 32),
+                title: const Text('速度计'),
+                subtitle: const Text('实验性功能，可能不准'),
+                trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SpeedometerPage()),
                   );
                 },
               ),
