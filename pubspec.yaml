@@ -16,11 +16,9 @@ dependencies:
   shared_preferences: ^2.5.4
   url_launcher: ^6.3.2
   http: ^1.6.0
-  clipboard: ^3.0.14
-  android_intent_plus: ^6.0.0
   cupertino_icons: ^1.0.8
-  geolocator: ^14.0.2       # GPS 定位 & 速度
-  permission_handler: ^11.3.0 # 权限管理
+  geolocator: ^14.0.2
+  permission_handler: ^11.3.0
 
 dev_dependencies:
   flutter_test:

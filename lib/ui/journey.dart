@@ -3,7 +3,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:android_intent_plus/android_intent.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -12,7 +11,6 @@ import 'package:provider/provider.dart';
 
 import '../journey_model.dart';
 import '../journey_provider.dart';
-import '../tool.dart';
 import 'linemap.dart';
 import 'travel_screen.dart';
 
@@ -456,7 +454,6 @@ class _AddJourneyPageState extends State<AddJourneyPage>
       }
     } catch (e) {
       _showSnack('发生错误: $e');
-      print(e);
     } finally {
       setState(() => _loading = false);
     }
@@ -2867,16 +2864,9 @@ class _AddJourneyPageState extends State<AddJourneyPage>
           builder: (context) => AlertDialog(
             title: const Text('添加行程'),
             content: Text(
-              '是否添加 ${train['station_train_code']} 次列车？\n点击12306按钮跳转软件自行购票',
+              '是否添加 ${train['station_train_code']} 次列车？',
             ),
             actions: [
-              TextButton(
-                onPressed: () => {
-                  _launchTicketApp(),
-                  Navigator.of(context).pop(),
-                },
-                child: const Text('12306'),
-              ),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
                 child: const Text('取消'),
@@ -3386,21 +3376,6 @@ class _AddJourneyPageState extends State<AddJourneyPage>
         },
       ),
     );
-  }
-
-  Future<void> _launchTicketApp() async {
-    try {
-      AndroidIntent intent = AndroidIntent(
-        action: 'android.intent.action.VIEW',
-        package: 'com.MobileTicket',
-        componentName: 'com.MobileTicket.ui.activity.WelcomeGuideActivity',
-      );
-      await intent.launch();
-    } catch (e) {
-      if (mounted) {
-        Tool.launchBrowser(context, 'https://www.12306.cn/');
-      }
-    }
   }
 
   void _addJourney(
