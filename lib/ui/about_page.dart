@@ -43,7 +43,7 @@ class AboutPage extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Text(
-          '这个软合并了之前两个软件,可以看交路,记录旅途等',
+          '这个合并了之前两个软件,可以看交路,记录旅途等',
           style: TextStyle(
             fontSize: 16,
             color: theme.colorScheme.onSurfaceVariant,

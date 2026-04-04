@@ -88,6 +88,12 @@ class TrainModelUtils {
         return 'CRH6F';
       }
     }
+    if (modelC == 'CRH6F-A') {
+      int? num = int.tryParse(cleanedNumber.replaceAll(RegExp(r'[^0-9]'), ''));
+      if (num != null && num >= 445 && num <= 450) {
+        return 'CRH6F';
+      }
+    }
 
     if (modelC == 'CRH6A') {
       int? num = int.tryParse(cleanedNumber.replaceAll(RegExp(r'[^0-9]'), ''));

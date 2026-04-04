@@ -23,7 +23,7 @@ class _SpeedometerPageState extends State<SpeedometerPage>
 
   double _panelRatio = _collapsedRatio;
   double _dragStartRatio = _collapsedRatio;
-  bool _isExpanded = false;
+  bool _isExpanded = true;
 
   late AnimationController _snapController;
   late Animation<double> _snapAnimation;
