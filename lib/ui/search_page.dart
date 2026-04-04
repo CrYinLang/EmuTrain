@@ -1336,6 +1336,8 @@ class _SearchPageState extends State<SearchPage> {
                           ? '如: 31'
                           : searchType == 'trainId'
                           ? '如: CR400AF-AZ-2311'
+                          : searchType == 'carType'
+                          ? '如: CRH6F-A'
                           : '如: 上局 或 上海铁路局',
                       border: const OutlineInputBorder(),
                       filled: true,
@@ -1369,6 +1371,11 @@ class _SearchPageState extends State<SearchPage> {
                   value: 'trainId',
                   label: Text('车号查询'),
                   icon: Icon(Icons.confirmation_number),
+                ),
+                ButtonSegment(
+                  value: 'carType',
+                  label: Text('车型查询'),
+                  icon: Icon(Icons.card_travel_rounded),
                 ),
                 ButtonSegment(
                   value: 'bureau',
@@ -1436,49 +1443,54 @@ class _SearchPageState extends State<SearchPage> {
               const Center(child: CircularProgressIndicator()),
 
             if (errorMsg.isNotEmpty)
-              Card(
-                color: Theme.of(context).colorScheme.errorContainer,
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.error_outline),
-                      const SizedBox(width: 12),
-                      Expanded(child: Text(errorMsg)),
-                      IntrinsicHeight(
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Tool.buildTrainDataSourceCard(
-                                context: context,
-                                settings: settings,
-                                source: TrainDataSource.railRe,
-                                title: 'Rail.re',
-                                description: '第三方数据源',
-                                icon: Icons.cloud_upload,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Tool.buildTrainDataSourceCard(
-                                context: context,
-                                settings: settings,
-                                source: TrainDataSource.official12306,
-                                title: '12306',
-                                description: '官方数据源',
-                                icon: Icons.train,
-                              ),
-                            ),
-                          ],
-                        ),
+              Column(
+                children: [
+                  Card(
+                    color: Theme.of(context).colorScheme.errorContainer,
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.error_outline),
+                          const SizedBox(width: 12),
+                          Expanded(child: Text(errorMsg)),
+                          IconButton(
+                            onPressed: () => setState(() => errorMsg = ''),
+                            icon: const Icon(Icons.close),
+                          ),
+                        ],
                       ),
-                      IconButton(
-                        onPressed: () => setState(() => errorMsg = ''),
-                        icon: const Icon(Icons.close),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 12),
+                  if (searchType == 'trainCode') IntrinsicHeight(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Tool.buildTrainDataSourceCard(
+                            context: context,
+                            settings: settings,
+                            source: TrainDataSource.railRe,
+                            title: 'Rail.re',
+                            description: '第三方数据源',
+                            icon: Icons.cloud_upload,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Tool.buildTrainDataSourceCard(
+                            context: context,
+                            settings: settings,
+                            source: TrainDataSource.official12306,
+                            title: '12306',
+                            description: '官方数据源',
+                            icon: Icons.train,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
 
             if (_searchResults.isNotEmpty) ...[
@@ -1536,6 +1548,8 @@ class _SearchPageState extends State<SearchPage> {
                           ? '请输入车次数字进行查询\n（例如：25）'
                           : searchType == 'trainId'
                           ? '请输入车号进行查询'
+                          : searchType == 'carType'
+                          ? '请输入车型进行查询'
                           : '请输入路局名称或点击下方简称查询',
                       textAlign: TextAlign.center,
                       style: const TextStyle(fontSize: 16),
