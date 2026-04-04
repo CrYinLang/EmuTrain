@@ -134,7 +134,7 @@ class SpeedService extends ChangeNotifier {
       },
     );
 
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 5), () {
       if (isTracking && _updateCount == 0) {
         statusMsg = 'Stream 无响应，切换轮询…';
         notifyListeners();
@@ -155,7 +155,7 @@ class SpeedService extends ChangeNotifier {
             accuracy: LocationAccuracy.bestForNavigation,
             forceLocationManager: true,
           ),
-        ).timeout(const Duration(seconds: 2));
+        ).timeout(const Duration(seconds: 10));
         _onPosition(position);
       } catch (e) {
         debugInfo = '轮询错误: $e';
