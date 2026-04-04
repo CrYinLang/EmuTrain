@@ -164,76 +164,6 @@ class _SettingsScreenState extends State<SettingsScreen>
 
   // ==================== 数据源卡片 ====================
 
-  Widget _buildTrainDataSourceCard({
-    required AppSettings settings,
-    required TrainDataSource source,
-    required String title,
-    required String description,
-    required IconData icon,
-  }) {
-    final isSelected = settings.dataSource == source;
-    final primary = Theme.of(context).colorScheme.primary;
-    final onSurface = Theme.of(context).colorScheme.onSurface;
-
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: isSelected ? primary : Colors.transparent,
-          width: 2,
-        ),
-      ),
-      child: InkWell(
-        onTap: () {
-          if (!isSelected) settings.setDataSource(source);
-        },
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          constraints: const BoxConstraints(minHeight: 100),
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                icon,
-                size: 28,
-                color: isSelected ? primary : onSurface.withValues(alpha: 0.7),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                title,
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                  color: isSelected ? primary : onSurface,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                description,
-                maxLines: 2,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: isSelected
-                      ? primary.withValues(alpha: 0.8)
-                      : onSurface.withValues(alpha: 0.6),
-                ),
-              ),
-              if (isSelected) ...[
-                const SizedBox(height: 8),
-                Icon(Icons.check_circle_rounded, size: 16, color: primary),
-              ],
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildEmuDataSourceCard({
     required AppSettings settings,
     required TrainEmuDataSource source,
@@ -508,7 +438,8 @@ class _SettingsScreenState extends State<SettingsScreen>
               child: Row(
                 children: [
                   Expanded(
-                    child: _buildTrainDataSourceCard(
+                    child: Tool.buildTrainDataSourceCard(
+                      context: context,
                       settings: settings,
                       source: TrainDataSource.railRe,
                       title: 'Rail.re',
@@ -518,7 +449,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: _buildTrainDataSourceCard(
+                    child: Tool.buildTrainDataSourceCard(
+                      context: context,
                       settings: settings,
                       source: TrainDataSource.official12306,
                       title: '12306',

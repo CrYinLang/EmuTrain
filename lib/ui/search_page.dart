@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 import 'journey.dart';
+import '../tool.dart';
 import '../main.dart';
 import '../train_model.dart';
 
@@ -502,15 +503,6 @@ class _SearchPageState extends State<SearchPage> {
         final List<dynamic> filteredData = [];
         for (var i = 0; i < data.length; i++) {
           final item = data[i];
-          final emuNo = item['emu_no']?.toString().trim() ?? '';
-
-          if (emuNo.contains('CR200')) {
-            setState(() {
-              isLoading = false;
-              errorMsg = '不支持CR200J动集的交路查询!\n相关结果: ${item['emu_no']}';
-            });
-            return;
-          }
           filteredData.add(item);
         }
 
@@ -566,7 +558,7 @@ class _SearchPageState extends State<SearchPage> {
             setState(() {
               isLoading = false;
               errorMsg =
-                  '车次过期! 可能调图后删除列车\n或者上游API无数据!\n可切换第二数据源尝试\n或者是车次有误\n当前数据源: ${settings.dataSource.toString().split('.').last}';
+                  '车次过期! 时间过久可尝试切换数据源';
             });
             return;
           }
@@ -1286,6 +1278,7 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    final settings = Provider.of<AppSettings>(context);
     final int displayedCount = _searchResults.length;
     final int totalCount = searchType == 'bureau'
         ? _totalResults
@@ -1452,6 +1445,33 @@ class _SearchPageState extends State<SearchPage> {
                       const Icon(Icons.error_outline),
                       const SizedBox(width: 12),
                       Expanded(child: Text(errorMsg)),
+                      IntrinsicHeight(
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Tool.buildTrainDataSourceCard(
+                                context: context,
+                                settings: settings,
+                                source: TrainDataSource.railRe,
+                                title: 'Rail.re',
+                                description: '第三方数据源',
+                                icon: Icons.cloud_upload,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Tool.buildTrainDataSourceCard(
+                                context: context,
+                                settings: settings,
+                                source: TrainDataSource.official12306,
+                                title: '12306',
+                                description: '官方数据源',
+                                icon: Icons.train,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                       IconButton(
                         onPressed: () => setState(() => errorMsg = ''),
                         icon: const Icon(Icons.close),

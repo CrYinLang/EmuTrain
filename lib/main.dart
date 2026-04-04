@@ -134,8 +134,7 @@ class Vars {
         .timeout(const Duration(seconds: 10));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      if (data is List && data.isNotEmpty)
-        return data[0] as Map<String, dynamic>;
+      if (data is List && data.isNotEmpty) return data[0] as Map<String, dynamic>;
       if (data is Map<String, dynamic>) return data;
     }
     return null;
@@ -642,7 +641,7 @@ class TrainIconWidget extends StatelessWidget {
         width: size,
         height: size,
         fit: BoxFit.contain,
-        errorBuilder: (_, __, ___) => _buildFallbackIcon(),
+        errorBuilder: (context, error, stackTrace) => _buildFallbackIcon(),
       ),
     );
   }
@@ -753,7 +752,7 @@ class BureauIconWidget extends StatelessWidget {
                 width: size,
                 height: size,
                 fit: BoxFit.contain,
-                errorBuilder: (_, __, ___) => _buildFallbackIcon(),
+                errorBuilder: (context, error, stackTrace) => _buildFallbackIcon(),
               ),
             );
           } else {
