@@ -13,6 +13,7 @@ import 'journey_provider.dart';
 import 'train_model.dart';
 import 'ui/search_page.dart';
 import 'ui/settings.dart';
+import 'speed_service.dart';
 import 'ui/tool_screen.dart';
 import 'ui/travel_screen.dart';
 import 'update.dart';
@@ -373,8 +374,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Vars._initializeStationBuild();
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => AppSettings()..loadSettings(),
+    // ← 改为 MultiProvider，新增 SpeedService
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AppSettings()..loadSettings()),
+        ChangeNotifierProvider(create: (_) => SpeedService()),
+      ],
       child: const EmuTrainApp(),
     ),
   );
