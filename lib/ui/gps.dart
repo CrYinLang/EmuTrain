@@ -192,11 +192,51 @@ class _SpeedometerPageState extends State<SpeedometerPage>
 }
 
 // ══════════════════════════════════════════════════════════════════
-//  轨迹地图视图
+//  轨迹地图视图（支持双指缩放 / 旋转 / 单指平移 / 双击复位）
 // ══════════════════════════════════════════════════════════════════
-class _TrackMapView extends StatelessWidget {
+class _TrackMapView extends StatefulWidget {
   final SpeedService service;
   const _TrackMapView({required this.service});
+
+  @override
+  State<_TrackMapView> createState() => _TrackMapViewState();
+}
+
+class _TrackMapViewState extends State<_TrackMapView> {
+  // 变换状态
+  double _scale = 1.0;
+  double _rotation = 0.0; // 弧度
+  Offset _offset = Offset.zero;
+
+  // 手势起始快照
+  double _startScale = 1.0;
+  double _startRotation = 0.0;
+  Offset _startOffset = Offset.zero;
+  Offset _focalPointStart = Offset.zero;
+
+  // 是否处于自动追踪模式（新轨迹点进来时自动重置视图）
+  bool _autoFollow = true;
+  int _lastPointCount = 0;
+
+  @override
+  void didUpdateWidget(_TrackMapView old) {
+    super.didUpdateWidget(old);
+    final newCount = widget.service.trackPoints.length;
+    // 有新轨迹点且用户没有手动操作过，保持自动适配
+    if (_autoFollow && newCount != _lastPointCount) {
+      _lastPointCount = newCount;
+      // 让 painter 重绘即可，视图始终自适应
+    }
+  }
+
+  void _resetView() {
+    setState(() {
+      _scale = 1.0;
+      _rotation = 0.0;
+      _offset = Offset.zero;
+      _autoFollow = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -205,19 +245,17 @@ class _TrackMapView extends StatelessWidget {
 
     return Container(
       color: isDark ? const Color(0xFF1A1F2E) : const Color(0xFFE8EDF5),
-      child: service.trackPoints.length < 2
+      child: widget.service.trackPoints.length < 2
           ? Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    Icons.map_outlined,
-                    size: 48,
-                    color: colorScheme.onSurface.withValues(alpha: 0.2),
-                  ),
+                  Icon(Icons.map_outlined,
+                      size: 48,
+                      color: colorScheme.onSurface.withValues(alpha: 0.2)),
                   const SizedBox(height: 8),
                   Text(
-                    service.isTracking ? '等待 GPS 信号…' : '开始测速后显示轨迹',
+                    widget.service.isTracking ? '等待 GPS 信号…' : '开始测速后显示轨迹',
                     style: TextStyle(
                       color: colorScheme.onSurface.withValues(alpha: 0.35),
                       fontSize: 13,
@@ -226,36 +264,101 @@ class _TrackMapView extends StatelessWidget {
                 ],
               ),
             )
-          : CustomPaint(
-              painter: _TrackPainter(
-                points: service.trackPoints,
-                trackColor: colorScheme.primary,
-                isDark: isDark,
-              ),
-              child: const SizedBox.expand(),
+          : Stack(
+              children: [
+                // ── 手势层 ──────────────────────────────────────
+                GestureDetector(
+                  // 双击复位
+                  onDoubleTap: _resetView,
+                  // 双指缩放 + 旋转
+                  onScaleStart: (details) {
+                    _startScale = _scale;
+                    _startRotation = _rotation;
+                    _startOffset = _offset;
+                    _focalPointStart = details.focalPoint;
+                  },
+                  onScaleUpdate: (details) {
+                    setState(() {
+                      _autoFollow = false;
+                      _scale = (_startScale * details.scale).clamp(0.2, 20.0);
+                      _rotation = _startRotation + details.rotation;
+                      // 平移：跟随焦点移动
+                      final focalDelta =
+                          details.focalPoint - _focalPointStart;
+                      _offset = _startOffset + focalDelta;
+                    });
+                  },
+                  child: CustomPaint(
+                    painter: _TrackPainter(
+                      points: widget.service.trackPoints,
+                      trackColor: colorScheme.primary,
+                      isDark: isDark,
+                      scale: _autoFollow ? 1.0 : _scale,
+                      rotation: _autoFollow ? 0.0 : _rotation,
+                      offset: _autoFollow ? Offset.zero : _offset,
+                      autoFit: _autoFollow,
+                    ),
+                    child: const SizedBox.expand(),
+                  ),
+                ),
+
+                // ── 复位按钮（手动操作后显示）──────────────────
+                if (!_autoFollow)
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: GestureDetector(
+                      onTap: _resetView,
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: colorScheme.surface.withValues(alpha: 0.85),
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.15),
+                              blurRadius: 4,
+                            )
+                          ],
+                        ),
+                        child: Icon(Icons.my_location,
+                            size: 18, color: colorScheme.primary),
+                      ),
+                    ),
+                  ),
+              ],
             ),
     );
   }
 }
 
 // ══════════════════════════════════════════════════════════════════
-//  轨迹 Painter
+//  轨迹 Painter（支持变换矩阵）
 // ══════════════════════════════════════════════════════════════════
 class _TrackPainter extends CustomPainter {
   final List<TrackPoint> points;
   final Color trackColor;
   final bool isDark;
+  final double scale;
+  final double rotation;
+  final Offset offset;
+  final bool autoFit; // true = 忽略变换，自动适配窗口
 
   _TrackPainter({
     required this.points,
     required this.trackColor,
     required this.isDark,
+    this.scale = 1.0,
+    this.rotation = 0.0,
+    this.offset = Offset.zero,
+    this.autoFit = true,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
     if (points.length < 2) return;
 
+    // 计算轨迹包围盒
     double minLat = points.first.latitude;
     double maxLat = points.first.latitude;
     double minLng = points.first.longitude;
@@ -270,14 +373,14 @@ class _TrackPainter extends CustomPainter {
 
     final latRange = maxLat - minLat;
     final lngRange = maxLng - minLng;
-
     if (latRange == 0 && lngRange == 0) return;
 
     const padding = 24.0;
     final drawW = size.width - padding * 2;
     final drawH = size.height - padding * 2;
 
-    Offset toOffset(TrackPoint p) {
+    // 基础坐标转换（自适应模式下铺满画布）
+    Offset toBase(TrackPoint p) {
       final x = lngRange == 0
           ? size.width / 2
           : padding + (p.longitude - minLng) / lngRange * drawW;
@@ -287,39 +390,63 @@ class _TrackPainter extends CustomPainter {
       return Offset(x, y);
     }
 
+    // 应用变换矩阵（缩放 + 旋转 + 平移，以画布中心为原点）
+    Offset transform(Offset base) {
+      if (autoFit) return base;
+      final center = Offset(size.width / 2, size.height / 2);
+      final translated = base - center;
+      final cosA = math.cos(rotation);
+      final sinA = math.sin(rotation);
+      final rotated = Offset(
+        translated.dx * cosA - translated.dy * sinA,
+        translated.dx * sinA + translated.dy * cosA,
+      );
+      return center + rotated * scale + offset;
+    }
+
+    canvas.save();
+
     // 轨迹线
     final linePaint = Paint()
       ..color = trackColor.withValues(alpha: 0.85)
-      ..strokeWidth = 3.0
+      ..strokeWidth = autoFit ? 3.0 : (3.0 / math.max(scale, 0.5)).clamp(1.0, 6.0)
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
 
     final path = Path();
-    path.moveTo(toOffset(points.first).dx, toOffset(points.first).dy);
+    final firstPt = transform(toBase(points.first));
+    path.moveTo(firstPt.dx, firstPt.dy);
     for (final p in points.skip(1)) {
-      final o = toOffset(p);
+      final o = transform(toBase(p));
       path.lineTo(o.dx, o.dy);
     }
     canvas.drawPath(path, linePaint);
 
     // 起点（绿色圆）
     canvas.drawCircle(
-      toOffset(points.first),
+      transform(toBase(points.first)),
       6,
       Paint()..color = Colors.green,
     );
 
     // 终点（红色圆）
     canvas.drawCircle(
-      toOffset(points.last),
+      transform(toBase(points.last)),
       6,
       Paint()..color = Colors.red,
     );
+
+    canvas.restore();
   }
 
   @override
   bool shouldRepaint(_TrackPainter old) =>
-      old.points.length != points.length || old.trackColor != trackColor;
+      old.points.length != points.length ||
+      old.trackColor != trackColor ||
+      old.scale != scale ||
+      old.rotation != rotation ||
+      old.offset != offset ||
+      old.autoFit != autoFit;
 }
 
 // ══════════════════════════════════════════════════════════════════
@@ -934,22 +1061,9 @@ class TrackDetailPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // ── 轨迹地图 ──────────────────────────────────────────
+          // ── 轨迹地图（支持手势）──────────────────────────────
           Expanded(
-            child: Container(
-              color:
-                  isDark ? const Color(0xFF1A1F2E) : const Color(0xFFE8EDF5),
-              child: record.points.length < 2
-                  ? const Center(child: Text('轨迹点不足，无法绘制'))
-                  : CustomPaint(
-                      painter: _TrackPainter(
-                        points: record.points,
-                        trackColor: colorScheme.primary,
-                        isDark: isDark,
-                      ),
-                      child: const SizedBox.expand(),
-                    ),
-            ),
+            child: _TrackDetailMapView(points: record.points),
           ),
 
           // ── 数据卡片 ──────────────────────────────────────────
@@ -1040,4 +1154,102 @@ class TrackDetailPage extends StatelessWidget {
   }
 
   String _p(int n) => n.toString().padLeft(2, '0');
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  历史轨迹地图（支持双指缩放 / 旋转 / 平移 / 双击复位）
+// ══════════════════════════════════════════════════════════════════
+class _TrackDetailMapView extends StatefulWidget {
+  final List<TrackPoint> points;
+  const _TrackDetailMapView({required this.points});
+
+  @override
+  State<_TrackDetailMapView> createState() => _TrackDetailMapViewState();
+}
+
+class _TrackDetailMapViewState extends State<_TrackDetailMapView> {
+  double _scale = 1.0;
+  double _rotation = 0.0;
+  Offset _offset = Offset.zero;
+
+  double _startScale = 1.0;
+  double _startRotation = 0.0;
+  Offset _startOffset = Offset.zero;
+  Offset _focalPointStart = Offset.zero;
+  bool _transformed = false;
+
+  void _reset() => setState(() {
+        _scale = 1.0;
+        _rotation = 0.0;
+        _offset = Offset.zero;
+        _transformed = false;
+      });
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Container(
+      color: isDark ? const Color(0xFF1A1F2E) : const Color(0xFFE8EDF5),
+      child: widget.points.length < 2
+          ? const Center(child: Text('轨迹点不足，无法绘制'))
+          : Stack(
+              children: [
+                GestureDetector(
+                  onDoubleTap: _reset,
+                  onScaleStart: (d) {
+                    _startScale = _scale;
+                    _startRotation = _rotation;
+                    _startOffset = _offset;
+                    _focalPointStart = d.focalPoint;
+                  },
+                  onScaleUpdate: (d) {
+                    setState(() {
+                      _transformed = true;
+                      _scale = (_startScale * d.scale).clamp(0.2, 20.0);
+                      _rotation = _startRotation + d.rotation;
+                      _offset = _startOffset + (d.focalPoint - _focalPointStart);
+                    });
+                  },
+                  child: CustomPaint(
+                    painter: _TrackPainter(
+                      points: widget.points,
+                      trackColor: colorScheme.primary,
+                      isDark: isDark,
+                      scale: _transformed ? _scale : 1.0,
+                      rotation: _transformed ? _rotation : 0.0,
+                      offset: _transformed ? _offset : Offset.zero,
+                      autoFit: !_transformed,
+                    ),
+                    child: const SizedBox.expand(),
+                  ),
+                ),
+                if (_transformed)
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: GestureDetector(
+                      onTap: _reset,
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: colorScheme.surface.withValues(alpha: 0.85),
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.15),
+                              blurRadius: 4,
+                            )
+                          ],
+                        ),
+                        child: Icon(Icons.my_location,
+                            size: 18, color: colorScheme.primary),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+    );
+  }
 }
