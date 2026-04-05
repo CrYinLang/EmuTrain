@@ -19,6 +19,9 @@ dependencies:
   cupertino_icons: ^1.0.8
   geolocator: ^14.0.2
   permission_handler: ^11.3.0
+  lpinyin: ^2.0.3
+  screenshot: ^3.0.0
+  gal: ^2.3.0
 
 dev_dependencies:
   flutter_test:
