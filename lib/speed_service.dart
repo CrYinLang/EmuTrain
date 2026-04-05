@@ -42,9 +42,7 @@ class SpeedService extends ChangeNotifier {
   String debugInfo = '';
   int _updateCount = 0;
 
-  /// 最近一次保存结果（用于 UI 提示）
-  bool? lastSaveResult; // null=未保存过, true=保存成功, false=距离不足未保存
-
+  bool? lastSaveResult;
   DateTime? _trackingStartTime;
 
   StreamSubscription<Position>? _positionStream;
@@ -84,8 +82,8 @@ class SpeedService extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ── 开始追踪（直接轮询，不再等 Stream）────────────────────────
-  void startTracking() {
+  // ── 开始追踪 ──────────────────────────────────────────────────
+  Future<void> startTracking() async {
     isTracking = true;
     statusMsg = '正在定位…';
     _updateCount = 0;
@@ -102,61 +100,72 @@ class SpeedService extends ChangeNotifier {
     _trackingStartTime = DateTime.now();
     notifyListeners();
 
-    _startPolling();
+    // ✅ 确保设置已从 SharedPreferences 加载完毕再开始轮询
+    await SettingsModel().load();
+
+    // 先尝试拿上一次已知位置，让界面立刻有数据显示
+    try {
+      final last = await Geolocator.getLastKnownPosition();
+      if (last != null && isTracking) {
+        debugInfo = '使用上次缓存位置';
+        _onPosition(last);
+      }
+    } catch (_) {}
+
+    _scheduleNextPoll();
   }
 
-  // ── 启动轮询 ──────────────────────────────────────────────────
-  void _startPolling() {
-    _positionStream?.cancel();
-    _pollTimer?.cancel();
-    _schedulePoll();
+  // ── 构建当前 LocationSettings（每次调用都从 SettingsModel 实时读）
+  LocationSettings _buildLocationSettings() {
+    final s = SettingsModel();
+    if (Platform.isAndroid) {
+      return AndroidSettings(
+        accuracy: LocationAccuracy.bestForNavigation,
+        forceLocationManager: s.forceLocationManager,
+      );
+    } else if (Platform.isIOS) {
+      return AppleSettings(
+        accuracy: LocationAccuracy.bestForNavigation,
+        pauseLocationUpdatesAutomatically: false,
+      );
+    } else {
+      return const LocationSettings(
+        accuracy: LocationAccuracy.bestForNavigation,
+      );
+    }
   }
 
-  // 单次轮询 + 完成后根据最新设置重新调度，保证设置实时生效
-  void _schedulePoll() {
+  // ── 递归单次轮询，每轮都重新读设置，确保途中修改立即生效 ──────
+  void _scheduleNextPoll() {
     if (!isTracking) return;
 
-    final settings = SettingsModel();
+    // 实时读取间隔
     final intervalMs =
-        (settings.pollIntervalSeconds * 1000).round().clamp(100, 5000);
+        (SettingsModel().pollIntervalSeconds * 1000).round().clamp(100, 5000);
 
+    _pollTimer?.cancel();
     _pollTimer = Timer(Duration(milliseconds: intervalMs), () async {
       if (!isTracking) return;
 
       try {
-        // 每次都实时读取设置，途中改间隔/模式立即下一次生效
-        final s = SettingsModel();
-        final LocationSettings ls;
-        if (Platform.isAndroid) {
-          ls = AndroidSettings(
-            accuracy: LocationAccuracy.bestForNavigation,
-            forceLocationManager: s.forceLocationManager,
-          );
-        } else if (Platform.isIOS) {
-          ls = AppleSettings(
-            accuracy: LocationAccuracy.bestForNavigation,
-            pauseLocationUpdatesAutomatically: false,
-          );
-        } else {
-          ls = const LocationSettings(
-            accuracy: LocationAccuracy.bestForNavigation,
-          );
-        }
-
+        // 实时读取 timeout（间隔的3倍，最少5秒最多15秒）
         final timeoutSec =
-            (s.pollIntervalSeconds * 3).ceil().clamp(5, 15);
+            (SettingsModel().pollIntervalSeconds * 3).ceil().clamp(5, 15);
+
         final position = await Geolocator.getCurrentPosition(
-          locationSettings: ls,
+          locationSettings: _buildLocationSettings(),
         ).timeout(Duration(seconds: timeoutSec));
 
-        _onPosition(position);
+        if (isTracking) _onPosition(position);
       } catch (e) {
-        debugInfo = '定位错误: $e';
-        notifyListeners();
+        if (isTracking) {
+          debugInfo = '定位错误: $e';
+          notifyListeners();
+        }
       }
 
-      // 本次结束后，用最新间隔重新调度下一次
-      _schedulePoll();
+      // 无论成功失败，都用最新设置调度下一次
+      _scheduleNextPoll();
     });
   }
 
@@ -205,7 +214,6 @@ class SpeedService extends ChangeNotifier {
     speedKmh = 0.0;
     _updateCount = 0;
 
-    // 尝试保存
     if (trackPoints.isNotEmpty && _trackingStartTime != null) {
       final record = TrackRecord(
         id: _trackingStartTime!.millisecondsSinceEpoch.toString(),

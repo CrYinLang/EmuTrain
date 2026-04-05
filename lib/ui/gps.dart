@@ -537,8 +537,21 @@ class _SpeedometerPanel extends StatelessWidget {
 // ══════════════════════════════════════════════════════════════════
 //  设置页面
 // ══════════════════════════════════════════════════════════════════
-class SpeedometerSettingsPage extends StatelessWidget {
+class SpeedometerSettingsPage extends StatefulWidget {
   const SpeedometerSettingsPage({super.key});
+
+  @override
+  State<SpeedometerSettingsPage> createState() =>
+      _SpeedometerSettingsPageState();
+}
+
+class _SpeedometerSettingsPageState extends State<SpeedometerSettingsPage> {
+  @override
+  void initState() {
+    super.initState();
+    // ✅ 打开设置页时从 SharedPreferences 加载最新值，确保显示正确
+    SettingsModel().load();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -573,7 +586,7 @@ class SpeedometerSettingsPage extends StatelessWidget {
                 const Divider(indent: 16, endIndent: 16),
 
                 // ── 分组：轮询频率 ────────────────────────────
-                _SectionHeader(title: '定位频率（备用轮询模式）'),
+                _SectionHeader(title: '定位频率'),
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -592,7 +605,7 @@ class SpeedometerSettingsPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        '值越小定位越频繁，但耗电更快。仅在 Stream 失败后的轮询模式生效。',
+                        '值越小定位越频繁，但耗电更快。',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: Theme.of(context)
                                   .colorScheme

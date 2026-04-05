@@ -7,14 +7,13 @@ class SettingsModel extends ChangeNotifier {
   factory SettingsModel() => _instance;
   SettingsModel._internal();
 
-  // ── 默认值 ────────────────────────────────────────────────────
-  bool _forceLocationManager = false; // false = FLP（推荐）; true = 老LocationManager
-  double _pollIntervalSeconds = 1.0;  // 轮询间隔，0.1 ~ 5.0 秒
+  bool _forceLocationManager = false;
+  double _pollIntervalSeconds = 1.0;
 
   bool get forceLocationManager => _forceLocationManager;
   double get pollIntervalSeconds => _pollIntervalSeconds;
 
-  // ── 加载持久化数据 ────────────────────────────────────────────
+  // ✅ 可安全重复调用，每次都从 SharedPreferences 同步最新值
   Future<void> load() async {
     final prefs = await SharedPreferences.getInstance();
     _forceLocationManager = prefs.getBool('forceLocationManager') ?? false;
@@ -22,7 +21,6 @@ class SettingsModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ── 修改并持久化 ──────────────────────────────────────────────
   Future<void> setForceLocationManager(bool value) async {
     _forceLocationManager = value;
     final prefs = await SharedPreferences.getInstance();
