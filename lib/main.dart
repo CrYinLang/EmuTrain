@@ -20,15 +20,15 @@ import 'update.dart';
 
 // ==================== 应用常量 ====================
 class Vars {
-  static const String lastUpdate = '26-04-04-21-30';
-  static const String version = '1.1.0.0';
-  static const String build = '1100';
+  static const String lastUpdate = '26-04-05-22-10';
+  static const String version = '1.2.0.0';
+  static const String build = '1200';
   static const String urlServer = 'version';
   static const String commandServer = 'remote';
   static const String stationData = 'assets/stations';
   static const String trainData = 'assets/train';
-  static String defaultStationBuild = '2';
-  static String defaultTrainBuild = '2';
+  static String defaultStationBuild = '3';
+  static String defaultTrainBuild = '3';
 
   static bool _isStationBuildInitialized = false;
   static String _stationBuild = defaultStationBuild;

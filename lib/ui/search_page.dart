@@ -105,21 +105,16 @@ class _SearchPageState extends State<SearchPage> {
 
       // 获取应用文档目录
       final directory = await getApplicationDocumentsDirectory();
-      final versionFile = File('${directory.path}/trainVer.json');
       final dataFile = File('${directory.path}/train.json');
 
       // 检查是否存在更新版本
-      if (await versionFile.exists() && await dataFile.exists()) {
+      if (await dataFile.exists()) {
         try {
-          // 读取版本信息
-          final versionContent = await versionFile.readAsString();
-          final versionData = json.decode(versionContent);
-
           // 读取更新后的数据文件
           final jsonString = await dataFile.readAsString();
           final Map<String, dynamic> dataJson = json.decode(jsonString);
 
-          // 处理数据
+          // 处理数据结构
           for (var model in dataJson.keys) {
             for (var record in dataJson[model]) {
               var r = Map<String, dynamic>.from(record);
@@ -128,11 +123,11 @@ class _SearchPageState extends State<SearchPage> {
             }
           }
 
-          debugPrint('已加载更新版本: ${versionData['TrainBuild']}');
+          debugPrint('已加载更新版本配置文件');
         } catch (e) {
           // 如果更新文件损坏，回退到默认资源
-          final String dataString = await rootBundle.loadString('assets/train.json');
-          final Map<String, dynamic> dataJson = json.decode(dataString);
+          final jsonString = await rootBundle.loadString('assets/train.json');
+          final Map<String, dynamic> dataJson = json.decode(jsonString);
 
           for (var model in dataJson.keys) {
             for (var record in dataJson[model]) {
@@ -141,12 +136,13 @@ class _SearchPageState extends State<SearchPage> {
               loadedData.add(r);
             }
           }
-          debugPrint('更新文件损坏，使用默认资源: $e');
+
+          debugPrint('更新配置文件损坏，使用默认资源: $e');
         }
       } else {
         // 加载默认资源文件
-        final String dataString = await rootBundle.loadString('assets/train.json');
-        final Map<String, dynamic> dataJson = json.decode(dataString);
+        final jsonString = await rootBundle.loadString('assets/train.json');
+        final Map<String, dynamic> dataJson = json.decode(jsonString);
 
         for (var model in dataJson.keys) {
           for (var record in dataJson[model]) {
@@ -155,7 +151,8 @@ class _SearchPageState extends State<SearchPage> {
             loadedData.add(r);
           }
         }
-        debugPrint('加载默认资源文件');
+
+        debugPrint('加载默认配置文件');
       }
 
       if (mounted) {
@@ -165,7 +162,6 @@ class _SearchPageState extends State<SearchPage> {
       }
     } catch (e) {
       if (mounted) {
-        Tool.showSnack(context,'加载列车数据失败: $e');
         setState(() {
           errorMsg = '加载数据失败: $e';
         });
