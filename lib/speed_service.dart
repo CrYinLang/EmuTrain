@@ -84,10 +84,10 @@ class SpeedService extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ── 开始追踪 ──────────────────────────────────────────────────
+  // ── 开始追踪（直接轮询，不再等 Stream）────────────────────────
   void startTracking() {
     isTracking = true;
-    statusMsg = '正在获取 GPS 信号…';
+    statusMsg = '正在定位…';
     _updateCount = 0;
     debugInfo = '';
     _lastPosition = null;
@@ -102,77 +102,35 @@ class SpeedService extends ChangeNotifier {
     _trackingStartTime = DateTime.now();
     notifyListeners();
 
-    final settings = SettingsModel();
-
-    LocationSettings locationSettings;
-    if (Platform.isAndroid) {
-      locationSettings = AndroidSettings(
-        accuracy: LocationAccuracy.bestForNavigation,
-        distanceFilter: 0,
-        // ✅ 使用设置中的模式开关
-        forceLocationManager: settings.forceLocationManager,
-        intervalDuration: const Duration(seconds: 1),
-        foregroundNotificationConfig: const ForegroundNotificationConfig(
-          notificationText: 'GPS 速度计正在后台运行',
-          notificationTitle: '速度计',
-          enableWakeLock: true,
-        ),
-      );
-    } else if (Platform.isIOS) {
-      locationSettings = AppleSettings(
-        accuracy: LocationAccuracy.bestForNavigation,
-        activityType: ActivityType.automotiveNavigation,
-        distanceFilter: 0,
-        pauseLocationUpdatesAutomatically: false,
-        showBackgroundLocationIndicator: true,
-      );
-    } else {
-      locationSettings = const LocationSettings(
-        accuracy: LocationAccuracy.bestForNavigation,
-        distanceFilter: 0,
-      );
-    }
-
-    _positionStream = Geolocator.getPositionStream(
-      locationSettings: locationSettings,
-    ).listen(
-      _onPosition,
-      onError: (error) {
-        statusMsg = 'Stream 失败，切换轮询…';
-        notifyListeners();
-        _positionStream?.cancel();
-        _startPollingFallback();
-      },
-    );
-
-    // Stream 20秒无响应再切换，给真实GPS足够冷启动时间
-    Future.delayed(const Duration(seconds: 20), () {
-      if (isTracking && _updateCount == 0) {
-        statusMsg = 'Stream 无响应，切换轮询…';
-        notifyListeners();
-        _positionStream?.cancel();
-        _startPollingFallback();
-      }
-    });
+    _startPolling();
   }
 
-  // ── 备用轮询（读取设置中的间隔和模式）────────────────────────
-  void _startPollingFallback() {
-    final settings = SettingsModel();
+  // ── 启动轮询 ──────────────────────────────────────────────────
+  void _startPolling() {
+    _positionStream?.cancel();
     _pollTimer?.cancel();
+    _schedulePoll();
+  }
 
+  // 单次轮询 + 完成后根据最新设置重新调度，保证设置实时生效
+  void _schedulePoll() {
+    if (!isTracking) return;
+
+    final settings = SettingsModel();
     final intervalMs =
         (settings.pollIntervalSeconds * 1000).round().clamp(100, 5000);
 
-    _pollTimer = Timer.periodic(Duration(milliseconds: intervalMs), (_) async {
+    _pollTimer = Timer(Duration(milliseconds: intervalMs), () async {
       if (!isTracking) return;
+
       try {
-        LocationSettings ls;
+        // 每次都实时读取设置，途中改间隔/模式立即下一次生效
+        final s = SettingsModel();
+        final LocationSettings ls;
         if (Platform.isAndroid) {
           ls = AndroidSettings(
             accuracy: LocationAccuracy.bestForNavigation,
-            // ✅ 修复原始bug：从设置读取，默认false走FLP
-            forceLocationManager: settings.forceLocationManager,
+            forceLocationManager: s.forceLocationManager,
           );
         } else if (Platform.isIOS) {
           ls = AppleSettings(
@@ -185,15 +143,20 @@ class SpeedService extends ChangeNotifier {
           );
         }
 
+        final timeoutSec =
+            (s.pollIntervalSeconds * 3).ceil().clamp(5, 15);
         final position = await Geolocator.getCurrentPosition(
           locationSettings: ls,
-        ).timeout(Duration(seconds: (settings.pollIntervalSeconds * 3).ceil().clamp(5, 15)));
+        ).timeout(Duration(seconds: timeoutSec));
 
         _onPosition(position);
       } catch (e) {
-        debugInfo = '轮询错误: $e';
+        debugInfo = '定位错误: $e';
         notifyListeners();
       }
+
+      // 本次结束后，用最新间隔重新调度下一次
+      _schedulePoll();
     });
   }
 
