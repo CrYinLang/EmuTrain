@@ -1,11 +1,13 @@
 //home_page.dart
 import 'dart:convert';
 import 'dart:math';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'journey.dart';
 import '../tool.dart';
@@ -99,18 +101,61 @@ class _SearchPageState extends State<SearchPage> {
 
   Future<void> _loadConfig() async {
     try {
-      final String dataString = await rootBundle.loadString(
-        'assets/train.json',
-      );
-      final Map<String, dynamic> dataJson = json.decode(dataString);
+      List<Map<String, dynamic>> loadedData = [];
 
-      final loadedData = <Map<String, dynamic>>[];
-      for (var model in dataJson.keys) {
-        for (var record in dataJson[model]) {
-          var r = Map<String, dynamic>.from(record);
-          r['type_code'] = model;
-          loadedData.add(r);
+      // 获取应用文档目录
+      final directory = await getApplicationDocumentsDirectory();
+      final versionFile = File('${directory.path}/trainVer.json');
+      final dataFile = File('${directory.path}/train.json');
+
+      // 检查是否存在更新版本
+      if (await versionFile.exists() && await dataFile.exists()) {
+        try {
+          // 读取版本信息
+          final versionContent = await versionFile.readAsString();
+          final versionData = json.decode(versionContent);
+
+          // 读取更新后的数据文件
+          final jsonString = await dataFile.readAsString();
+          final Map<String, dynamic> dataJson = json.decode(jsonString);
+
+          // 处理数据
+          for (var model in dataJson.keys) {
+            for (var record in dataJson[model]) {
+              var r = Map<String, dynamic>.from(record);
+              r['type_code'] = model;
+              loadedData.add(r);
+            }
+          }
+
+          debugPrint('已加载更新版本: ${versionData['TrainBuild']}');
+        } catch (e) {
+          // 如果更新文件损坏，回退到默认资源
+          final String dataString = await rootBundle.loadString('assets/train.json');
+          final Map<String, dynamic> dataJson = json.decode(dataString);
+
+          for (var model in dataJson.keys) {
+            for (var record in dataJson[model]) {
+              var r = Map<String, dynamic>.from(record);
+              r['type_code'] = model;
+              loadedData.add(r);
+            }
+          }
+          debugPrint('更新文件损坏，使用默认资源: $e');
         }
+      } else {
+        // 加载默认资源文件
+        final String dataString = await rootBundle.loadString('assets/train.json');
+        final Map<String, dynamic> dataJson = json.decode(dataString);
+
+        for (var model in dataJson.keys) {
+          for (var record in dataJson[model]) {
+            var r = Map<String, dynamic>.from(record);
+            r['type_code'] = model;
+            loadedData.add(r);
+          }
+        }
+        debugPrint('加载默认资源文件');
       }
 
       if (mounted) {
@@ -120,6 +165,7 @@ class _SearchPageState extends State<SearchPage> {
       }
     } catch (e) {
       if (mounted) {
+        Tool.showSnack(context,'加载列车数据失败: $e');
         setState(() {
           errorMsg = '加载数据失败: $e';
         });

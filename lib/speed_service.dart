@@ -1,10 +1,12 @@
-// lib/ui/speed_service.dart
+// lib/speed_service.dart
 import 'dart:async';
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
+import 'settings_model.dart';
+import 'track_record.dart';
 
-/// 轨迹点：经纬度 + 对应速度（用于将来按速度着色）
+/// 轨迹点：经纬度 + 对应速度
 class TrackPoint {
   final double latitude;
   final double longitude;
@@ -23,7 +25,7 @@ class SpeedService extends ChangeNotifier {
   factory SpeedService() => _instance;
   SpeedService._internal();
 
-  // ── 状态数据（Widget 直接读取）────────────────────────────────
+  // ── 状态数据 ──────────────────────────────────────────────────
   double speedKmh = 0.0;
   double maxSpeedKmh = 0.0;
   double totalDistanceM = 0.0;
@@ -31,7 +33,6 @@ class SpeedService extends ChangeNotifier {
   double _speedAccumulator = 0.0;
   int _speedSampleCount = 0;
 
-  /// 历史轨迹点列表，每次 GPS 更新追加一个
   final List<TrackPoint> trackPoints = [];
 
   Position? _lastPosition;
@@ -40,6 +41,11 @@ class SpeedService extends ChangeNotifier {
   String statusMsg = '点击开始测速';
   String debugInfo = '';
   int _updateCount = 0;
+
+  /// 最近一次保存结果（用于 UI 提示）
+  bool? lastSaveResult; // null=未保存过, true=保存成功, false=距离不足未保存
+
+  DateTime? _trackingStartTime;
 
   StreamSubscription<Position>? _positionStream;
   Timer? _pollTimer;
@@ -91,15 +97,20 @@ class SpeedService extends ChangeNotifier {
     speedKmh = 0.0;
     _speedAccumulator = 0.0;
     _speedSampleCount = 0;
-    trackPoints.clear(); // 新一次记录，清空旧轨迹
+    lastSaveResult = null;
+    trackPoints.clear();
+    _trackingStartTime = DateTime.now();
     notifyListeners();
+
+    final settings = SettingsModel();
 
     LocationSettings locationSettings;
     if (Platform.isAndroid) {
       locationSettings = AndroidSettings(
         accuracy: LocationAccuracy.bestForNavigation,
         distanceFilter: 0,
-        forceLocationManager: false,
+        // ✅ 使用设置中的模式开关
+        forceLocationManager: settings.forceLocationManager,
         intervalDuration: const Duration(seconds: 1),
         foregroundNotificationConfig: const ForegroundNotificationConfig(
           notificationText: 'GPS 速度计正在后台运行',
@@ -134,7 +145,8 @@ class SpeedService extends ChangeNotifier {
       },
     );
 
-    Future.delayed(const Duration(seconds: 5), () {
+    // Stream 20秒无响应再切换，给真实GPS足够冷启动时间
+    Future.delayed(const Duration(seconds: 20), () {
       if (isTracking && _updateCount == 0) {
         statusMsg = 'Stream 无响应，切换轮询…';
         notifyListeners();
@@ -144,18 +156,39 @@ class SpeedService extends ChangeNotifier {
     });
   }
 
-  // ── 备用轮询 ──────────────────────────────────────────────────
+  // ── 备用轮询（读取设置中的间隔和模式）────────────────────────
   void _startPollingFallback() {
+    final settings = SettingsModel();
     _pollTimer?.cancel();
-    _pollTimer = Timer.periodic(const Duration(seconds: 1), (_) async {
+
+    final intervalMs =
+        (settings.pollIntervalSeconds * 1000).round().clamp(100, 5000);
+
+    _pollTimer = Timer.periodic(Duration(milliseconds: intervalMs), (_) async {
       if (!isTracking) return;
       try {
-        final position = await Geolocator.getCurrentPosition(
-          locationSettings: AndroidSettings(
+        LocationSettings ls;
+        if (Platform.isAndroid) {
+          ls = AndroidSettings(
             accuracy: LocationAccuracy.bestForNavigation,
-            forceLocationManager: true,
-          ),
-        ).timeout(const Duration(seconds: 10));
+            // ✅ 修复原始bug：从设置读取，默认false走FLP
+            forceLocationManager: settings.forceLocationManager,
+          );
+        } else if (Platform.isIOS) {
+          ls = AppleSettings(
+            accuracy: LocationAccuracy.bestForNavigation,
+            pauseLocationUpdatesAutomatically: false,
+          );
+        } else {
+          ls = const LocationSettings(
+            accuracy: LocationAccuracy.bestForNavigation,
+          );
+        }
+
+        final position = await Geolocator.getCurrentPosition(
+          locationSettings: ls,
+        ).timeout(Duration(seconds: (settings.pollIntervalSeconds * 3).ceil().clamp(5, 15)));
+
         _onPosition(position);
       } catch (e) {
         debugInfo = '轮询错误: $e';
@@ -192,7 +225,6 @@ class SpeedService extends ChangeNotifier {
     if (currentSpeedKmh > maxSpeedKmh) maxSpeedKmh = currentSpeedKmh;
     statusMsg = '正在测速';
 
-    // 追加轨迹点
     trackPoints.add(TrackPoint(
       latitude: position.latitude,
       longitude: position.longitude,
@@ -202,14 +234,31 @@ class SpeedService extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ── 停止追踪 ──────────────────────────────────────────────────
-  void stopTracking() {
+  // ── 停止追踪并保存 ────────────────────────────────────────────
+  Future<void> stopTracking() async {
     _positionStream?.cancel();
     _pollTimer?.cancel();
     isTracking = false;
     speedKmh = 0.0;
-    statusMsg = '已停止';
     _updateCount = 0;
+
+    // 尝试保存
+    if (trackPoints.isNotEmpty && _trackingStartTime != null) {
+      final record = TrackRecord(
+        id: _trackingStartTime!.millisecondsSinceEpoch.toString(),
+        startTime: _trackingStartTime!,
+        endTime: DateTime.now(),
+        maxSpeedKmh: maxSpeedKmh,
+        avgSpeedKmh: avgSpeedKmh,
+        totalDistanceM: totalDistanceM,
+        points: List.unmodifiable(trackPoints),
+      );
+      lastSaveResult = await TrackRecord.save(record);
+      statusMsg = lastSaveResult! ? '已停止并保存记录' : '已停止（距离不足100m，未保存）';
+    } else {
+      statusMsg = '已停止';
+    }
+
     notifyListeners();
   }
 }

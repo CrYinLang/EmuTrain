@@ -29,6 +29,12 @@ class Tool {
     );
   }
 
+  static void showSnack(BuildContext context,String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), duration: const Duration(seconds: 2)),
+    );
+  }
+
   static Widget buildSwitch({
     required BuildContext context,
     required String title,
