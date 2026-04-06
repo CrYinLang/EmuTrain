@@ -87,7 +87,7 @@ class ToolScreen extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const TicketGeneratorPage()),
+                    MaterialPageRoute(builder: (context) => const TicketPage()),
                   );
                 },
               ),
