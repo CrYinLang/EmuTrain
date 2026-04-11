@@ -1,14 +1,13 @@
 // journey.dart
 
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../main.dart';
 import '../journey_model.dart';
 import '../journey_provider.dart';
 import 'linemap.dart';
@@ -87,40 +86,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
   Future<void> _loadStations() async {
     setState(() => _loadingStations = true);
     try {
-      List<dynamic> stationsList = [];
-
-      // 获取应用文档目录
-      final directory = await getApplicationDocumentsDirectory();
-      final versionFile = File('${directory.path}/stationVer.json');
-      final dataFile = File('${directory.path}/stations.json');
-
-      // 检查是否存在更新版本
-      if (await versionFile.exists() && await dataFile.exists()) {
-        try {
-          // 读取版本信息（即使不使用也保持读取以验证文件完整性）
-          final versionContent = await versionFile.readAsString();
-          final versionData = json.decode(versionContent);
-
-          // 读取更新后的数据文件
-          final jsonString = await dataFile.readAsString();
-          stationsList = json.decode(jsonString);
-
-          // 可以使用版本信息进行日志记录
-          debugPrint('已加载更新版本: ${versionData['StationBuild']}');
-        } catch (e) {
-          // 如果更新文件损坏，回退到默认资源
-          final jsonString = await rootBundle.loadString(
-            'assets/stations.json',
-          );
-          stationsList = json.decode(jsonString);
-          debugPrint('更新文件损坏，使用默认资源: $e');
-        }
-      } else {
-        // 加载默认资源文件
-        final jsonString = await rootBundle.loadString('assets/stations.json');
-        stationsList = json.decode(jsonString);
-        debugPrint('加载默认资源文件');
-      }
+      final stationsList = await DataFileHelper.loadStations();
 
       final Map<String, String> nameMap = {};
       for (var station in stationsList) {

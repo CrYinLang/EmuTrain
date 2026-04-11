@@ -5,6 +5,7 @@ import 'about_page.dart';
 import 'gallery_page.dart';
 import 'gps.dart';
 import 'station_screen.dart';
+import '../tool.dart';
 
 class ToolScreen extends StatelessWidget {
   const ToolScreen({super.key});
@@ -78,6 +79,99 @@ class ToolScreen extends StatelessWidget {
                   );
                 },
               ),
+            ),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.touch_app_outlined, size: 32),
+                title: const Text('友情链接'),
+                subtitle: const Text('推荐使用的APP'),
+                trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MoreAppsPage(),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class MoreAppsPage extends StatelessWidget {
+  const MoreAppsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('友情链接')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            ListTile(
+                leading: Image.asset(
+                'assets/icon/llt.png',
+                  width: 32,
+                  height: 32,
+                  fit: BoxFit.contain,
+                ),
+                title: const Text('路路通'),
+                trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  Tool.launchBrowser(context, 'https://sj.qq.com/appdetail/com.lltskb.lltskb');
+                },
+            ),
+            ListTile(
+              leading: Image.asset(
+                'assets/icon/railre.png',
+                width: 32,
+                height: 32,
+                fit: BoxFit.contain,
+              ),
+              title: const Text('动车组查询'),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                Tool.launchBrowser(context, 'https://rail.re/');
+              },
+            ),
+            ListTile(
+              leading: Image.asset(
+                'assets/icon/railgo.png',
+                width: 32,
+                height: 32,
+                fit: BoxFit.contain,
+              ),
+              title: const Text('RailGo'),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                Tool.launchBrowser(context, 'https://railgo.dev/android.html');
+              },
+            ),
+            ListTile(
+              leading: Image.asset(
+                'assets/icon/moefactory.png',
+                width: 32,
+                height: 32,
+                fit: BoxFit.contain,
+              ),
+              title: const Text('MoeFactory车箱'),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                Tool.launchBrowser(context, 'https://sharyou.moefactory.com/');
+              },
+            ),
+            ListTile(
+              title: const Text('动车组图鉴网站'),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                Tool.launchBrowser(context, 'https://china-emu.cn/');
+              },
             ),
           ],
         ),

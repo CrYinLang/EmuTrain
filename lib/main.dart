@@ -20,9 +20,9 @@ import 'update.dart';
 
 // ==================== 应用常量 ====================
 class Vars {
-  static const String lastUpdate = '26-04-05-22-10';
-  static const String version = '1.2.0.0';
-  static const String build = '1200';
+  static const String lastUpdate = '26-04-11-21-10';
+  static const String version = '1.2.1.0';
+  static const String build = '1210';
   static const String urlServer = 'version';
   static const String commandServer = 'remote';
   static const String stationData = 'assets/stations';
