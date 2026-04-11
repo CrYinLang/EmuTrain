@@ -1,18 +1,16 @@
 //home_page.dart
 import 'dart:convert';
 import 'dart:math';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:path_provider/path_provider.dart';
 
-import 'journey.dart';
-import '../tool.dart';
 import '../main.dart';
+import '../tool.dart';
 import '../train_model.dart';
+import 'journey.dart';
 
 // 搜索结果数据类（统一所有查询类型的结果）
 class SearchResult {
@@ -101,60 +99,7 @@ class _SearchPageState extends State<SearchPage> {
 
   Future<void> _loadConfig() async {
     try {
-      List<Map<String, dynamic>> loadedData = [];
-
-      // 获取应用文档目录
-      final directory = await getApplicationDocumentsDirectory();
-      final dataFile = File('${directory.path}/train.json');
-
-      // 检查是否存在更新版本
-      if (await dataFile.exists()) {
-        try {
-          // 读取更新后的数据文件
-          final jsonString = await dataFile.readAsString();
-          final Map<String, dynamic> dataJson = json.decode(jsonString);
-
-          // 处理数据结构
-          for (var model in dataJson.keys) {
-            for (var record in dataJson[model]) {
-              var r = Map<String, dynamic>.from(record);
-              r['type_code'] = model;
-              loadedData.add(r);
-            }
-          }
-
-          debugPrint('已加载更新版本配置文件');
-        } catch (e) {
-          // 如果更新文件损坏，回退到默认资源
-          final jsonString = await rootBundle.loadString('assets/train.json');
-          final Map<String, dynamic> dataJson = json.decode(jsonString);
-
-          for (var model in dataJson.keys) {
-            for (var record in dataJson[model]) {
-              var r = Map<String, dynamic>.from(record);
-              r['type_code'] = model;
-              loadedData.add(r);
-            }
-          }
-
-          debugPrint('更新配置文件损坏，使用默认资源: $e');
-        }
-      } else {
-        // 加载默认资源文件
-        final jsonString = await rootBundle.loadString('assets/train.json');
-        final Map<String, dynamic> dataJson = json.decode(jsonString);
-
-        for (var model in dataJson.keys) {
-          for (var record in dataJson[model]) {
-            var r = Map<String, dynamic>.from(record);
-            r['type_code'] = model;
-            loadedData.add(r);
-          }
-        }
-
-        debugPrint('加载默认配置文件');
-      }
-
+      final loadedData = await DataFileHelper.loadTrains();
       if (mounted) {
         setState(() {
           trainData = loadedData;
@@ -339,7 +284,10 @@ class _SearchPageState extends State<SearchPage> {
     final List<Map<String, dynamic>> matchedRecords = [];
 
     for (var record in trainData) {
-      final typeCode = (record['type_code'] ?? '').toString().trim().toUpperCase();
+      final typeCode = (record['type_code'] ?? '')
+          .toString()
+          .trim()
+          .toUpperCase();
       if (typeCode == pattern) {
         matchedRecords.add(record);
       }
@@ -353,8 +301,7 @@ class _SearchPageState extends State<SearchPage> {
       return;
     }
 
-    matchedRecords.sort((a, b) =>
-        (a['车组号'] ?? '').compareTo(b['车组号'] ?? ''));
+    matchedRecords.sort((a, b) => (a['车组号'] ?? '').compareTo(b['车组号'] ?? ''));
 
     _allBureauRecords = matchedRecords;
     _totalResults = matchedRecords.length;
@@ -650,8 +597,7 @@ class _SearchPageState extends State<SearchPage> {
           if (absDays > 2) {
             setState(() {
               isLoading = false;
-              errorMsg =
-                  '车次过期! 时间过久可尝试切换数据源';
+              errorMsg = '车次过期! 时间过久可尝试切换数据源';
             });
             return;
           }
@@ -1094,27 +1040,28 @@ class _SearchPageState extends State<SearchPage> {
       ),
     );
   }
+
   Widget _buildResultCard(SearchResult result) {
     final settings = Provider.of<AppSettings>(context, listen: false);
 
     // 判断是否支持点击跳转到 Journey 页面
-    final bool canNavigateToJourney = result.trainCodeForJourney != null &&
+    final bool canNavigateToJourney =
+        result.trainCodeForJourney != null &&
         result.trainCodeForJourney!.isNotEmpty &&
-        (searchType == 'trainCode' ||
-            (searchType == 'trainId' && showRoutes));
+        (searchType == 'trainCode' || (searchType == 'trainId' && showRoutes));
 
     return InkWell(
       onTap: canNavigateToJourney
           ? () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => AddJourneyPage(
-              initialTrainNumber: result.trainCodeForJourney!,
-              autoSearchAndExpand: true,
-            ),
-          ),
-        );
-      }
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => AddJourneyPage(
+                    initialTrainNumber: result.trainCodeForJourney!,
+                    autoSearchAndExpand: true,
+                  ),
+                ),
+              );
+            }
           : null, // 不支持跳转时点击无反应
       borderRadius: BorderRadius.circular(12),
       child: Card(
@@ -1146,10 +1093,9 @@ class _SearchPageState extends State<SearchPage> {
                             result.bureauFullName,
                             style: TextStyle(
                               fontSize: 12,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurface
-                                  .withAlpha(150),
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurface.withAlpha(150),
                             ),
                           ),
                         if (result.isCoupledTrain)
@@ -1218,18 +1164,18 @@ class _SearchPageState extends State<SearchPage> {
                                     vertical: 2,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primary
-                                        .withAlpha(20),
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary.withAlpha(20),
                                     borderRadius: BorderRadius.circular(4),
                                   ),
                                   child: Text(
                                     '#${result.rank!}',
                                     style: TextStyle(
                                       fontSize: 10,
-                                      color:
-                                      Theme.of(context).colorScheme.primary,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.primary,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -1251,7 +1197,9 @@ class _SearchPageState extends State<SearchPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (result.bureau.isNotEmpty && searchType != 'bureau' && searchType != 'carType')
+                  if (result.bureau.isNotEmpty &&
+                      searchType != 'bureau' &&
+                      searchType != 'carType')
                     _buildInfoRow('配属路局', result.bureauFullName),
                   if (result.depot != null && result.depot!.isNotEmpty)
                     _buildInfoRow('配属动车所', result.depot!),
@@ -1269,8 +1217,7 @@ class _SearchPageState extends State<SearchPage> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color:
-                    Theme.of(context).colorScheme.primary.withAlpha(20),
+                    color: Theme.of(context).colorScheme.primary.withAlpha(20),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Column(
@@ -1279,16 +1226,15 @@ class _SearchPageState extends State<SearchPage> {
                         .split('\n')
                         .map(
                           (line) => Text(
-                        line,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withAlpha(200),
-                        ),
-                      ),
-                    )
+                            line,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurface.withAlpha(200),
+                            ),
+                          ),
+                        )
                         .toList(),
                   ),
                 ),
@@ -1298,10 +1244,7 @@ class _SearchPageState extends State<SearchPage> {
                 '查询时间: ${result.queryTime}',
                 style: TextStyle(
                   fontSize: 12,
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onSurface
-                      .withAlpha(150),
+                  color: Theme.of(context).colorScheme.onSurface.withAlpha(150),
                 ),
               ),
             ],
@@ -1310,6 +1253,7 @@ class _SearchPageState extends State<SearchPage> {
       ),
     );
   }
+
   Widget _buildPaginationControls() {
     if (_totalPages <= 1) return const SizedBox.shrink();
 
@@ -1558,33 +1502,34 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  if (searchType == 'trainCode') IntrinsicHeight(
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Tool.buildTrainDataSourceCard(
-                            context: context,
-                            settings: settings,
-                            source: TrainDataSource.railRe,
-                            title: 'Rail.re',
-                            description: '第三方数据源',
-                            icon: Icons.cloud_upload,
+                  if (searchType == 'trainCode')
+                    IntrinsicHeight(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Tool.buildTrainDataSourceCard(
+                              context: context,
+                              settings: settings,
+                              source: TrainDataSource.railRe,
+                              title: 'Rail.re',
+                              description: '第三方数据源',
+                              icon: Icons.cloud_upload,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Tool.buildTrainDataSourceCard(
-                            context: context,
-                            settings: settings,
-                            source: TrainDataSource.official12306,
-                            title: '12306',
-                            description: '官方数据源',
-                            icon: Icons.train,
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Tool.buildTrainDataSourceCard(
+                              context: context,
+                              settings: settings,
+                              source: TrainDataSource.official12306,
+                              title: '12306',
+                              description: '官方数据源',
+                              icon: Icons.train,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
                 ],
               ),
 
@@ -1598,7 +1543,9 @@ class _SearchPageState extends State<SearchPage> {
                         horizontal: 12,
                       ),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.surfaceContainerHighest,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
@@ -1610,9 +1557,8 @@ class _SearchPageState extends State<SearchPage> {
                             (searchType == 'bureau' || searchType == 'carType')
                                 ? '$_currentBureauSearch 共 $totalCount 条（当前 $displayedCount 条）'
                                 : '共找到 $totalCount 条结果',
-                            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: Theme.of(context).textTheme.titleSmall
+                                ?.copyWith(fontWeight: FontWeight.w600),
                           ),
                         ],
                       ),
@@ -1635,7 +1581,8 @@ class _SearchPageState extends State<SearchPage> {
               ),
               const SizedBox(height: 12),
 
-              if (searchType == 'bureau' || searchType == 'carType') _buildPaginationControls(),
+              if (searchType == 'bureau' || searchType == 'carType')
+                _buildPaginationControls(),
 
               for (final result in _searchResults) _buildResultCard(result),
 

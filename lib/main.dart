@@ -30,88 +30,47 @@ class Vars {
   static String defaultStationBuild = '3';
   static String defaultTrainBuild = '3';
 
-  static bool _isStationBuildInitialized = false;
+  // ---------- stationBuild ----------
   static String _stationBuild = defaultStationBuild;
+  static bool _isStationBuildInitialized = false;
 
-  static String get stationBuild {
-    if (!_isStationBuildInitialized) {
-      _initializeStationBuild();
-    }
-    return _stationBuild;
-  }
+  static String get stationBuild => _stationBuild;
 
-  static bool _isTrainBuildInitialized = false;
-  static String _trainBuild = defaultTrainBuild;
-
-  static String get trainBuild {
-    if (!_isTrainBuildInitialized) {
-      _initializeTrainBuild();
-    }
-    return _trainBuild;
-  }
-
-  static Future<void> _initializeStationBuild() async {
-    if (!_isStationBuildInitialized) {
-      final directory = await getApplicationDocumentsDirectory();
-      final versionFile = File('${directory.path}/stationVer.json');
-      if (await versionFile.exists()) {
-        final content = await versionFile.readAsString();
-        final jsonData = json.decode(content);
-        if (jsonData['StationBuild'] != null) {
-          _stationBuild = jsonData['StationBuild'].toString();
-          _isStationBuildInitialized = true;
-          return;
-        }
-      }
-      final prefs = await SharedPreferences.getInstance();
-      if (!prefs.containsKey('stationBuild')) {
-        await prefs.setString('stationBuild', defaultStationBuild);
-        _stationBuild = defaultStationBuild;
-      } else {
-        _stationBuild = prefs.getString('stationBuild') ?? defaultStationBuild;
-      }
-      _isStationBuildInitialized = true;
-    }
+  static Future<void> initStationBuild() async {
+    if (_isStationBuildInitialized) return;
+    final prefs = await SharedPreferences.getInstance();
+    _stationBuild = prefs.getString('stationBuild') ?? defaultStationBuild;
+    _isStationBuildInitialized = true;
   }
 
   static Future<void> setStationBuild(String value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('stationBuild', value);
     _stationBuild = value;
-    if (!_isStationBuildInitialized) _isStationBuildInitialized = true;
+    _isStationBuildInitialized = true;
   }
 
-  static Future<void> _initializeTrainBuild() async {
-    if (!_isTrainBuildInitialized) {
-      final directory = await getApplicationDocumentsDirectory();
-      final versionFile = File('${directory.path}/trainVer.json');
-      if (await versionFile.exists()) {
-        final content = await versionFile.readAsString();
-        final jsonData = json.decode(content);
-        if (jsonData['TrainBuild'] != null) {
-          _trainBuild = jsonData['TrainBuild'].toString();
-          _isTrainBuildInitialized = true;
-          return;
-        }
-      }
-      final prefs = await SharedPreferences.getInstance();
-      if (!prefs.containsKey('trainBuild')) {
-        await prefs.setString('trainBuild', defaultTrainBuild);
-        _trainBuild = defaultTrainBuild;
-      } else {
-        _trainBuild = prefs.getString('trainBuild') ?? defaultTrainBuild;
-      }
-      _isTrainBuildInitialized = true;
-    }
+  // ---------- trainBuild ----------
+  static String _trainBuild = defaultTrainBuild;
+  static bool _isTrainBuildInitialized = false;
+
+  static String get trainBuild => _trainBuild;
+
+  static Future<void> initTrainBuild() async {
+    if (_isTrainBuildInitialized) return;
+    final prefs = await SharedPreferences.getInstance();
+    _trainBuild = prefs.getString('trainBuild') ?? defaultTrainBuild;
+    _isTrainBuildInitialized = true;
   }
 
   static Future<void> setTrainBuild(String value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('trainBuild', value);
     _trainBuild = value;
-    if (!_isTrainBuildInitialized) _isTrainBuildInitialized = true;
+    _isTrainBuildInitialized = true;
   }
 
+  // ---------- 网络 ----------
   static Future<Map<String, dynamic>?> fetchVersionInfo() async {
     final response = await http
         .get(
@@ -138,6 +97,67 @@ class Vars {
       if (data is Map<String, dynamic>) return data;
     }
     return null;
+  }
+}
+
+// ==================== 数据文件帮助类 ====================
+
+/// 统一处理"优先读下载文件，失败/不存在则回退 assets"
+class DataFileHelper {
+  /// 读取车站数据（List 结构）
+  static Future<List<dynamic>> loadStations() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/stations.json');
+
+    if (await file.exists()) {
+      try {
+        final jsonString = await file.readAsString();
+        final data = json.decode(jsonString);
+        if (data is List) {
+          debugPrint('[DataFileHelper] 已加载下载版本 stations.json');
+          return data;
+        }
+        debugPrint('[DataFileHelper] stations.json 格式异常，回退 assets');
+      } catch (e) {
+        debugPrint('[DataFileHelper] stations.json 损坏，回退 assets: $e');
+      }
+    }
+
+    final jsonString = await rootBundle.loadString('assets/stations.json');
+    debugPrint('[DataFileHelper] 已加载 assets/stations.json');
+    return json.decode(jsonString) as List<dynamic>;
+  }
+
+  /// 读取列车数据（Map 结构），并展开为带 type_code 的 List
+  static Future<List<Map<String, dynamic>>> loadTrains() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/train.json');
+
+    String? jsonString;
+
+    if (await file.exists()) {
+      try {
+        jsonString = await file.readAsString();
+        json.decode(jsonString); // 验证 JSON 合法
+        debugPrint('[DataFileHelper] 已加载下载版本 train.json');
+      } catch (e) {
+        debugPrint('[DataFileHelper] train.json 损坏，回退 assets: $e');
+        jsonString = null;
+      }
+    }
+
+    jsonString ??= await rootBundle.loadString('assets/train.json');
+
+    final Map<String, dynamic> dataJson = json.decode(jsonString);
+    final List<Map<String, dynamic>> result = [];
+    for (var model in dataJson.keys) {
+      for (var record in dataJson[model]) {
+        final r = Map<String, dynamic>.from(record);
+        r['type_code'] = model;
+        result.add(r);
+      }
+    }
+    return result;
   }
 }
 
@@ -371,9 +391,9 @@ class AppSettings extends ChangeNotifier {
 // ==================== 入口 ====================
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Vars._initializeStationBuild();
+  await Vars.initStationBuild();
+  await Vars.initTrainBuild();
   runApp(
-    // ← 改为 MultiProvider，新增 SpeedService
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AppSettings()..loadSettings()),
@@ -549,7 +569,7 @@ class _MainScreenState extends State<MainScreen> {
       case 0:
         return const TravelScreen();
       case 1:
-        return const SearchPage(); // ← search_page
+        return const SearchPage();
       case 2:
         return const ToolScreen();
       case 3:

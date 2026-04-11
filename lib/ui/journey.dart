@@ -10,7 +10,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../journey_model.dart';
-import '../tool.dart';
 import '../journey_provider.dart';
 import 'linemap.dart';
 import 'travel_screen.dart';
@@ -137,9 +136,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
         _stationNameMap = nameMap;
       });
     } catch (e) {
-      final context = this.context;
-      if (!context.mounted) return;
-      Tool.showSnack(context,'加载站点数据失败: $e');
+      _showSnack('加载站点数据失败: $e');
     } finally {
       setState(() => _loadingStations = false);
     }
@@ -234,12 +231,12 @@ class _AddJourneyPageState extends State<AddJourneyPage>
 
   Future<void> _searchTrain() async {
     if (_selectedDate == null) {
-      Tool.showSnack(context,'请先选择日期');
+      _showSnack('请先选择日期');
       return;
     }
     final trainNumber = _trainNumberCtrl.text.trim();
     if (trainNumber.isEmpty) {
-      Tool.showSnack(context,'请输入车次');
+      _showSnack('请输入车次');
       return;
     }
 
@@ -253,7 +250,6 @@ class _AddJourneyPageState extends State<AddJourneyPage>
     });
 
     try {
-
       final url =
           'https://search.12306.cn/search/v1/train/search?keyword=$trainNumber&date=$_formattedDate';
       final response = await http.get(Uri.parse(url));
@@ -285,27 +281,19 @@ class _AddJourneyPageState extends State<AddJourneyPage>
           }
           // =================================================================
 
-          final context = this.context;
-          if (!context.mounted) return;
-          Tool.showSnack(context,
+          _showSnack(
             _trainResults.isEmpty
                 ? '未找到相关车次信息'
                 : '找到 ${_trainResults.length} 条结果',
           );
         } else {
-          final context = this.context;
-          if (!context.mounted) return;
-          Tool.showSnack(context,'搜索失败: ${data['errorMsg'] ?? '未知错误'}');
+          _showSnack('搜索失败: ${data['errorMsg'] ?? '未知错误'}');
         }
       } else {
-        final context = this.context;
-        if (!context.mounted) return;
-        Tool.showSnack(context,'网络请求失败: ${response.statusCode}');
+        _showSnack('网络请求失败: ${response.statusCode}');
       }
     } catch (e) {
-      final context = this.context;
-      if (!context.mounted) return;
-      Tool.showSnack(context,'发生错误: $e');
+      _showSnack('发生错误: $e');
     } finally {
       setState(() => _loading = false);
     }
@@ -379,11 +367,11 @@ class _AddJourneyPageState extends State<AddJourneyPage>
 
   Future<void> _searchStation() async {
     if (_selectedDate == null) {
-      Tool.showSnack(context,'请先选择日期');
+      _showSnack('请先选择日期');
       return;
     }
     if (_fromCode == null || _toCode == null) {
-      Tool.showSnack(context,'请选择起始站和终点站');
+      _showSnack('请选择起始站和终点站');
       return;
     }
 
@@ -452,28 +440,20 @@ class _AddJourneyPageState extends State<AddJourneyPage>
 
             setState(() => _stationResults = parsedTrains);
 
-            final context = this.context;
-            if (!context.mounted) return;
-            Tool.showSnack(context,
+            _showSnack(
               _stationResults.isEmpty
                   ? '未找到相关车次信息'
                   : '找到 ${_stationResults.length} 条结果',
             );
           }
         } else {
-          final context = this.context;
-          if (!context.mounted) return;
-          Tool.showSnack(context,'数据获取失败');
+          _showSnack('数据获取失败');
         }
       } else {
-        final context = this.context;
-        if (!context.mounted) return;
-        Tool.showSnack(context,'网络请求失败');
+        _showSnack('网络请求失败');
       }
     } catch (e) {
-      final context = this.context;
-      if (!context.mounted) return;
-      Tool.showSnack(context,'发生错误: $e');
+      _showSnack('发生错误: $e');
     } finally {
       setState(() => _loading = false);
     }
@@ -710,9 +690,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
           _stationLoading[index] = false;
         });
       } catch (e) {
-        final context = this.context;
-        if (!context.mounted) return;
-        Tool.showSnack(context,'获取停站信息失败: $e');
+        _showSnack('获取停站信息失败: $e');
         setState(() => _stationLoading[index] = false);
       }
     } else {
@@ -728,9 +706,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
           _trainLoading[index] = false;
         });
       } catch (e) {
-        final context = this.context;
-        if (!context.mounted) return;
-        Tool.showSnack(context,'获取停站信息失败: $e');
+        _showSnack('获取停站信息失败: $e');
         setState(() => _trainLoading[index] = false);
       }
     }
@@ -794,11 +770,11 @@ class _AddJourneyPageState extends State<AddJourneyPage>
 
   Future<void> _showStationSelector(bool isFrom) async {
     if (_loadingStations) {
-      Tool.showSnack(context,'正在加载站点数据...');
+      _showSnack('正在加载站点数据...');
       return;
     }
     if (_allStations.isEmpty) {
-      Tool.showSnack(context,'站点数据为空，请稍后重试');
+      _showSnack('站点数据为空，请稍后重试');
       return;
     }
     String? selectedCode = isFrom ? _fromCode : _toCode;
@@ -859,6 +835,12 @@ class _AddJourneyPageState extends State<AddJourneyPage>
     }
   }
 
+  void _showSnack(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), duration: const Duration(seconds: 2)),
+    );
+  }
+
   void _clearResults() {
     if (_searchMode == 0) {
       setState(() {
@@ -869,7 +851,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
         if (_animCtrl.isAnimating) _animCtrl.reset();
       });
       _trainNumberCtrl.clear();
-      Tool.showSnack(context,'已清除车次搜索结果');
+      _showSnack('已清除车次搜索结果');
     } else {
       setState(() {
         _stationResults.clear();
@@ -878,7 +860,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
         _stationExpandedIndex = null;
         if (_animCtrl.isAnimating) _animCtrl.reset();
       });
-      Tool.showSnack(context,'已清除站点搜索结果');
+      _showSnack('已清除站点搜索结果');
     }
   }
 
@@ -2382,7 +2364,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
           : (_trainDetails[currentIndex] ?? []);
 
       if (stopData.isEmpty) {
-        Tool.showSnack(context,'暂无站点信息，无法显示线路走向图');
+        _showSnack('暂无站点信息，无法显示线路走向图');
         return;
       }
 
@@ -2408,7 +2390,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
         ),
       );
     } catch (e) {
-      Tool.showSnack(context,'打开线路走向图失败: $e');
+      _showSnack('打开线路走向图失败: $e');
     }
   }
 
@@ -2920,7 +2902,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
     final trainDate = _selectedDate ?? DateTime.now();
 
     if (stopData.isEmpty) {
-      Tool.showSnack(context,'站点信息未加载，请稍后重试');
+      _showSnack('站点信息未加载，请稍后重试');
       return;
     }
 
@@ -2936,7 +2918,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
             final stationName = station['stationName']?.toString() ?? '';
 
             if (_isStationPassedSection(station, trainDate)) {
-              Tool.showSnack(context,'该车站已过期，无法选择');
+              _showSnack('该车站已过期，无法选择');
               return;
             }
 
@@ -2958,7 +2940,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
                   selectedTo = stationName;
                 } else {
                   // 下车站不能在上车站之前，显示提示
-                  Tool.showSnack(context,'下车站必须在上车站之后');
+                  _showSnack('下车站必须在上车站之后');
                 }
               } else {
                 // 已经选择了两个车站，重新选择上车站
@@ -3404,7 +3386,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
     String? toStation,
   }) {
     if (_isExpired(index, train, isStation)) {
-      Tool.showSnack(context,'车次已过期，无法添加');
+      _showSnack('车次已过期，无法添加');
       return;
     }
 
@@ -3416,7 +3398,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
     }
 
     if (stationList.isEmpty) {
-      Tool.showSnack(context,'无法获取车次详细信息');
+      _showSnack('无法获取车次详细信息');
       return;
     }
 
@@ -3450,7 +3432,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
     );
 
     if (!fromExists || !toExists) {
-      Tool.showSnack(context,'选择的站点不存在于该车次中');
+      _showSnack('选择的站点不存在于该车次中');
       return;
     }
 
@@ -3636,12 +3618,12 @@ class _AddJourneyPageState extends State<AddJourneyPage>
               ElevatedButton(
                 onPressed: () {
                   if (selectedSeatType == null) {
-                    Tool.showSnack(context,'请选择座位类型');
+                    _showSnack('请选择座位类型');
                     return;
                   }
 
                   if (selectedSeatType != 'wz_num' && seatInfo.isEmpty) {
-                    Tool.showSnack(context,'请输入座位信息');
+                    _showSnack('请输入座位信息');
                     return;
                   }
 
@@ -3712,7 +3694,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
       final seatName = seatTypeNames[seatType] ?? '未知座位';
       final infoText = seatType == 'wz_num' ? '' : ' ($seatInfo)';
 
-      Tool.showSnack(context,
+      _showSnack(
         '已添加 ${train['station_train_code']} 次列车 '
         '($actualFromStation -> $actualToStation) '
         '$seatName$infoText',

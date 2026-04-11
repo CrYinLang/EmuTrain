@@ -1,9 +1,11 @@
 // lib/ui/gps.dart
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../speed_service.dart';
+
 import '../settings_model.dart';
+import '../speed_service.dart';
 import '../track_record.dart';
 
 // ══════════════════════════════════════════════════════════════════
@@ -36,8 +38,9 @@ class _SpeedometerPageState extends State<SpeedometerPage>
       vsync: this,
       duration: const Duration(milliseconds: 280),
     );
-    _snapAnimation =
-        _snapController.drive(CurveTween(curve: Curves.easeOutCubic));
+    _snapAnimation = _snapController.drive(
+      CurveTween(curve: Curves.easeOutCubic),
+    );
 
     final service = Provider.of<SpeedService>(context, listen: false);
     if (!service.hasPermission) service.checkPermission();
@@ -57,8 +60,10 @@ class _SpeedometerPageState extends State<SpeedometerPage>
   void _onDragUpdate(DragUpdateDetails details, double availableHeight) {
     final delta = -details.delta.dy / availableHeight;
     setState(() {
-      _panelRatio = (_panelRatio + delta)
-          .clamp(_collapsedRatio - 0.05, _expandedRatio + 0.05);
+      _panelRatio = (_panelRatio + delta).clamp(
+        _collapsedRatio - 0.05,
+        _expandedRatio + 0.05,
+      );
     });
   }
 
@@ -77,9 +82,10 @@ class _SpeedometerPageState extends State<SpeedometerPage>
     final startRatio = _panelRatio;
     final endRatio = shouldExpand ? _expandedRatio : _collapsedRatio;
 
-    _snapAnimation = Tween<double>(begin: startRatio, end: endRatio)
-        .chain(CurveTween(curve: Curves.easeOutCubic))
-        .animate(_snapController);
+    _snapAnimation = Tween<double>(
+      begin: startRatio,
+      end: endRatio,
+    ).chain(CurveTween(curve: Curves.easeOutCubic)).animate(_snapController);
 
     _snapController
       ..reset()
@@ -135,9 +141,7 @@ class _SpeedometerPageState extends State<SpeedometerPage>
                   icon: const Icon(Icons.history),
                   tooltip: '历史记录',
                   onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const TrackHistoryPage(),
-                    ),
+                    MaterialPageRoute(builder: (_) => const TrackHistoryPage()),
                   ),
                 ),
                 // ── 设置按钮 ──────────────────────────────────
@@ -196,6 +200,7 @@ class _SpeedometerPageState extends State<SpeedometerPage>
 // ══════════════════════════════════════════════════════════════════
 class _TrackMapView extends StatefulWidget {
   final SpeedService service;
+
   const _TrackMapView({required this.service});
 
   @override
@@ -250,9 +255,11 @@ class _TrackMapViewState extends State<_TrackMapView> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.map_outlined,
-                      size: 48,
-                      color: colorScheme.onSurface.withValues(alpha: 0.2)),
+                  Icon(
+                    Icons.map_outlined,
+                    size: 48,
+                    color: colorScheme.onSurface.withValues(alpha: 0.2),
+                  ),
                   const SizedBox(height: 8),
                   Text(
                     widget.service.isTracking ? '等待 GPS 信号…' : '开始测速后显示轨迹',
@@ -283,8 +290,7 @@ class _TrackMapViewState extends State<_TrackMapView> {
                       _scale = (_startScale * details.scale).clamp(0.2, 20.0);
                       _rotation = _startRotation + details.rotation;
                       // 平移：跟随焦点移动
-                      final focalDelta =
-                          details.focalPoint - _focalPointStart;
+                      final focalDelta = details.focalPoint - _focalPointStart;
                       _offset = _startOffset + focalDelta;
                     });
                   },
@@ -318,11 +324,14 @@ class _TrackMapViewState extends State<_TrackMapView> {
                             BoxShadow(
                               color: Colors.black.withValues(alpha: 0.15),
                               blurRadius: 4,
-                            )
+                            ),
                           ],
                         ),
-                        child: Icon(Icons.my_location,
-                            size: 18, color: colorScheme.primary),
+                        child: Icon(
+                          Icons.my_location,
+                          size: 18,
+                          color: colorScheme.primary,
+                        ),
                       ),
                     ),
                   ),
@@ -409,7 +418,9 @@ class _TrackPainter extends CustomPainter {
     // 轨迹线
     final linePaint = Paint()
       ..color = trackColor.withValues(alpha: 0.85)
-      ..strokeWidth = autoFit ? 3.0 : (3.0 / math.max(scale, 0.5)).clamp(1.0, 6.0)
+      ..strokeWidth = autoFit
+          ? 3.0
+          : (3.0 / math.max(scale, 0.5)).clamp(1.0, 6.0)
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
 
@@ -565,8 +576,9 @@ class _SpeedometerPanel extends StatelessWidget {
                           label: '移动距离',
                           value: service.totalDistanceM < 1000
                               ? service.totalDistanceM.toStringAsFixed(0)
-                              : (service.totalDistanceM / 1000)
-                                  .toStringAsFixed(2),
+                              : (service.totalDistanceM / 1000).toStringAsFixed(
+                                  2,
+                                ),
                           unit: service.totalDistanceM < 1000 ? 'm' : 'km',
                           icon: Icons.route,
                         ),
@@ -588,8 +600,8 @@ class _SpeedometerPanel extends StatelessWidget {
                         onPressed: !service.hasPermission
                             ? service.checkPermission
                             : (service.isTracking
-                                ? service.stopTracking
-                                : service.startTracking),
+                                  ? service.stopTracking
+                                  : service.startTracking),
                         style: service.isTracking
                             ? FilledButton.styleFrom(
                                 backgroundColor: colorScheme.error,
@@ -687,10 +699,7 @@ class _SpeedometerSettingsPageState extends State<SpeedometerSettingsPage> {
       child: Consumer<SettingsModel>(
         builder: (context, settings, _) {
           return Scaffold(
-            appBar: AppBar(
-              title: const Text('速度计设置'),
-              centerTitle: true,
-            ),
+            appBar: AppBar(title: const Text('速度计设置'), centerTitle: true),
             body: ListView(
               children: [
                 // ── 分组：定位模式 ────────────────────────────
@@ -715,8 +724,10 @@ class _SpeedometerSettingsPageState extends State<SpeedometerSettingsPage> {
                 // ── 分组：轮询频率 ────────────────────────────
                 _SectionHeader(title: '定位频率'),
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -734,26 +745,29 @@ class _SpeedometerSettingsPageState extends State<SpeedometerSettingsPage> {
                       Text(
                         '值越小定位越频繁，但耗电更快。',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant,
-                            ),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                       ),
                       Slider(
                         value: settings.pollIntervalSeconds,
                         min: 0.1,
                         max: 5.0,
-                        divisions: 49, // 步长 0.1
+                        divisions: 49,
+                        // 步长 0.1
                         label: _formatInterval(settings.pollIntervalSeconds),
                         onChanged: (v) => settings.setPollIntervalSeconds(v),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('0.1 秒（最快）',
-                              style: Theme.of(context).textTheme.labelSmall),
-                          Text('5.0 秒（省电）',
-                              style: Theme.of(context).textTheme.labelSmall),
+                          Text(
+                            '0.1 秒（最快）',
+                            style: Theme.of(context).textTheme.labelSmall,
+                          ),
+                          Text(
+                            '5.0 秒（省电）',
+                            style: Theme.of(context).textTheme.labelSmall,
+                          ),
                         ],
                       ),
                     ],
@@ -773,8 +787,7 @@ class _SpeedometerSettingsPageState extends State<SpeedometerSettingsPage> {
                   title: const Text('查看历史记录'),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (_) => const TrackHistoryPage()),
+                    MaterialPageRoute(builder: (_) => const TrackHistoryPage()),
                   ),
                 ),
               ],
@@ -793,6 +806,7 @@ class _SpeedometerSettingsPageState extends State<SpeedometerSettingsPage> {
 
 class _SectionHeader extends StatelessWidget {
   final String title;
+
   const _SectionHeader({required this.title});
 
   @override
@@ -802,10 +816,10 @@ class _SectionHeader extends StatelessWidget {
       child: Text(
         title,
         style: Theme.of(context).textTheme.labelMedium?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.1,
-            ),
+          color: Theme.of(context).colorScheme.primary,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 1.1,
+        ),
       ),
     );
   }
@@ -843,12 +857,12 @@ class _TrackHistoryPageState extends State<TrackHistoryPage> {
         content: const Text('确定要删除这条行程记录吗？'),
         actions: [
           TextButton(
-              onPressed: () => Navigator.of(ctx).pop(false),
-              child: const Text('取消')),
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('取消'),
+          ),
           FilledButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            style:
-                FilledButton.styleFrom(backgroundColor: Colors.red.shade700),
+            style: FilledButton.styleFrom(backgroundColor: Colors.red.shade700),
             child: const Text('删除'),
           ),
         ],
@@ -863,64 +877,60 @@ class _TrackHistoryPageState extends State<TrackHistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('历史记录'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('历史记录'), centerTitle: true),
       body: _records == null
           ? const Center(child: CircularProgressIndicator())
           : _records!.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.history,
-                          size: 56,
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withValues(alpha: 0.2)),
-                      const SizedBox(height: 12),
-                      Text(
-                        '暂无记录',
-                        style: TextStyle(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withValues(alpha: 0.4),
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '移动距离 ≥ 100m 的行程会在停止后自动保存',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurface
-                                  .withValues(alpha: 0.35),
-                            ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
+          ? Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.history,
+                    size: 56,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.2),
                   ),
-                )
-              : ListView.separated(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: _records!.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 10),
-                  itemBuilder: (context, index) {
-                    final r = _records![index];
-                    return _RecordCard(
-                      record: r,
-                      onDelete: () => _delete(r.id),
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => TrackDetailPage(record: r),
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                  const SizedBox(height: 12),
+                  Text(
+                    '暂无记录',
+                    style: TextStyle(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withValues(alpha: 0.4),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '移动距离 ≥ 100m 的行程会在停止后自动保存',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withValues(alpha: 0.35),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            )
+          : ListView.separated(
+              padding: const EdgeInsets.all(16),
+              itemCount: _records!.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 10),
+              itemBuilder: (context, index) {
+                final r = _records![index];
+                return _RecordCard(
+                  record: r,
+                  onDelete: () => _delete(r.id),
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => TrackDetailPage(record: r),
+                    ),
+                  ),
+                );
+              },
+            ),
     );
   }
 }
@@ -960,8 +970,11 @@ class _RecordCard extends StatelessWidget {
               // 时间 + 删除按钮
               Row(
                 children: [
-                  Icon(Icons.access_time,
-                      size: 14, color: colorScheme.onSurfaceVariant),
+                  Icon(
+                    Icons.access_time,
+                    size: 14,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
                   const SizedBox(width: 4),
                   Text(
                     _formatDateTime(record.startTime),
@@ -979,8 +992,11 @@ class _RecordCard extends StatelessWidget {
                   const SizedBox(width: 8),
                   GestureDetector(
                     onTap: onDelete,
-                    child: Icon(Icons.delete_outline,
-                        size: 18, color: colorScheme.error.withValues(alpha: 0.7)),
+                    child: Icon(
+                      Icons.delete_outline,
+                      size: 18,
+                      color: colorScheme.error.withValues(alpha: 0.7),
+                    ),
                   ),
                 ],
               ),
@@ -989,10 +1005,18 @@ class _RecordCard extends StatelessWidget {
               Row(
                 children: [
                   _miniStat(context, Icons.straighten, distStr, '距离'),
-                  _miniStat(context, Icons.speed,
-                      '${record.maxSpeedKmh.toStringAsFixed(1)} km/h', '最高速'),
-                  _miniStat(context, Icons.av_timer,
-                      '${record.avgSpeedKmh.toStringAsFixed(1)} km/h', '平均速'),
+                  _miniStat(
+                    context,
+                    Icons.speed,
+                    '${record.maxSpeedKmh.toStringAsFixed(1)} km/h',
+                    '最高速',
+                  ),
+                  _miniStat(
+                    context,
+                    Icons.av_timer,
+                    '${record.avgSpeedKmh.toStringAsFixed(1)} km/h',
+                    '平均速',
+                  ),
                 ],
               ),
             ],
@@ -1003,21 +1027,31 @@ class _RecordCard extends StatelessWidget {
   }
 
   Widget _miniStat(
-      BuildContext context, IconData icon, String value, String label) {
+    BuildContext context,
+    IconData icon,
+    String value,
+    String label,
+  ) {
     final theme = Theme.of(context);
     return Expanded(
       child: Column(
         children: [
           Icon(icon, size: 16, color: theme.colorScheme.primary),
           const SizedBox(height: 2),
-          Text(value,
-              style: theme.textTheme.bodyMedium
-                  ?.copyWith(fontWeight: FontWeight.bold),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis),
-          Text(label,
-              style: theme.textTheme.labelSmall
-                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+          Text(
+            value,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          Text(
+            label,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
         ],
       ),
     );
@@ -1042,6 +1076,7 @@ class _RecordCard extends StatelessWidget {
 // ══════════════════════════════════════════════════════════════════
 class TrackDetailPage extends StatelessWidget {
   final TrackRecord record;
+
   const TrackDetailPage({super.key, required this.record});
 
   @override
@@ -1062,17 +1097,16 @@ class TrackDetailPage extends StatelessWidget {
       body: Column(
         children: [
           // ── 轨迹地图（支持手势）──────────────────────────────
-          Expanded(
-            child: _TrackDetailMapView(points: record.points),
-          ),
+          Expanded(child: _TrackDetailMapView(points: record.points)),
 
           // ── 数据卡片 ──────────────────────────────────────────
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF141218) : Colors.white,
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(20)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(20),
+              ),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.12),
@@ -1087,13 +1121,17 @@ class TrackDetailPage extends StatelessWidget {
                 // 时间段
                 Row(
                   children: [
-                    Icon(Icons.schedule,
-                        size: 14, color: colorScheme.onSurfaceVariant),
+                    Icon(
+                      Icons.schedule,
+                      size: 14,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       '${_formatTime(record.startTime)} → ${_formatTime(record.endTime)}  （${_formatDuration(duration)}）',
-                      style: theme.textTheme.bodySmall
-                          ?.copyWith(color: colorScheme.onSurfaceVariant),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   ],
                 ),
@@ -1103,17 +1141,23 @@ class TrackDetailPage extends StatelessWidget {
                   children: [
                     _detailStat(context, distStr, '移动距离', Icons.straighten),
                     _detailStat(
-                        context,
-                        '${record.maxSpeedKmh.toStringAsFixed(1)}\nkm/h',
-                        '最高速',
-                        Icons.speed),
+                      context,
+                      '${record.maxSpeedKmh.toStringAsFixed(1)}\nkm/h',
+                      '最高速',
+                      Icons.speed,
+                    ),
                     _detailStat(
-                        context,
-                        '${record.avgSpeedKmh.toStringAsFixed(1)}\nkm/h',
-                        '平均速',
-                        Icons.av_timer),
-                    _detailStat(context, '${record.points.length}',
-                        'GPS点数', Icons.location_on_outlined),
+                      context,
+                      '${record.avgSpeedKmh.toStringAsFixed(1)}\nkm/h',
+                      '平均速',
+                      Icons.av_timer,
+                    ),
+                    _detailStat(
+                      context,
+                      '${record.points.length}',
+                      'GPS点数',
+                      Icons.location_on_outlined,
+                    ),
                   ],
                 ),
               ],
@@ -1125,28 +1169,39 @@ class TrackDetailPage extends StatelessWidget {
   }
 
   Widget _detailStat(
-      BuildContext context, String value, String label, IconData icon) {
+    BuildContext context,
+    String value,
+    String label,
+    IconData icon,
+  ) {
     final theme = Theme.of(context);
     return Expanded(
       child: Column(
         children: [
           Icon(icon, size: 18, color: theme.colorScheme.primary),
           const SizedBox(height: 4),
-          Text(value,
-              style: theme.textTheme.titleSmall
-                  ?.copyWith(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center),
-          Text(label,
-              style: theme.textTheme.labelSmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant)),
+          Text(
+            value,
+            style: theme.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          Text(
+            label,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
         ],
       ),
     );
   }
 
-  String _formatDate(DateTime dt) =>
-      '${dt.year}-${_p(dt.month)}-${_p(dt.day)}';
+  String _formatDate(DateTime dt) => '${dt.year}-${_p(dt.month)}-${_p(dt.day)}';
+
   String _formatTime(DateTime dt) => '${_p(dt.hour)}:${_p(dt.minute)}';
+
   String _formatDuration(Duration d) {
     if (d.inHours > 0) return '${d.inHours}h ${d.inMinutes.remainder(60)}m';
     if (d.inMinutes > 0) return '${d.inMinutes}m ${d.inSeconds.remainder(60)}s';
@@ -1161,6 +1216,7 @@ class TrackDetailPage extends StatelessWidget {
 // ══════════════════════════════════════════════════════════════════
 class _TrackDetailMapView extends StatefulWidget {
   final List<TrackPoint> points;
+
   const _TrackDetailMapView({required this.points});
 
   @override
@@ -1179,11 +1235,11 @@ class _TrackDetailMapViewState extends State<_TrackDetailMapView> {
   bool _transformed = false;
 
   void _reset() => setState(() {
-        _scale = 1.0;
-        _rotation = 0.0;
-        _offset = Offset.zero;
-        _transformed = false;
-      });
+    _scale = 1.0;
+    _rotation = 0.0;
+    _offset = Offset.zero;
+    _transformed = false;
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1209,7 +1265,8 @@ class _TrackDetailMapViewState extends State<_TrackDetailMapView> {
                       _transformed = true;
                       _scale = (_startScale * d.scale).clamp(0.2, 20.0);
                       _rotation = _startRotation + d.rotation;
-                      _offset = _startOffset + (d.focalPoint - _focalPointStart);
+                      _offset =
+                          _startOffset + (d.focalPoint - _focalPointStart);
                     });
                   },
                   child: CustomPaint(
@@ -1240,11 +1297,14 @@ class _TrackDetailMapViewState extends State<_TrackDetailMapView> {
                             BoxShadow(
                               color: Colors.black.withValues(alpha: 0.15),
                               blurRadius: 4,
-                            )
+                            ),
                           ],
                         ),
-                        child: Icon(Icons.my_location,
-                            size: 18, color: colorScheme.primary),
+                        child: Icon(
+                          Icons.my_location,
+                          size: 18,
+                          color: colorScheme.primary,
+                        ),
                       ),
                     ),
                   ),

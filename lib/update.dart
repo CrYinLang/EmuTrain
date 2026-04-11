@@ -200,14 +200,11 @@ class AppUpdateResultDialog extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
 
-                // 更新描述区域
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.surfaceContainerHighest,
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: SelectableText(
@@ -269,7 +266,6 @@ class AppUpdateResultDialog extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 12),
-
                   Row(
                     children: [
                       Expanded(
@@ -335,8 +331,8 @@ class StationUpdateResultDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentBuild = int.tryParse(Vars.stationBuild) ?? 42;
-    int remoteBuild = 42;
+    final currentBuild = int.tryParse(Vars.stationBuild) ?? 0;
+    int remoteBuild = 0;
 
     bool hasUpdate = false;
     String resultMessage = '';
@@ -348,7 +344,8 @@ class StationUpdateResultDialog extends StatelessWidget {
       resultColor = Colors.red;
       resultIcon = Icons.error;
     } else if (versionInfo != null) {
-      remoteBuild = int.tryParse(versionInfo!['StationBuild'].toString()) ?? 42;
+      remoteBuild =
+          int.tryParse(versionInfo!['StationBuild'].toString()) ?? 0;
 
       if (remoteBuild > currentBuild) {
         hasUpdate = true;
@@ -436,33 +433,25 @@ class StationUpdateResultDialog extends StatelessWidget {
                             );
 
                             try {
-                              String stationDataUrl =
+                              final stationDataUrl =
                                   'https://gitee.com/CrYinLang/EmuTrain/raw/master/${Vars.stationData}.json';
 
-                              // 下载文件内容
                               final response = await http.get(
                                 Uri.parse(stationDataUrl),
                               );
 
                               if (response.statusCode == 200) {
+                                // 验证 JSON 合法
+                                json.decode(response.body);
+
                                 final directory =
                                     await getApplicationDocumentsDirectory();
-
                                 final file = File(
-                                  '${directory.path}/statiosns.json',
+                                  '${directory.path}/stations.json',
                                 );
                                 await file.writeAsString(response.body);
 
-                                final versionFile = File(
-                                  '${directory.path}/stationVer.json',
-                                );
-                                final versionData = {
-                                  "StationBuild": remoteBuild.toString(),
-                                  "file": "stations.json",
-                                };
-                                await versionFile.writeAsString(
-                                  json.encode(versionData),
-                                );
+                                // 只写 SharedPreferences，不再写 stationVer.json
                                 await Vars.setStationBuild(
                                   remoteBuild.toString(),
                                 );
@@ -475,20 +464,23 @@ class StationUpdateResultDialog extends StatelessWidget {
                                   Navigator.pop(context);
 
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('车站数据更新成功！')),
+                                    const SnackBar(
+                                      content: Text('车站数据更新成功！'),
+                                    ),
                                   );
                                 }
                               } else {
-                                throw Exception('下载失败: ${response.statusCode}');
+                                throw Exception(
+                                  '下载失败: ${response.statusCode}',
+                                );
                               }
                             } catch (e) {
                               if (context.mounted) {
                                 Navigator.of(
                                   context,
                                   rootNavigator: true,
-                                ).pop(); // 关闭下载弹窗
+                                ).pop();
 
-                                // 显示错误提示
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text('更新失败: $e'),
@@ -498,6 +490,7 @@ class StationUpdateResultDialog extends StatelessWidget {
                               }
                             }
                           },
+                          icon: const Icon(Icons.download, size: 20),
                           label: const Text(
                             '升级',
                             style: TextStyle(fontSize: 14),
@@ -556,8 +549,8 @@ class TrainUpdateResultDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentBuild = int.tryParse(Vars.trainBuild) ?? 42;
-    int remoteBuild = 42;
+    final currentBuild = int.tryParse(Vars.trainBuild) ?? 0;
+    int remoteBuild = 0;
 
     bool hasUpdate = false;
     String resultMessage = '';
@@ -569,7 +562,8 @@ class TrainUpdateResultDialog extends StatelessWidget {
       resultColor = Colors.red;
       resultIcon = Icons.error;
     } else if (versionInfo != null) {
-      remoteBuild = int.tryParse(versionInfo!['TrainBuild'].toString()) ?? 42;
+      remoteBuild =
+          int.tryParse(versionInfo!['TrainBuild'].toString()) ?? 0;
 
       if (remoteBuild > currentBuild) {
         hasUpdate = true;
@@ -657,33 +651,25 @@ class TrainUpdateResultDialog extends StatelessWidget {
                             );
 
                             try {
-                              String trainDataUrl =
+                              final trainDataUrl =
                                   'https://gitee.com/CrYinLang/EmuTrain/raw/master/${Vars.trainData}.json';
 
-                              // 下载文件内容
                               final response = await http.get(
                                 Uri.parse(trainDataUrl),
                               );
 
                               if (response.statusCode == 200) {
+                                // 验证 JSON 合法
+                                json.decode(response.body);
+
                                 final directory =
                                     await getApplicationDocumentsDirectory();
-
                                 final file = File(
                                   '${directory.path}/train.json',
                                 );
                                 await file.writeAsString(response.body);
 
-                                final versionFile = File(
-                                  '${directory.path}/trainVer.json',
-                                );
-                                final versionData = {
-                                  "TrainBuild": remoteBuild.toString(),
-                                  "file": "train.json",
-                                };
-                                await versionFile.writeAsString(
-                                  json.encode(versionData),
-                                );
+                                // 只写 SharedPreferences，不再写 trainVer.json
                                 await Vars.setTrainBuild(
                                   remoteBuild.toString(),
                                 );
@@ -696,20 +682,23 @@ class TrainUpdateResultDialog extends StatelessWidget {
                                   Navigator.pop(context);
 
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('车站数据更新成功！')),
+                                    const SnackBar(
+                                      content: Text('列车数据更新成功！'),
+                                    ),
                                   );
                                 }
                               } else {
-                                throw Exception('下载失败: ${response.statusCode}');
+                                throw Exception(
+                                  '下载失败: ${response.statusCode}',
+                                );
                               }
                             } catch (e) {
                               if (context.mounted) {
                                 Navigator.of(
                                   context,
                                   rootNavigator: true,
-                                ).pop(); // 关闭下载弹窗
+                                ).pop();
 
-                                // 显示错误提示
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text('更新失败: $e'),
@@ -719,6 +708,7 @@ class TrainUpdateResultDialog extends StatelessWidget {
                               }
                             }
                           },
+                          icon: const Icon(Icons.download, size: 20),
                           label: const Text(
                             '升级',
                             style: TextStyle(fontSize: 14),

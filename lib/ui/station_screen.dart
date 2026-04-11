@@ -1,8 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+
+import '../main.dart';
 
 // 车站大屏页面
 class StationScreen extends StatefulWidget {
@@ -519,9 +520,7 @@ class _StationSelectorState extends State<StationSelector> {
   Future<void> _loadStations() async {
     setState(() => _loadingStations = true);
     try {
-      final jsonString = await rootBundle.loadString('assets/stations.json');
-      final List<dynamic> stationsList = json.decode(jsonString);
-
+      final stationsList = await DataFileHelper.loadStations();
       setState(() {
         _allStations = stationsList;
         _filtered = stationsList;

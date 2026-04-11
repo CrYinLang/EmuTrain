@@ -64,7 +64,7 @@ class _GalleryPageState extends State<GalleryPage> {
       ),
       TrainInfo(
         model: 'CR400AF-J',
-        number: '2808', 
+        number: '2808',
         title: 'CR400AF-J-2808',
         infoItems: {
           '代管路局': '济南铁路局',

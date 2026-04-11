@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 
 import 'about_page.dart';
 import 'gallery_page.dart';
-import 'station_screen.dart';
 import 'gps.dart';
-import 'ticket.dart';
+import 'station_screen.dart';
 
 class ToolScreen extends StatelessWidget {
   const ToolScreen({super.key});
@@ -73,21 +72,9 @@ class ToolScreen extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const SpeedometerPage()),
-                  );
-                },
-              ),
-            ),
-            Card(
-              child: ListTile(
-                leading: const Icon(Icons.menu_book, size: 32),
-                title: const Text('纪念票生成器'),
-                subtitle: const Text('实验性功能，当个玩具'),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const TicketPage()),
+                    MaterialPageRoute(
+                      builder: (context) => const SpeedometerPage(),
+                    ),
                   );
                 },
               ),
