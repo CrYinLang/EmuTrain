@@ -7,9 +7,9 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
-import '../main.dart';
 import '../journey_model.dart';
 import '../journey_provider.dart';
+import '../main.dart';
 import 'linemap.dart';
 import 'travel_screen.dart';
 
@@ -65,7 +65,8 @@ class _AddJourneyPageState extends State<AddJourneyPage>
     final today = DateTime(now.year, now.month, now.day);
     _selectedDate = today.add(const Duration(days: 1));
 
-    if (widget.initialTrainNumber != null && widget.initialTrainNumber!.isNotEmpty) {
+    if (widget.initialTrainNumber != null &&
+        widget.initialTrainNumber!.isNotEmpty) {
       _trainNumberCtrl.text = widget.initialTrainNumber!;
       _searchMode = 0; // 强制车次查询模式
       _selectedDate = today;
@@ -237,7 +238,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
               // 只有一条结果时：自动展开 + 加载详情 + 禁止收回
               setState(() => _expandedIndex = 0);
               _animCtrl.forward();
-              await _fetchDetails(0, false);   // 加载停站信息
+              await _fetchDetails(0, false); // 加载停站信息
             } else {
               // 多条结果时：只自动展开第一条（可选），不强制禁止收回
               setState(() => _expandedIndex = 0);
@@ -650,7 +651,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
       if (trainNumber.isEmpty) return;
       setState(() => _stationLoading[index] = true);
       try {
-        final stopData = await _fetchStopInfo(trainNumber);
+        final stopData = await _fetchStopInfo_sharyou(trainNumber);
         setState(() {
           _stationDetails[index] = stopData;
           _stationLoading[index] = false;
@@ -666,7 +667,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
       if (trainNumber.isEmpty) return;
       setState(() => _trainLoading[index] = true);
       try {
-        final stopData = await _fetchStopInfo(trainNumber);
+        final stopData = await _fetchStopInfo_sharyou(trainNumber);
         setState(() {
           _trainDetails[index] = stopData;
           _trainLoading[index] = false;
@@ -678,7 +679,101 @@ class _AddJourneyPageState extends State<AddJourneyPage>
     }
   }
 
-  Future<List<dynamic>> _fetchStopInfo(String trainNumber) async {
+  Future<List<dynamic>> _fetchStopInfo_sharyou(String trainNumber) async {
+    final baseUrl = 'https://sharyou.moefactory.com/api/trainNumber/query';
+
+    final headers = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Accept': 'application/json, text/plain, */*',
+      'User-Agent':
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0',
+    };
+
+    try {
+      /// =========================
+      /// 第一步：获取 trainIndex
+      /// =========================
+      print(_formattedDate);
+      final firstBody = 'date=$_formattedDate&trainNumber=$trainNumber&cursor=0&count=15';
+
+      final firstResp = await http
+          .post(
+        Uri.parse(baseUrl),
+        headers: headers,
+        body: firstBody,
+      ).timeout(const Duration(seconds: 10));
+
+      if (firstResp.statusCode != 200) {
+        throw Exception('第一步请求失败: ${firstResp.statusCode}');
+      }
+
+      final firstData = json.decode(firstResp.body);
+
+      if (firstData['code'] != 200) {
+        throw Exception('第一步 API 错误: ${firstData['message']}');
+      }
+
+      final List<dynamic> trainList = firstData['data']['data'] ?? [];
+
+      if (trainList.isEmpty) {
+        return [];
+      }
+
+      // 取第一个列车的 trainIndex
+      final int trainIndex = trainList.first['trainIndex'];
+
+      /// =========================
+      /// 第二步：用 trainIndex 查经停站
+      /// =========================
+      final secondBody = 'trainIndex=$trainIndex&includeCheckoutNames=true&date=$_formattedDate';
+
+      final secondResp = await http
+          .post(
+        Uri.parse('https://sharyou.moefactory.com/api/trainDetails/query'),
+        headers: headers,
+        body: secondBody,
+      )
+          .timeout(const Duration(seconds: 10));
+
+      if (secondResp.statusCode != 200) {
+        throw Exception('第二步请求失败: ${secondResp.statusCode}');
+      }
+
+      final secondData = json.decode(secondResp.body);
+
+      if (secondData['code'] != 200) {
+        throw Exception('第二步 API 错误: ${secondData['message']}');
+      }
+
+      final List<dynamic> viaStations =
+          secondData['data']['viaStations'] ?? [];
+
+      /// =========================
+      /// 映射为你原来的结构
+      /// =========================
+      return viaStations.asMap().entries.map((entry) {
+        final index = entry.key;
+        final stop = entry.value;
+
+        return {
+          'stationNo': (index + 1).toString().padLeft(2, '0'),
+          'stationName': stop['stationName'] ?? '',
+          'arriveTime': stop['arrivalTime'] ?? '--:--',
+          'departTime': stop['departureTime'] ?? '--:--',
+          'stayTime': stop['stopMinutes']?.toString() ?? '0',
+          'distance': stop['distance']?.toString() ?? '0',
+          'DayDifference': stop['dayIndex'] ?? 0,
+          'telCode': stop['stationTelegramCode'] ?? '',
+          'isFirst': index == 0,
+          'isLast': index == viaStations.length - 1,
+        };
+      }).toList();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<dynamic>> _fetchStopInfo_ctrip(String trainNumber) async {
     final url = Uri.parse(
       'https://m.ctrip.com/restapi/soa2/14674/json/GetTrainStopTimeInfo',
     );
@@ -686,7 +781,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'User-Agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
       'Referer': 'https://m.ctrip.com/',
       'Origin': 'https://m.ctrip.com',
     };
@@ -705,19 +800,20 @@ class _AddJourneyPageState extends State<AddJourneyPage>
           return stopList
               .map(
                 (stop) => {
-                  'stationNo': stop['StationNo'] ?? '',
-                  'stationName': _cleanStationName(stop['StationName']),
-                  'arriveTime': stop['ArriveTime'] ?? '--:--',
-                  'departTime': stop['DepartTime'] ?? '--:--',
-                  'stayTime': stop['StayWayStationTime'] ?? '0',
-                  'DayDifference': stop['DayDifference'] ?? 0,
-                  'telCode': stop['TelCode'] ?? '',
-                  'isFirst': stop['StationNo'] == '01',
-                  'isLast':
-                      stop['StationNo'] ==
-                      stopList.length.toString().padLeft(2, '0'),
-                },
-              )
+              'stationNo': stop['StationNo'] ?? '',
+              'stationName': _cleanStationName(stop['StationName']),
+              'arriveTime': stop['ArriveTime'] ?? '--:--',
+              'departTime': stop['DepartTime'] ?? '--:--',
+              'stayTime': stop['StayWayStationTime'] ?? '0',
+              'distance': stop['distance'] ?? '0',
+              'DayDifference': stop['DayDifference'] ?? 0,
+              'telCode': stop['TelCode'] ?? '',
+              'isFirst': stop['StationNo'] == '01',
+              'isLast':
+              stop['StationNo'] ==
+                  stopList.length.toString().padLeft(2, '0'),
+            },
+          )
               .toList();
         } else if (data['RetCode'] != 1) {
           throw Exception(
@@ -768,8 +864,8 @@ class _AddJourneyPageState extends State<AddJourneyPage>
 
   void _toggleExpand(int index, bool isStation) async {
     if (widget.autoSearchAndExpand &&
-        !isStation &&                    // 车次查询模式
-        _trainResults.length == 1 &&     // 只有一条结果
+        !isStation && // 车次查询模式
+        _trainResults.length == 1 && // 只有一条结果
         _expandedIndex == index) {
       return; // 不允许收回
     }
@@ -2414,6 +2510,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
           final arr = stop['arriveTime']?.toString() ?? '--:--';
           final dep = stop['departTime']?.toString() ?? '--:--';
           final stay = int.tryParse(stop['stayTime']?.toString() ?? '0') ?? 0;
+          final mile = int.tryParse(stop['distance']?.toString() ?? '0') ?? 0;
           final first = (stop['isFirst'] as bool?) ?? false;
           final last = (stop['isLast'] as bool?) ?? false;
           final terminal = first || last;
@@ -2682,7 +2779,6 @@ class _AddJourneyPageState extends State<AddJourneyPage>
                               ],
                             ],
                           ),
-                          const SizedBox(height: 6),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -2692,6 +2788,15 @@ class _AddJourneyPageState extends State<AddJourneyPage>
                                 passed,
                                 first,
                               ),
+                              Text(
+                                '里程:$mile',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                ),
+                              ),
+                              const SizedBox(height: 5),
                               if (stay > 0)
                                 Column(
                                   children: [
@@ -2829,9 +2934,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
           context: context,
           builder: (context) => AlertDialog(
             title: const Text('添加行程'),
-            content: Text(
-              '是否添加 ${train['station_train_code']} 次列车？',
-            ),
+            content: Text('是否添加 ${train['station_train_code']} 次列车？'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),

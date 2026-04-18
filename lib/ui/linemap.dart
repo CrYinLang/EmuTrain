@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../journey_model.dart';
+import '../main.dart';
 
 class LineMapDialog extends StatelessWidget {
   final Journey journey;
@@ -753,8 +754,7 @@ class _LineMapContentState extends State<LineMapContent> {
   Future<List<Map<String, dynamic>>> _matchStationsWithLocalData(
       List<Map<String, dynamic>> apiStations) async {
     try {
-      final jsonStr = await rootBundle.loadString('assets/stations.json');
-      final List<dynamic> all = json.decode(jsonStr);
+      final List<dynamic> all = await DataFileHelper.loadStations();
 
       return apiStations.map((api) {
         final clean =
