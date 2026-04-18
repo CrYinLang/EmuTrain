@@ -44,7 +44,6 @@ class LineMapDialog extends StatelessWidget {
                   ),
                 ),
                 const Divider(height: 1),
-                // 内容区域
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(16),
@@ -83,7 +82,8 @@ class LineMapDialog extends StatelessWidget {
                   ),
                   Text(
                     '全程${journey.getTotalDuration()} • ${journey.stations.length}个站点',
-                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                    style:
+                        TextStyle(fontSize: 12, color: Colors.grey.shade600),
                   ),
                 ],
               ),
@@ -95,9 +95,9 @@ class LineMapDialog extends StatelessWidget {
   }
 }
 
+// ============================================================
 class LineMapContent extends StatefulWidget {
   final Journey journey;
-
   const LineMapContent({super.key, required this.journey});
 
   @override
@@ -105,12 +105,20 @@ class LineMapContent extends StatefulWidget {
 }
 
 class _LineMapContentState extends State<LineMapContent> {
+  /// 停车站（用户行程中的站，带时间信息，isViaStation==false）
   List<Map<String, dynamic>> _filteredStations = [];
+
+  /// 全路线所有站（含途径小站，isViaStation字段来自API原始值）
   List<Map<String, dynamic>> _fullRouteStations = [];
+
   bool _isLoading = true;
   String _errorMessage = '';
   int? _selectedStationIndex;
   final Map<int, bool> _stationLabelsVisible = {};
+
+  final TransformationController _transformationController =
+      TransformationController();
+  double _currentScale = 1.0;
 
   @override
   void initState() {
@@ -118,301 +126,590 @@ class _LineMapContentState extends State<LineMapContent> {
     _loadRouteMapData();
   }
 
-  Future<bool> _hasAnomalousSegments() async {
-    for (int i = 1; i < _fullRouteStations.length; i++) {
-      final prevStation = _fullRouteStations[i - 1];
-      final currentStation = _fullRouteStations[i];
+  @override
+  void dispose() {
+    _transformationController.dispose();
+    super.dispose();
+  }
 
-      if (prevStation['hasLocation'] == true &&
-          currentStation['hasLocation'] == true) {
-        final dx =
-            (currentStation['relativeX'] - prevStation['relativeX']) * 100;
-        final dy =
-            (currentStation['relativeY'] - prevStation['relativeY']) * 100;
-        final segmentLength = sqrt(dx * dx + dy * dy);
+  // ==================== 跨天时间解析 ====================
 
-        bool isEasy = await _getSetting('show_real_train_map');
+  /// 将 "HH:mm" 解析为绝对 DateTime，以 [refBase] 为基准处理跨天。
+  /// 若候选时间比 refBase 早超过2小时，认为已过午夜，自动加一天。
+  static DateTime? _parseRelative(DateTime refBase, String? timeStr) {
+    if (timeStr == null || timeStr.isEmpty) return null;
+    final parts = timeStr.split(':');
+    if (parts.length < 2) return null;
+    final h = int.tryParse(parts[0]);
+    final m = int.tryParse(parts[1]);
+    if (h == null || m == null) return null;
+    var t = DateTime(refBase.year, refBase.month, refBase.day, h, m);
+    if (t.isBefore(refBase.subtract(const Duration(hours: 2)))) {
+      t = t.add(const Duration(days: 1));
+    }
+    return t;
+  }
 
-        if (segmentLength > 30 && isEasy) {
-          return true;
+  /// 计算每个停车站的时间状态（与 _filteredStations 等长）。
+  /// 返回值：'past' | 'current' | 'future'
+  List<String> _computeStationStatuses() {
+    final now = DateTime.now();
+    final n = _filteredStations.length;
+    if (n == 0) return [];
+
+    // 找第一站时间作为初始基准
+    DateTime refBase = now;
+    for (final s in _filteredStations) {
+      final raw = (s['departureTime'] ?? s['arrivalTime']) as String?;
+      if (raw != null && raw.isNotEmpty) {
+        final p = raw.split(':');
+        if (p.length >= 2) {
+          final h = int.tryParse(p[0]);
+          final m = int.tryParse(p[1]);
+          if (h != null && m != null) {
+            refBase = DateTime(now.year, now.month, now.day, h, m);
+            break;
+          }
         }
+      }
+    }
+
+    // 逐站累积解析绝对时间
+    final List<DateTime?> deps = List.filled(n, null);
+    final List<DateTime?> arrs = List.filled(n, null);
+    DateTime prev = refBase;
+    for (int i = 0; i < n; i++) {
+      final s = _filteredStations[i];
+      final arr = _parseRelative(prev, s['arrivalTime'] as String?);
+      final dep = _parseRelative(arr ?? prev, s['departureTime'] as String?);
+      arrs[i] = arr;
+      deps[i] = dep;
+      prev = dep ?? arr ?? prev;
+    }
+
+    // 确定每站状态
+    final statuses = List<String>.filled(n, 'future');
+    int lastPast = -1;
+    for (int i = 0; i < n; i++) {
+      final ref = deps[i] ?? arrs[i];
+      if (ref != null && ref.isBefore(now)) {
+        statuses[i] = 'past';
+        lastPast = i;
+      }
+    }
+    if (lastPast >= 0 && lastPast + 1 < n && statuses[lastPast + 1] == 'future') {
+      statuses[lastPast + 1] = 'current';
+    }
+
+    return statuses;
+  }
+
+  // ==================== 数据加载 ====================
+
+  Future<void> _loadRouteMapData() async {
+    try {
+      final fullFromApi = await _fetchStationsFromApi(widget.journey.trainCode)
+          .timeout(const Duration(seconds: 10));
+
+      // 停车站：从全量API结果中筛选，注入 journey 时间信息
+      final filtered = _filterApiStations(fullFromApi, widget.journey.stations);
+
+      // 本地坐标匹配
+      final fullWithLoc = await _matchStationsWithLocalData(fullFromApi);
+      final filteredWithLoc = await _matchStationsWithLocalData(filtered);
+
+      // 坐标归一化
+      final positionedFull = _calcPositions(fullWithLoc, fullWithLoc);
+      final positionedFiltered = _calcPositions(filteredWithLoc, fullWithLoc);
+
+      setState(() {
+        _fullRouteStations = positionedFull;
+        _filteredStations = positionedFiltered;
+        _isLoading = false;
+      });
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _hasAnomalousSegments().then((bad) {
+          if (bad && mounted) _showAnomalyAlert();
+        });
+      });
+    } catch (e) {
+      // Fallback：直接用 journey.stations 均匀排列
+      try {
+        final fallback = _buildFallback();
+        setState(() {
+          _fullRouteStations = fallback;
+          _filteredStations = fallback;
+          _isLoading = false;
+        });
+      } catch (_) {
+        setState(() {
+          _errorMessage = e.toString();
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  List<Map<String, dynamic>> _buildFallback() {
+    final stations = widget.journey.stations;
+    final n = stations.length;
+    return List.generate(n, (i) {
+      final s = stations[i];
+      return {
+        'stationName': s.stationName,
+        'name': s.stationName,
+        'isViaStation': false,
+        'arrivalTime': s.arrivalTime,
+        'departureTime': s.departureTime,
+        'stationSequence': i + 1,
+        'hasLocation': true,
+        'city': '',
+        'longitude': 0.0,
+        'latitude': 0.0,
+        'relativeX': n > 1 ? 0.1 + 0.8 * (i / (n - 1)) : 0.5,
+        'relativeY': 0.5,
+        'index': i,
+      };
+    });
+  }
+
+  // ==================== 异常检测 ====================
+
+  Future<bool> _hasAnomalousSegments() async {
+    final bool isReal = await _getSetting('show_real_train_map');
+    if (!isReal) return false;
+    for (int i = 1; i < _fullRouteStations.length; i++) {
+      final a = _fullRouteStations[i - 1];
+      final b = _fullRouteStations[i];
+      if (a['hasLocation'] == true && b['hasLocation'] == true) {
+        final dx = ((b['relativeX'] as double) - (a['relativeX'] as double)) * 100;
+        final dy = ((b['relativeY'] as double) - (a['relativeY'] as double)) * 100;
+        if (sqrt(dx * dx + dy * dy) > 30) return true;
       }
     }
     return false;
   }
 
   List<String> _getAnomalousSegmentInfo() {
-    final List<String> anomalies = [];
-
+    final List<String> res = [];
     for (int i = 1; i < _fullRouteStations.length; i++) {
-      final prevStation = _fullRouteStations[i - 1];
-      final currentStation = _fullRouteStations[i];
-
-      if (prevStation['hasLocation'] == true &&
-          currentStation['hasLocation'] == true) {
-        final dx =
-            (currentStation['relativeX'] - prevStation['relativeX']) * 100;
-        final dy =
-            (currentStation['relativeY'] - prevStation['relativeY']) * 100;
-        final segmentLength = sqrt(dx * dx + dy * dy);
-
-        if (segmentLength > 30) {
-          anomalies.add(
-            '${prevStation['name']} → ${currentStation['name']}: '
-            '${segmentLength.toStringAsFixed(2)}单位',
-          );
+      final a = _fullRouteStations[i - 1];
+      final b = _fullRouteStations[i];
+      if (a['hasLocation'] == true && b['hasLocation'] == true) {
+        final dx = ((b['relativeX'] as double) - (a['relativeX'] as double)) * 100;
+        final dy = ((b['relativeY'] as double) - (a['relativeY'] as double)) * 100;
+        final len = sqrt(dx * dx + dy * dy);
+        if (len > 30) {
+          res.add('${a['name']} → ${b['name']}: ${len.toStringAsFixed(2)}单位');
         }
       }
     }
-    return anomalies;
-  }
-
-  Future<void> _loadRouteMapData() async {
-    try {
-      final fullStationsFromApi = await _fetchStationsFromApi(
-        widget.journey.trainCode,
-      ).timeout(const Duration(seconds: 10));
-
-      final filteredStations = _filterApiStations(
-        fullStationsFromApi,
-        widget.journey.stations,
-      );
-
-      final fullRouteWithLocation = await _matchStationsWithLocalData(
-        fullStationsFromApi,
-      );
-
-      final filteredWithLocation = await _matchStationsWithLocalData(
-        filteredStations,
-      );
-
-      final positionedFullRoute = _calculateRelativePositions(
-        fullRouteWithLocation,
-      );
-      final positionedFiltered = _calculatePositionsUsingFullRouteRange(
-        filteredWithLocation,
-        fullRouteWithLocation,
-      );
-
-      setState(() {
-        _fullRouteStations = positionedFullRoute;
-        _filteredStations = positionedFiltered;
-        _isLoading = false;
-      });
-
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _hasAnomalousSegments().then((hasAnomaly) {
-          if (hasAnomaly) {
-            _showAnomalyAlert();
-          }
-        });
-      });
-    } catch (e) {
-      try {
-        final fallbackData = _createFallbackStationData();
-        final filteredStations = _filterApiStations(
-          fallbackData,
-          widget.journey.stations,
-        );
-
-        final filteredWithLocation = await _matchStationsWithLocalData(
-          filteredStations,
-        );
-
-        final positionedFiltered = _calculateEvenPositions(
-          filteredWithLocation,
-        );
-
-        setState(() {
-          _fullRouteStations = positionedFiltered;
-          _filteredStations = positionedFiltered;
-          _isLoading = false;
-          _errorMessage = '';
-        });
-      } catch (fallbackError) {
-        setState(() {
-          _errorMessage = '加载失败: $e';
-          _isLoading = false;
-        });
-      }
-    }
+    return res;
   }
 
   void _showAnomalyAlert() {
     final anomalies = _getAnomalousSegmentInfo();
-
     showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Row(
+      builder: (ctx) => AlertDialog(
+        title: const Row(children: [
+          Icon(Icons.warning_amber, color: Colors.orange),
+          SizedBox(width: 8),
+          Text('走向图数据异常'),
+        ]),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.warning_amber, color: Colors.orange),
-              SizedBox(width: 8),
-              Text('走向图数据异常'),
+              const Text('检测到以下异常线段，可能影响显示效果：'),
+              const SizedBox(height: 12),
+              ...anomalies.map((a) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  child: Text('• $a'))),
+              const SizedBox(height: 16),
+              const Text('请联系技术支持。',
+                  style: TextStyle(fontSize: 12, color: Colors.grey)),
             ],
           ),
-          content: SingleChildScrollView(
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx), child: const Text('确定'))
+        ],
+      ),
+    );
+  }
+
+  // ==================== 站点标记构建 ====================
+
+  List<Widget> _buildStationMarkers(double cw, double ch) {
+    final bool showVia = _currentScale > 1.8;
+    final statuses = _computeStationStatuses();
+    final List<Widget> markers = [];
+
+    // ---- 途径小站（_fullRouteStations 中 isViaStation==true 的站） ----
+    // 只在缩放超过阈值时显示，视觉大小固定。
+    if (showVia) {
+      for (final st in _fullRouteStations) {
+        final isVia = st['isViaStation'] as bool? ?? false;
+        if (!isVia) continue;
+        final rx = st['relativeX'] as double?;
+        final ry = st['relativeY'] as double?;
+        if (rx == null || ry == null || st['hasLocation'] != true) continue;
+
+        final double dotSize = 7.0 / _currentScale;
+        final double px = rx * cw;
+        final double py = ry * ch;
+
+        markers.add(Positioned(
+          left: px - dotSize / 2,
+          top: py - dotSize / 2,
+          child: IgnorePointer(
+            child: Container(
+              width: dotSize,
+              height: dotSize,
+              decoration: BoxDecoration(
+                color: Colors.orange,
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.white,
+                  width: (0.8 / _currentScale).clamp(0.3, 1.2),
+                ),
+              ),
+            ),
+          ),
+        ));
+      }
+    }
+
+    // ---- 停车站（_filteredStations，始终显示） ----
+    for (int i = 0; i < _filteredStations.length; i++) {
+      final st = _filteredStations[i];
+      final rx = st['relativeX'] as double?;
+      final ry = st['relativeY'] as double?;
+      if (rx == null || ry == null || st['hasLocation'] != true) continue;
+
+      final int index = (st['index'] as int?) ?? i;
+      final double px = rx * cw;
+      final double py = ry * ch;
+
+      // 视觉圆点大小（恒定14px屏幕像素）
+      final double dotSize = 14.0 / _currentScale;
+      // 触控热区（恒定44px，更好点击）
+      final double hitSize = 44.0 / _currentScale;
+
+      final String status = i < statuses.length ? statuses[i] : 'future';
+      final Color dotColor = switch (status) {
+        'past' => Colors.orange,
+        'current' => Colors.green,
+        _ => Colors.blue.shade600,
+      };
+
+      markers.add(Positioned(
+        left: px - hitSize / 2,
+        top: py - hitSize / 2,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => _toggleLabel(index),
+          child: SizedBox(
+            width: hitSize,
+            height: hitSize,
+            child: Center(
+              child: Container(
+                width: dotSize,
+                height: dotSize,
+                decoration: BoxDecoration(
+                  color: dotColor,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.white,
+                    width: (2.0 / _currentScale).clamp(0.5, 2.0),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(80),
+                      blurRadius: 3 / _currentScale,
+                      offset: Offset(0, 1 / _currentScale),
+                    ),
+                  ],
+                ),
+                // 序号：仅当视觉圆点够大时渲染（避免溢出）
+                child: Center(
+                  child: Text(
+                    '${index + 1}',
+                    style: TextStyle(
+                      color: Colors.white,
+                      // 字号恒定约5px屏幕像素
+                      fontSize: (5.0 / _currentScale).clamp(2.0, 5.5),
+                      fontWeight: FontWeight.bold,
+                      height: 1.0,
+                    ),
+                    overflow: TextOverflow.clip,
+                    softWrap: false,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ));
+    }
+
+    return markers;
+  }
+
+  void _toggleLabel(int index) {
+    setState(() {
+      if (_selectedStationIndex == index) {
+        _stationLabelsVisible.clear();
+        _selectedStationIndex = null;
+      } else {
+        _stationLabelsVisible.clear();
+        _stationLabelsVisible[index] = true;
+        _selectedStationIndex = index;
+      }
+    });
+  }
+
+  // ==================== 标签构建 ====================
+
+  List<Widget> _buildStationLabels(double cw, double ch) {
+    final List<Widget> labels = [];
+    for (final st in _filteredStations) {
+      final index = (st['index'] as int?) ?? 0;
+      if (!(_stationLabelsVisible[index] ?? false)) continue;
+
+      final rx = st['relativeX'] as double?;
+      final ry = st['relativeY'] as double?;
+      if (rx == null || ry == null) continue;
+
+      final double px = rx * cw;
+      final double py = ry * ch;
+
+      // 所有尺寸除以 scale，使标签在屏幕上保持固定视觉大小
+      final double fs1 = 11.0 / _currentScale;  // 站名字号
+      final double fs2 = 9.0 / _currentScale;   // 副文字字号
+      final double padH = 8.0 / _currentScale;
+      final double padV = 5.0 / _currentScale;
+      final double radius = 6.0 / _currentScale;
+      final double borderW = 1.0 / _currentScale;
+      final double lw = 96.0 / _currentScale;   // 估算标签宽
+      final double lh = 52.0 / _currentScale;   // 估算标签高
+      final double mg = 8.0 / _currentScale;
+
+      final Offset pos =
+          _pickLabelPos(px, py, lw, lh, mg, cw, ch);
+
+      final String name = (st['name'] as String?) ?? '';
+      final bool hasLoc = st['hasLocation'] as bool? ?? false;
+      final String city = (st['city'] as String?) ?? '';
+      final String? arr = st['arrivalTime'] as String?;
+      final String? dep = st['departureTime'] as String?;
+
+      labels.add(Positioned(
+        left: pos.dx,
+        top: pos.dy,
+        child: GestureDetector(
+          onTap: () => _toggleLabel(index),
+          child: Container(
+            padding:
+                EdgeInsets.symmetric(horizontal: padH, vertical: padV),
+            decoration: BoxDecoration(
+              color: Colors.white.withAlpha(242),
+              borderRadius: BorderRadius.circular(radius),
+              border: Border.all(
+                  color: Colors.grey.shade400, width: borderW),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withAlpha(60),
+                  blurRadius: 6 / _currentScale,
+                  offset: Offset(0, 2 / _currentScale),
+                ),
+              ],
+            ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('检测到以下异常线段，可能影响显示效果：'),
-                const SizedBox(height: 12),
-                ...anomalies.map(
-                  (anomaly) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2),
-                    child: Text('• $anomaly'),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '$name站',
+                      style: TextStyle(
+                        fontSize: fs1,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                        height: 1.2,
+                      ),
+                    ),
+                    if (!hasLoc)
+                      Padding(
+                        padding: EdgeInsets.only(left: 2 / _currentScale),
+                        child: Icon(Icons.warning_amber,
+                            size: 9 / _currentScale,
+                            color: Colors.orange),
+                      ),
+                  ],
+                ),
+                if (city.isNotEmpty)
+                  Text('$city市',
+                      style: TextStyle(
+                          fontSize: fs2,
+                          color: Colors.black54,
+                          height: 1.3)),
+                if (arr != null || dep != null)
+                  Text(
+                    '${arr ?? ""} - ${dep ?? ""}',
+                    style: TextStyle(
+                        fontSize: fs2,
+                        color: Colors.black54,
+                        height: 1.3),
                   ),
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  '请联系技术支持。',
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
-                ),
               ],
             ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('确定'),
-            ),
-          ],
-        );
-      },
+        ),
+      ));
+    }
+    return labels;
+  }
+
+  Offset _pickLabelPos(
+      double px, double py, double lw, double lh, double mg, double cw, double ch) {
+    final candidates = [
+      Offset(px + mg, py - lh / 2),       // 右
+      Offset(px - lw - mg, py - lh / 2),  // 左
+      Offset(px - lw / 2, py - lh - mg),  // 上
+      Offset(px - lw / 2, py + mg),        // 下
+    ];
+    for (final p in candidates) {
+      if (p.dx >= 0 && p.dx + lw <= cw && p.dy >= 0 && p.dy + lh <= ch) {
+        return p;
+      }
+    }
+    return Offset(
+      (px + mg).clamp(0.0, cw - lw),
+      (py - lh / 2).clamp(0.0, ch - lh),
     );
   }
 
-  List<Map<String, dynamic>> _calculatePositionsUsingFullRouteRange(
+  // ==================== 坐标计算 ====================
+
+  /// 以 [refStations] 的经纬度范围为基准，把 [targetStations] 的经纬度映射到 [0,1] 坐标。
+  List<Map<String, dynamic>> _calcPositions(
     List<Map<String, dynamic>> targetStations,
-    List<Map<String, dynamic>> fullRouteStations,
+    List<Map<String, dynamic>> refStations,
   ) {
     if (targetStations.isEmpty) return [];
 
-    // 使用完整路线的有效站点来计算坐标范围
-    final validFullStations = fullRouteStations
-        .where((s) => s['hasLocation'] == true)
+    final valid = refStations
+        .where((s) =>
+            s['hasLocation'] == true &&
+            ((s['longitude'] as num).toDouble() != 0 ||
+                (s['latitude'] as num).toDouble() != 0))
         .toList();
 
-    if (validFullStations.isEmpty) {
-      return _calculateEvenPositions(targetStations);
+    if (valid.isEmpty) return _evenPositions(targetStations);
+
+    double minLng = double.infinity, maxLng = -double.infinity;
+    double minLat = double.infinity, maxLat = -double.infinity;
+    for (final s in valid) {
+      final lng = (s['longitude'] as num).toDouble();
+      final lat = (s['latitude'] as num).toDouble();
+      minLng = min(minLng, lng);
+      maxLng = max(maxLng, lng);
+      minLat = min(minLat, lat);
+      maxLat = max(maxLat, lat);
     }
 
-    // 计算完整路线的坐标范围
-    double minLng = double.infinity;
-    double maxLng = -double.infinity;
-    double minLat = double.infinity;
-    double maxLat = -double.infinity;
+    final lngR = maxLng - minLng;
+    final latR = maxLat - minLat;
+    if (lngR == 0 || latR == 0) return _evenPositions(targetStations);
 
-    for (final station in validFullStations) {
-      final lng = station['longitude'] as double;
-      final lat = station['latitude'] as double;
-
-      if (lng < minLng) minLng = lng;
-      if (lng > maxLng) maxLng = lng;
-      if (lat < minLat) minLat = lat;
-      if (lat > maxLat) maxLat = lat;
-    }
-
-    final lngRange = maxLng - minLng;
-    final latRange = maxLat - minLat;
-
-    final targetAspectRatio = 1.8;
-    final currentAspectRatio = lngRange / latRange;
-    double adjustedLngRange = lngRange;
-    double adjustedLatRange = latRange;
-
-    if (currentAspectRatio > targetAspectRatio) {
-      adjustedLatRange = lngRange / targetAspectRatio;
+    const ar = 1.8;
+    double adjLng = lngR, adjLat = latR;
+    if (lngR / latR > ar) {
+      adjLat = lngR / ar;
     } else {
-      adjustedLngRange = latRange * targetAspectRatio;
+      adjLng = latR * ar;
     }
+    final lcx = (minLng + maxLng) / 2;
+    final lcy = (minLat + maxLat) / 2;
+    final fMinLng = lcx - adjLng * 0.6;
+    final fMaxLng = lcx + adjLng * 0.6;
+    final fMinLat = lcy - adjLat * 0.6;
+    final fMaxLat = lcy + adjLat * 0.6;
+    final fLngR = fMaxLng - fMinLng;
+    final fLatR = fMaxLat - fMinLat;
 
-    final lngCenter = (minLng + maxLng) / 2;
-    final latCenter = (minLat + maxLat) / 2;
-
-    final adjustedMinLng = lngCenter - adjustedLngRange / 2;
-    final adjustedMaxLng = lngCenter + adjustedLngRange / 2;
-    final adjustedMinLat = latCenter - adjustedLatRange / 2;
-    final adjustedMaxLat = latCenter + adjustedLatRange / 2;
-
-    final lngMargin = adjustedLngRange * 0.1;
-    final latMargin = adjustedLatRange * 0.1;
-
-    final finalMinLng = adjustedMinLng - lngMargin;
-    final finalMaxLng = adjustedMaxLng + lngMargin;
-    final finalMinLat = adjustedMinLat - latMargin;
-    final finalMaxLat = adjustedMaxLat + latMargin;
-
-    final finalLngRange = finalMaxLng - finalMinLng;
-    final finalLatRange = finalMaxLat - finalMinLat;
-
-    final List<Map<String, dynamic>> positionedStations = [];
-    for (int i = 0; i < targetStations.length; i++) {
-      final station = targetStations[i];
-      double x = 0.5;
-      double y = 0.5;
-
-      if (station['hasLocation'] == true) {
-        final lng = station['longitude'] as double;
-        final lat = station['latitude'] as double;
-
-        if (finalLngRange > 0) {
-          x = (lng - finalMinLng) / finalLngRange;
+    return List.generate(targetStations.length, (i) {
+      final st = targetStations[i];
+      double x = 0.5, y = 0.5;
+      if (st['hasLocation'] == true) {
+        final lng = (st['longitude'] as num).toDouble();
+        final lat = (st['latitude'] as num).toDouble();
+        if (lng != 0 || lat != 0) {
+          x = ((lng - fMinLng) / fLngR).clamp(0.0, 1.0);
+          y = (1.0 - (lat - fMinLat) / fLatR).clamp(0.0, 1.0);
         }
-        if (finalLatRange > 0) {
-          y = 1.0 - (lat - finalMinLat) / finalLatRange;
-        }
-
-        x = x.clamp(0.0, 1.0);
-        y = y.clamp(0.0, 1.0);
-      } else {
-        x = 0.5;
-        y = i / (targetStations.length - 1);
       }
-
-      positionedStations.add({
-        ...station,
-        'relativeX': x,
-        'relativeY': y,
-        'index': i,
-      });
-    }
-
-    return positionedStations;
+      return {...st, 'relativeX': x, 'relativeY': y, 'index': i};
+    });
   }
 
+  List<Map<String, dynamic>> _evenPositions(
+      List<Map<String, dynamic>> stations) {
+    final n = stations.length;
+    return stations.asMap().entries.map((e) => {
+          ...e.value,
+          'relativeX': n > 1 ? 0.1 + 0.8 * (e.key / (n - 1)) : 0.5,
+          'relativeY': 0.5,
+          'index': e.key,
+          'hasLocation': true,
+        }).toList();
+  }
+
+  // ==================== API / 数据处理 ====================
+
+  /// 从 API 全量结果中筛选停车站，并注入 journey 的时间信息。
   List<Map<String, dynamic>> _filterApiStations(
     List<Map<String, dynamic>> apiStations,
     List<StationDetail> journeyStations,
   ) {
-    final journeyStationNames = journeyStations.map((station) {
-      return station.stationName.replaceAll('站', '').trim();
-    }).toList();
+    final journeyNames = journeyStations
+        .map((s) => s.stationName.replaceAll('站', '').trim())
+        .toList();
 
-    final filtered = apiStations.where((apiStation) {
-      final apiStationName =
-          (apiStation['stationName'] as String?)?.replaceAll('站', '').trim() ??
-          '';
-      final isInJourney = journeyStationNames.contains(apiStationName);
-
-      return isInJourney;
+    final filtered = apiStations.where((api) {
+      final name =
+          (api['stationName'] as String?)?.replaceAll('站', '').trim() ?? '';
+      return journeyNames.contains(name);
     }).toList();
 
     filtered.sort((a, b) {
-      final aName =
+      final na =
           (a['stationName'] as String?)?.replaceAll('站', '').trim() ?? '';
-      final bName =
+      final nb =
           (b['stationName'] as String?)?.replaceAll('站', '').trim() ?? '';
-
-      final aIndex = journeyStationNames.indexOf(aName);
-      final bIndex = journeyStationNames.indexOf(bName);
-
-      return aIndex.compareTo(bIndex);
+      return journeyNames.indexOf(na).compareTo(journeyNames.indexOf(nb));
     });
 
-    return filtered;
+    return filtered.map((s) {
+      final name =
+          (s['stationName'] as String?)?.replaceAll('站', '').trim() ?? '';
+      final idx = journeyNames.indexOf(name);
+      final js = idx >= 0 ? journeyStations[idx] : null;
+      return {
+        ...s,
+        'isViaStation': false, // 筛出的都是停车站
+        'arrivalTime': js?.arrivalTime ?? s['arrivalTime'],
+        'departureTime': js?.departureTime ?? s['departureTime'],
+      };
+    }).toList();
   }
 
   Future<bool> _getSetting(String key) async {
@@ -421,314 +718,104 @@ class _LineMapContentState extends State<LineMapContent> {
   }
 
   Future<List<Map<String, dynamic>>> _fetchStationsFromApi(
-    String trainNumber,
-  ) async {
+      String trainNumber) async {
     try {
-      bool real = await _getSetting('show_real_train_map');
+      final bool real = await _getSetting('show_real_train_map');
+      if (!real) return _createFallbackStationData();
       final url = Uri.parse(
-        real
-            ? 'https://rail.moefactory.com/api/trainDetails/queryTrainRoutes'
-            : '',
-      );
-
-      final response = await http.post(url, body: {"trainNumber": trainNumber});
-
+          'https://rail.moefactory.com/api/trainDetails/queryTrainRoutes');
+      final response =
+          await http.post(url, body: {'trainNumber': trainNumber});
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-
         if (data['code'] == 200 && data['data'] != null) {
           return List<Map<String, dynamic>>.from(data['data']);
-        } else {
-          return _createFallbackStationData();
         }
-      } else {
-        return _createFallbackStationData();
       }
-    } catch (e) {
-      return _createFallbackStationData();
-    }
+    } catch (_) {}
+    return _createFallbackStationData();
   }
 
   List<Map<String, dynamic>> _createFallbackStationData() {
-    final List<Map<String, dynamic>> fallbackStations = [];
-
-    for (int i = 0; i < widget.journey.stations.length; i++) {
-      final station = widget.journey.stations[i];
-
-      fallbackStations.add({
-        'stationName': station.stationName,
+    return List.generate(widget.journey.stations.length, (i) {
+      final s = widget.journey.stations[i];
+      return {
+        'stationName': s.stationName,
         'railwayLineName': widget.journey.trainCode,
-        'isViaStation': true,
-        'arrivalTime': station.arrivalTime,
-        'departureTime': station.departureTime,
+        'isViaStation': false,
+        'arrivalTime': s.arrivalTime,
+        'departureTime': s.departureTime,
         'stationSequence': i + 1,
-      });
-    }
-
-    return fallbackStations;
+      };
+    });
   }
 
   Future<List<Map<String, dynamic>>> _matchStationsWithLocalData(
-    List<Map<String, dynamic>> apiStations,
-  ) async {
+      List<Map<String, dynamic>> apiStations) async {
     try {
-      final jsonString = await rootBundle.loadString('assets/stations.json');
-      final List<dynamic> allStations = json.decode(jsonString);
+      final jsonStr = await rootBundle.loadString('assets/stations.json');
+      final List<dynamic> all = json.decode(jsonStr);
 
-      final List<Map<String, dynamic>> matchedStations = [];
+      return apiStations.map((api) {
+        final clean =
+            (api['stationName'] as String? ?? '').replaceAll('站', '').trim();
+        final matched = all.cast<Map<String, dynamic>>().firstWhere(
+              (s) =>
+                  (s['name'] as String? ?? '').replaceAll('站', '').trim() ==
+                  clean,
+              orElse: () => <String, dynamic>{},
+            );
 
-      for (final apiStation in apiStations) {
-        final stationName = apiStation['stationName']?.toString() ?? '未知车站';
-        final cleanName = stationName.replaceAll('站', '').trim();
-
-        dynamic matched;
-        try {
-          matched = allStations.firstWhere((station) {
-            final jsonName = station['name']?.toString() ?? '';
-            final cleanJsonName = jsonName.replaceAll('站', '').trim();
-            return cleanJsonName == cleanName;
-          }, orElse: () => null);
-        } catch (e) {
-          matched = null;
-        }
-
-        if (matched != null) {
-          final location = matched['location']?.toString() ?? '';
-          final coords = location.split(',');
-          double longitude = 0;
-          double latitude = 0;
-
-          if (coords.length == 2) {
-            longitude = double.tryParse(coords[0]) ?? 0;
-            latitude = double.tryParse(coords[1]) ?? 0;
-          }
-
-          matchedStations.add({
-            'name': stationName,
-            'location': location,
+        if (matched.isNotEmpty) {
+          final loc = matched['location']?.toString() ?? '';
+          final coords = loc.split(',');
+          final lng = coords.length == 2
+              ? (double.tryParse(coords[0]) ?? 0.0)
+              : 0.0;
+          final lat = coords.length == 2
+              ? (double.tryParse(coords[1]) ?? 0.0)
+              : 0.0;
+          return {
+            ...api,
+            'name': api['stationName'],
+            'location': loc,
             'city': matched['city'] ?? '',
             'telecode': matched['telecode'] ?? '',
-            'longitude': longitude,
-            'latitude': latitude,
-            'hasLocation': location.isNotEmpty && coords.length == 2,
-            // 保留API数据
-            'railwayLineName': apiStation['railwayLineName'] ?? '未知走向',
-            'distance': apiStation['distance'] ?? 0,
-            'isViaStation': apiStation['isViaStation'] ?? true,
-            'arrivalTime': apiStation['arrivalTime'],
-            'departureTime': apiStation['departureTime'],
-          });
+            'longitude': lng,
+            'latitude': lat,
+            'hasLocation':
+                loc.isNotEmpty && coords.length == 2 && (lng != 0 || lat != 0),
+          };
         } else {
-          matchedStations.add({
-            'name': stationName,
+          return {
+            ...api,
+            'name': api['stationName'],
             'location': null,
             'city': '',
             'telecode': '',
-            'longitude': 0,
-            'latitude': 0,
+            'longitude': 0.0,
+            'latitude': 0.0,
             'hasLocation': false,
-            // 保留API数据
-            'railwayLineName': apiStation['railwayLineName'] ?? '未知走向',
-            'distance': apiStation['distance'] ?? 0,
-            'isViaStation': apiStation['isViaStation'] ?? true,
-            'arrivalTime': apiStation['arrivalTime'],
-            'departureTime': apiStation['departureTime'],
-          });
+          };
         }
-      }
-
-      return matchedStations;
-    } catch (e) {
-      // 如果匹配失败，返回原始数据（无坐标）
+      }).toList();
+    } catch (_) {
       return apiStations
-          .map(
-            (station) => {
-              ...station,
-              'name': station['stationName'] ?? '未知车站',
-              'location': null,
-              'city': '',
-              'telecode': '',
-              'longitude': 0,
-              'latitude': 0,
-              'hasLocation': false,
-            },
-          )
+          .map((s) => {...s, 'hasLocation': false, 'longitude': 0.0, 'latitude': 0.0})
           .toList();
     }
   }
 
-  // 计算相对位置
-  List<Map<String, dynamic>> _calculateRelativePositions(
-    List<Map<String, dynamic>> stations,
-  ) {
-    if (stations.isEmpty) return [];
-    final validStations = stations
-        .where((s) => s['hasLocation'] == true)
-        .toList();
+  // ==================== UI ====================
 
-    if (validStations.isEmpty) {
-      return _calculateEvenPositions(stations);
-    }
-
-    double minLng = double.infinity;
-    double maxLng = -double.infinity;
-    double minLat = double.infinity;
-    double maxLat = -double.infinity;
-
-    for (final station in validStations) {
-      final lng = station['longitude'] as double;
-      final lat = station['latitude'] as double;
-
-      if (lng < minLng) minLng = lng;
-      if (lng > maxLng) maxLng = lng;
-      if (lat < minLat) minLat = lat;
-      if (lat > maxLat) maxLat = lat;
-    }
-
-    final lngRange = maxLng - minLng;
-    final latRange = maxLat - minLat;
-
-    final targetAspectRatio = 1.8;
-    final currentAspectRatio = lngRange / latRange;
-    double adjustedLngRange = lngRange;
-    double adjustedLatRange = latRange;
-
-    if (currentAspectRatio > targetAspectRatio) {
-      adjustedLatRange = lngRange / targetAspectRatio;
-    } else {
-      adjustedLngRange = latRange * targetAspectRatio;
-    }
-
-    final lngCenter = (minLng + maxLng) / 2;
-    final latCenter = (minLat + maxLat) / 2;
-
-    final adjustedMinLng = lngCenter - adjustedLngRange / 2;
-    final adjustedMaxLng = lngCenter + adjustedLngRange / 2;
-    final adjustedMinLat = latCenter - adjustedLatRange / 2;
-    final adjustedMaxLat = latCenter + adjustedLatRange / 2;
-
-    final lngMargin = adjustedLngRange * 0.1;
-    final latMargin = adjustedLatRange * 0.1;
-
-    final finalMinLng = adjustedMinLng - lngMargin;
-    final finalMaxLng = adjustedMaxLng + lngMargin;
-    final finalMinLat = adjustedMinLat - latMargin;
-    final finalMaxLat = adjustedMaxLat + latMargin;
-
-    final finalLngRange = finalMaxLng - finalMinLng;
-    final finalLatRange = finalMaxLat - finalMinLat;
-
-    final List<Map<String, dynamic>> positionedStations = [];
-    for (int i = 0; i < stations.length; i++) {
-      final station = stations[i];
-      double x = 0.5;
-      double y = 0.5;
-
-      if (station['hasLocation'] == true) {
-        final lng = station['longitude'] as double;
-        final lat = station['latitude'] as double;
-
-        if (finalLngRange > 0) {
-          x = (lng - finalMinLng) / finalLngRange;
-        }
-        if (finalLatRange > 0) {
-          y = 1.0 - (lat - finalMinLat) / finalLatRange;
-        }
-
-        x = x.clamp(0.0, 1.0);
-        y = y.clamp(0.0, 1.0);
-      } else {
-        x = 0.5;
-        y = i / (stations.length - 1);
-      }
-
-      positionedStations.add({
-        ...station,
-        'relativeX': x,
-        'relativeY': y,
-        'index': i,
-      });
-    }
-
-    return positionedStations;
-  }
-
-  // 均匀分布计算
-  List<Map<String, dynamic>> _calculateEvenPositions(
-    List<Map<String, dynamic>> stations,
-  ) {
-    return stations.asMap().entries.map((entry) {
-      final i = entry.key;
-      final station = entry.value;
-
-      return {
-        ...station,
-        'relativeX': 0.1 + 0.8 * (i / (stations.length - 1)),
-        'relativeY': 0.5,
-        'index': i,
-      };
-    }).toList();
-  }
-
-  // 处理空白处点击
   void _handleBackgroundTap() {
     setState(() {
-      // 隐藏所有标签
       _stationLabelsVisible.clear();
       _selectedStationIndex = null;
     });
   }
 
-  // 自动管理标签显示
-  void _autoManageLabels(
-    int clickedIndex,
-    double containerWidth,
-    double containerHeight,
-  ) {
-    setState(() {
-      // 如果点击的是当前已选中的站点，则隐藏标签
-      if (_selectedStationIndex == clickedIndex) {
-        _stationLabelsVisible.clear();
-        _selectedStationIndex = null;
-      } else {
-        // 隐藏所有标签
-        _stationLabelsVisible.clear();
-
-        // 显示点击的站点标签
-        _stationLabelsVisible[clickedIndex] = true;
-        _selectedStationIndex = clickedIndex;
-
-        // 检查附近站点，如果距离过近也显示
-        for (int i = 0; i < _filteredStations.length; i++) {
-          if (i != clickedIndex &&
-              _isTooClose(i, clickedIndex, containerWidth, containerHeight)) {
-            _stationLabelsVisible[i] = true;
-          }
-        }
-      }
-    });
-  }
-
-  // 检查两个站点是否距离过近
-  bool _isTooClose(
-    int index1,
-    int index2,
-    double containerWidth,
-    double containerHeight,
-  ) {
-    final station1 = _filteredStations[index1];
-    final station2 = _filteredStations[index2];
-
-    final x1 = (station1['relativeX'] as double) * containerWidth;
-    final y1 = (station1['relativeY'] as double) * containerHeight;
-    final x2 = (station2['relativeX'] as double) * containerWidth;
-    final y2 = (station2['relativeY'] as double) * containerHeight;
-
-    final distance = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
-
-    // 根据标签大小调整距离阈值
-    return distance < 10;
-  }
+  double _getRotationAngle(Matrix4 m) => atan2(m.storage[1], m.storage[0]);
 
   @override
   Widget build(BuildContext context) {
@@ -755,9 +842,7 @@ class _LineMapContentState extends State<LineMapContent> {
             Text('加载失败: $_errorMessage'),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: _loadRouteMapData,
-              child: const Text('重试'),
-            ),
+                onPressed: _loadRouteMapData, child: const Text('重试')),
           ],
         ),
       );
@@ -770,10 +855,8 @@ class _LineMapContentState extends State<LineMapContent> {
             child: AspectRatio(
               aspectRatio: 1.0,
               child: Container(
-                constraints: const BoxConstraints(
-                  maxWidth: 400,
-                  maxHeight: 400,
-                ),
+                constraints:
+                    const BoxConstraints(maxWidth: 440, maxHeight: 440),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(12),
@@ -785,38 +868,60 @@ class _LineMapContentState extends State<LineMapContent> {
                     ),
                   ],
                 ),
-                child: GestureDetector(
-                  onTap: _handleBackgroundTap,
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      final size = constraints.biggest.shortestSide;
-                      final squareSize = Size(size, size);
-
-                      return Stack(
-                        children: [
-                          // 透明背景层捕获点击事件
-                          Container(
-                            width: squareSize.width,
-                            height: squareSize.height,
-                            color: Colors.transparent,
-                          ),
-
-                          // 绘制完整路线连线（背景）
-                          CustomPaint(
-                            size: squareSize,
-                            painter: _FullRouteLinePainter(_fullRouteStations),
-                          ),
-                          ..._buildStationMarkers(
-                            squareSize.width,
-                            squareSize.height,
-                          ),
-                          ..._buildStationLabels(
-                            squareSize.width,
-                            squareSize.height,
-                          ),
-                        ],
-                      );
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: InteractiveViewer(
+                    transformationController: _transformationController,
+                    minScale: 0.8,
+                    maxScale: 6.0,
+                    boundaryMargin: const EdgeInsets.all(80),
+                    panEnabled: true,
+                    scaleEnabled: true,
+                    onInteractionUpdate: (_) {
+                      final matrix = _transformationController.value;
+                      final scale = matrix.getMaxScaleOnAxis();
+                      // 锁定旋转
+                      if (_getRotationAngle(matrix).abs() > 0.001) {
+                        _transformationController.value = Matrix4.identity()
+                          ..translate(matrix.getTranslation().x,
+                              matrix.getTranslation().y)
+                          ..scale(scale);
+                      }
+                      setState(() {
+                        _currentScale = _transformationController.value
+                            .getMaxScaleOnAxis();
+                      });
                     },
+                    child: LayoutBuilder(builder: (ctx, constraints) {
+                      final side = constraints.biggest.shortestSide;
+                      final sz = Size(side, side);
+                      final statuses = _computeStationStatuses();
+                      return Stack(children: [
+                        GestureDetector(
+                          onTap: _handleBackgroundTap,
+                          child: Container(
+                              width: sz.width,
+                              height: sz.height,
+                              color: Colors.transparent),
+                        ),
+                        // 全路线底线
+                        CustomPaint(
+                          size: sz,
+                          painter: _FullRouteLinePainter(_fullRouteStations),
+                        ),
+                        // 彩色分段覆盖
+                        CustomPaint(
+                          size: sz,
+                          painter: _SegmentedLinePainter(
+                            filteredStations: _filteredStations,
+                            fullRouteStations: _fullRouteStations,
+                            statuses: statuses,
+                          ),
+                        ),
+                        ..._buildStationMarkers(sz.width, sz.height),
+                        ..._buildStationLabels(sz.width, sz.height),
+                      ]);
+                    }),
                   ),
                 ),
               ),
@@ -826,249 +931,127 @@ class _LineMapContentState extends State<LineMapContent> {
       ],
     );
   }
-
-  List<Widget> _buildStationMarkers(
-    double containerWidth,
-    double containerHeight,
-  ) {
-    return _filteredStations.map((station) {
-      final x = station['relativeX'] as double;
-      final y = station['relativeY'] as double;
-      final index = station['index'] as int;
-      final isViaStation = station['isViaStation'] as bool? ?? true;
-
-      final pixelX = x * containerWidth;
-      final pixelY = y * containerHeight;
-
-      return Positioned(
-        left: pixelX - 8,
-        top: pixelY - 8,
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () =>
-              _autoManageLabels(index, containerWidth, containerHeight),
-          child: Container(
-            width: 16,
-            height: 16,
-            decoration: BoxDecoration(
-              color: isViaStation ? Colors.blue : Colors.grey,
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.white, width: 2),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withAlpha(77),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Center(
-              child: Text(
-                '${index + 1}',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 8,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-    }).toList();
-  }
-
-  List<Widget> _buildStationLabels(
-    double containerWidth,
-    double containerHeight,
-  ) {
-    return _filteredStations.map((station) {
-      final x = station['relativeX'] as double;
-      final y = station['relativeY'] as double;
-      final index = station['index'] as int;
-      final name = station['name'] as String;
-      final hasLocation = station['hasLocation'] as bool? ?? false;
-      final city = station['city'] as String;
-      final arrivalTime = station['arrivalTime'];
-      final departureTime = station['departureTime'];
-      final isViaStation = station['isViaStation'] as bool? ?? true;
-
-      // 只显示被选中的标签或距离过近的标签
-      final isVisible = _stationLabelsVisible[index] ?? false;
-      if (!isVisible) {
-        return const SizedBox.shrink();
-      }
-
-      final pixelX = x * containerWidth;
-      final pixelY = y * containerHeight;
-
-      // 智能计算标签位置
-      final labelPosition = _calculateLabelPosition(
-        index,
-        pixelX,
-        pixelY,
-        containerWidth,
-        containerHeight,
-      );
-
-      return Positioned(
-        left: labelPosition.dx,
-        top: labelPosition.dy,
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () {
-            _autoManageLabels(index, containerWidth, containerHeight);
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: Colors.white.withAlpha(100),
-              borderRadius: BorderRadius.circular(6),
-              border: Border.all(color: Colors.grey.shade300),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withAlpha(51),
-                  blurRadius: 6,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      '$name站',
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    if (!hasLocation) ...[
-                      const SizedBox(width: 4),
-                      const Icon(
-                        Icons.warning_amber,
-                        size: 8,
-                        color: Colors.orange,
-                      ),
-                    ],
-                  ],
-                ),
-                if (city.isNotEmpty) ...[
-                  const SizedBox(height: 2),
-                  Text(
-                    '$city市',
-                    style: const TextStyle(fontSize: 8, color: Colors.black),
-                  ),
-                ],
-                if (arrivalTime != null || departureTime != null) ...[
-                  const SizedBox(height: 2),
-                  Text(
-                    '${arrivalTime ?? ''} - ${departureTime ?? ''}',
-                    style: const TextStyle(fontSize: 8, color: Colors.black),
-                  ),
-                ],
-                if (!isViaStation) ...[
-                  const SizedBox(height: 2),
-                  const Text(
-                    '经停站',
-                    style: TextStyle(fontSize: 8, color: Colors.grey),
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ),
-      );
-    }).toList();
-  }
-
-  // 计算标签位置
-  Offset _calculateLabelPosition(
-    int index,
-    double pixelX,
-    double pixelY,
-    double containerWidth,
-    double containerHeight,
-  ) {
-    const labelWidth = 80.0;
-    const labelHeight = 40.0;
-    const margin = 8.0;
-
-    // 定义位置优先级：右 > 左 > 上 > 下
-    final List<Offset> positions = [
-      // 右侧
-      Offset(pixelX + margin, pixelY - labelHeight / 2),
-      // 左侧
-      Offset(pixelX - labelWidth - margin, pixelY - labelHeight / 2),
-      // 上方
-      Offset(pixelX - labelWidth / 2, pixelY - labelHeight - margin),
-      // 下方
-      Offset(pixelX - labelWidth / 2, pixelY + margin),
-    ];
-
-    // 按优先级检查位置是否合适
-    for (final position in positions) {
-      if (position.dx >= 0 &&
-          position.dx + labelWidth <= containerWidth &&
-          position.dy >= 0 &&
-          position.dy + labelHeight <= containerHeight) {
-        return position;
-      }
-    }
-
-    // 如果所有位置都不合适，强制显示在右侧，但调整到边界内
-    double x = pixelX + margin;
-    double y = pixelY - labelHeight / 2;
-
-    // 确保在边界内
-    x = x.clamp(margin, containerWidth - labelWidth - margin);
-    y = y.clamp(margin, containerHeight - labelHeight - margin);
-
-    return Offset(x, y);
-  }
 }
 
-// 完整路线连线绘制器（蓝色线条）
+// ============================================================
+// Painter：全路线底线（蓝色，经过所有站含途径站）
+// ============================================================
 class _FullRouteLinePainter extends CustomPainter {
   final List<Map<String, dynamic>> stations;
-
-  _FullRouteLinePainter(this.stations);
+  const _FullRouteLinePainter(this.stations);
 
   @override
   void paint(Canvas canvas, Size size) {
-    final validStations = stations
-        .where((s) => s['hasLocation'] == true)
-        .toList();
-    if (validStations.length < 2) return;
+    final valid =
+        stations.where((s) => s['hasLocation'] == true).toList();
+    if (valid.length < 2) return;
 
     final paint = Paint()
-      ..color = Colors.blue.shade600
-      ..strokeWidth = 2
+      ..color = Colors.blue.shade300
+      ..strokeWidth = 2.5
       ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
 
     final path = Path();
-
-    final firstStation = validStations.first;
-    final startX = (firstStation['relativeX'] as double) * size.width;
-    final startY = (firstStation['relativeY'] as double) * size.height;
-    path.moveTo(startX, startY);
-
-    for (int i = 1; i < validStations.length; i++) {
-      final station = validStations[i];
-      final x = (station['relativeX'] as double) * size.width;
-      final y = (station['relativeY'] as double) * size.height;
-      path.lineTo(x, y);
+    path.moveTo((valid.first['relativeX'] as double) * size.width,
+        (valid.first['relativeY'] as double) * size.height);
+    for (int i = 1; i < valid.length; i++) {
+      path.lineTo((valid[i]['relativeX'] as double) * size.width,
+          (valid[i]['relativeY'] as double) * size.height);
     }
-
     canvas.drawPath(path, paint);
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _FullRouteLinePainter old) =>
+      old.stations != stations;
+}
+
+// ============================================================
+// Painter：按时间状态分段着色（沿全路线子路径，不直连停车站）
+// ============================================================
+class _SegmentedLinePainter extends CustomPainter {
+  final List<Map<String, dynamic>> filteredStations;
+  final List<Map<String, dynamic>> fullRouteStations;
+  final List<String> statuses;
+
+  const _SegmentedLinePainter({
+    required this.filteredStations,
+    required this.fullRouteStations,
+    required this.statuses,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (filteredStations.length < 2) return;
+
+    final fullValid =
+        fullRouteStations.where((s) => s['hasLocation'] == true).toList();
+    if (fullValid.length < 2) return;
+
+    // 建立站名→索引映射
+    final Map<String, int> idx = {};
+    for (int i = 0; i < fullValid.length; i++) {
+      final name =
+          ((fullValid[i]['name'] ?? fullValid[i]['stationName']) as String? ??
+              '');
+      if (name.isNotEmpty) idx[name] = i;
+    }
+
+    for (int fi = 1; fi < filteredStations.length; fi++) {
+      final from = filteredStations[fi - 1];
+      final to = filteredStations[fi];
+      final fs = fi - 1 < statuses.length ? statuses[fi - 1] : 'future';
+      final ts = fi < statuses.length ? statuses[fi] : 'future';
+
+      final Color color = switch (ts) {
+        'past' => Colors.orange,
+        'current' => Colors.green,
+        _ => throw UnimplementedError(),
+      };
+
+      final fromName =
+          ((from['name'] ?? from['stationName']) as String? ?? '');
+      final toName = ((to['name'] ?? to['stationName']) as String? ?? '');
+      final fi0 = idx[fromName];
+      final ti0 = idx[toName];
+
+      final paint = Paint()
+        ..color = color
+        ..strokeWidth = 3.0
+        ..style = PaintingStyle.stroke
+        ..strokeCap = StrokeCap.round
+        ..strokeJoin = StrokeJoin.round;
+
+      if (fi0 != null && ti0 != null && fi0 < ti0) {
+        final path = Path();
+        path.moveTo(
+          (fullValid[fi0]['relativeX'] as double) * size.width,
+          (fullValid[fi0]['relativeY'] as double) * size.height,
+        );
+        for (int k = fi0 + 1; k <= ti0; k++) {
+          path.lineTo(
+            (fullValid[k]['relativeX'] as double) * size.width,
+            (fullValid[k]['relativeY'] as double) * size.height,
+          );
+        }
+        canvas.drawPath(path, paint);
+      } else if (from['hasLocation'] == true && to['hasLocation'] == true) {
+        canvas.drawLine(
+          Offset((from['relativeX'] as double) * size.width,
+              (from['relativeY'] as double) * size.height),
+          Offset((to['relativeX'] as double) * size.width,
+              (to['relativeY'] as double) * size.height),
+          paint,
+        );
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _SegmentedLinePainter old) =>
+      old.statuses != statuses ||
+      old.filteredStations != filteredStations ||
+      old.fullRouteStations != fullRouteStations;
 }
