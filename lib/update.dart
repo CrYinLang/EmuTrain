@@ -88,6 +88,25 @@ class UpdateUI {
       builder: (_) => TrainUpdateResultDialog(versionInfo: versionInfo),
     );
   }
+
+  static Future<void> showCoachTrainUpdateFlow(BuildContext context) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const _CheckingDialog(),
+    );
+
+    final versionInfo = await UpdateService.checkForUpdate();
+
+    if (context.mounted) Navigator.of(context, rootNavigator: true).pop();
+
+    if (!context.mounted) return;
+
+    showDialog(
+      context: context,
+      builder: (_) => CoachTrainUpdateResultDialog(versionInfo: versionInfo),
+    );
+  }
 }
 
 /// ================= 检测中弹窗 =================
@@ -204,7 +223,9 @@ class AppUpdateResultDialog extends StatelessWidget {
                   width: double.infinity,
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: SelectableText(
@@ -344,8 +365,7 @@ class StationUpdateResultDialog extends StatelessWidget {
       resultColor = Colors.red;
       resultIcon = Icons.error;
     } else if (versionInfo != null) {
-      remoteBuild =
-          int.tryParse(versionInfo!['StationBuild'].toString()) ?? 0;
+      remoteBuild = int.tryParse(versionInfo!['StationBuild'].toString()) ?? 0;
 
       if (remoteBuild > currentBuild) {
         hasUpdate = true;
@@ -464,15 +484,11 @@ class StationUpdateResultDialog extends StatelessWidget {
                                   Navigator.pop(context);
 
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('车站数据更新成功！'),
-                                    ),
+                                    const SnackBar(content: Text('车站数据更新成功！')),
                                   );
                                 }
                               } else {
-                                throw Exception(
-                                  '下载失败: ${response.statusCode}',
-                                );
+                                throw Exception('下载失败: ${response.statusCode}');
                               }
                             } catch (e) {
                               if (context.mounted) {
@@ -562,8 +578,7 @@ class TrainUpdateResultDialog extends StatelessWidget {
       resultColor = Colors.red;
       resultIcon = Icons.error;
     } else if (versionInfo != null) {
-      remoteBuild =
-          int.tryParse(versionInfo!['TrainBuild'].toString()) ?? 0;
+      remoteBuild = int.tryParse(versionInfo!['TrainBuild'].toString()) ?? 0;
 
       if (remoteBuild > currentBuild) {
         hasUpdate = true;
@@ -682,15 +697,224 @@ class TrainUpdateResultDialog extends StatelessWidget {
                                   Navigator.pop(context);
 
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('列车数据更新成功！'),
-                                    ),
+                                    const SnackBar(content: Text('列车数据更新成功！')),
                                   );
                                 }
                               } else {
-                                throw Exception(
-                                  '下载失败: ${response.statusCode}',
+                                throw Exception('下载失败: ${response.statusCode}');
+                              }
+                            } catch (e) {
+                              if (context.mounted) {
+                                Navigator.of(
+                                  context,
+                                  rootNavigator: true,
+                                ).pop();
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('更新失败: $e'),
+                                    backgroundColor: Colors.red,
+                                  ),
                                 );
+                              }
+                            }
+                          },
+                          icon: const Icon(Icons.download, size: 20),
+                          label: const Text(
+                            '升级',
+                            style: TextStyle(fontSize: 14),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                          child: const Text(
+                            '关闭',
+                            style: TextStyle(fontSize: 14),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ] else ...[
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                      child: const Text('关闭', style: TextStyle(fontSize: 14)),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CoachTrainUpdateResultDialog extends StatelessWidget {
+  final Map<String, dynamic>? versionInfo;
+
+  const CoachTrainUpdateResultDialog({super.key, required this.versionInfo});
+
+  @override
+  Widget build(BuildContext context) {
+    final currentBuild = int.tryParse(Vars.coachTrainBuild) ?? 0;
+    int remoteBuild = 0;
+
+    bool hasUpdate = false;
+    String resultMessage = '';
+    Color resultColor = Colors.green;
+    IconData resultIcon = Icons.check_circle;
+
+    if (versionInfo != null && versionInfo!.containsKey('error')) {
+      resultMessage = '检查更新失败: ${versionInfo!['error']}';
+      resultColor = Colors.red;
+      resultIcon = Icons.error;
+    } else if (versionInfo != null) {
+      remoteBuild = int.tryParse(versionInfo!['CoachTrainBuild'].toString()) ?? 0;
+
+      if (remoteBuild > currentBuild) {
+        hasUpdate = true;
+        resultColor = Colors.green;
+        resultIcon = Icons.file_copy;
+      }
+    } else {
+      resultMessage = '检查更新失败: 未知错误';
+      resultColor = Colors.red;
+      resultIcon = Icons.error;
+    }
+
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.8,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(resultIcon, size: 50, color: resultColor),
+                const SizedBox(height: 20),
+                Text(
+                  hasUpdate ? '发现数据库新版本' : '已是最新版本',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+
+                if (hasUpdate)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'V$currentBuild',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Icon(
+                        Icons.arrow_forward,
+                        size: 20,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'V$remoteBuild',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                      ),
+                    ],
+                  )
+                else if (resultMessage.isNotEmpty)
+                  Text(
+                    resultMessage,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                  ),
+
+                if (resultMessage.isNotEmpty) const SizedBox(height: 24),
+
+                if (hasUpdate) ...[
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () async {
+                            showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (_) => const _DownloadingDialog(),
+                            );
+
+                            try {
+                              final coachTrainDataUrl =
+                                  'https://gitee.com/CrYinLang/EmuTrain/raw/master/${Vars.coachTrainData}.json';
+
+                              final response = await http.get(
+                                Uri.parse(coachTrainDataUrl),
+                              );
+
+                              if (response.statusCode == 200) {
+                                // 验证 JSON 合法
+                                json.decode(response.body);
+
+                                final directory =
+                                    await getApplicationDocumentsDirectory();
+                                final file = File(
+                                  '${directory.path}/coach.json',
+                                );
+                                await file.writeAsString(response.body);
+
+                                // 只写 SharedPreferences，不再写 trainVer.json
+                                await Vars.setCoachTrainBuild(
+                                  remoteBuild.toString(),
+                                );
+
+                                if (context.mounted) {
+                                  Navigator.of(
+                                    context,
+                                    rootNavigator: true,
+                                  ).pop();
+                                  Navigator.pop(context);
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('列车数据更新成功！')),
+                                  );
+                                }
+                              } else {
+                                throw Exception('下载失败: ${response.statusCode}');
                               }
                             } catch (e) {
                               if (context.mounted) {

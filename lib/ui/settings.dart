@@ -234,6 +234,76 @@ class _SettingsScreenState extends State<SettingsScreen>
     );
   }
 
+  Widget _buildStationDataSourceCard({
+    required AppSettings settings,
+    required TrainStationDataSource source,
+    required String title,
+    required String description,
+    required IconData icon,
+  }) {
+    final isSelected = settings.dataStationSource == source;
+    final primary = Theme.of(context).colorScheme.primary;
+    final onSurface = Theme.of(context).colorScheme.onSurface;
+
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(
+          color: isSelected ? primary : Colors.transparent,
+          width: 2,
+        ),
+      ),
+      child: InkWell(
+        onTap: () {
+          if (!isSelected) settings.setStationDataSource(source);
+        },
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 100),
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                icon,
+                size: 28,
+                color: isSelected ? primary : onSurface.withValues(alpha: 0.7),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                title,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                  color: isSelected ? primary : onSurface,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                description,
+                maxLines: 2,
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 11,
+                  color: isSelected
+                      ? primary.withValues(alpha: 0.8)
+                      : onSurface.withValues(alpha: 0.6),
+                ),
+              ),
+              if (isSelected) ...[
+                const SizedBox(height: 8),
+                Icon(Icons.check_circle_rounded, size: 16, color: primary),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   // ==================== 旅途 Tab ====================
   // 主题设置 + 列车显示 + 应用信息
 
@@ -363,10 +433,17 @@ class _SettingsScreenState extends State<SettingsScreen>
             ),
             const Divider(height: 1),
             _buildTile(
-              title: '配属数据版本',
+              title: '动车组配属数据版本',
               subtitle: 'V${Vars.trainBuild}',
               trailingIcon: Icons.arrow_forward_ios,
               onTap: () => UpdateUI.showTrainUpdateFlow(context),
+            ),
+            const Divider(height: 1),
+            _buildTile(
+              title: '普速客车配属数据版本',
+              subtitle: 'V${Vars.coachTrainBuild}',
+              trailingIcon: Icons.arrow_forward_ios,
+              onTap: () => UpdateUI.showCoachTrainUpdateFlow(context),
             ),
             const Divider(height: 1),
             Tool.buildSwitch(
@@ -416,7 +493,31 @@ class _SettingsScreenState extends State<SettingsScreen>
             ),
           ],
         ),
-
+        IntrinsicHeight(
+          child: Row(
+            children: [
+              Expanded(
+                child: _buildStationDataSourceCard(
+                  settings: settings,
+                  source: TrainStationDataSource.moeFactory,
+                  title: 'MoeFactory',
+                  description: '有里程查看',
+                  icon: Icons.cloud_upload,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildStationDataSourceCard(
+                  settings: settings,
+                  source: TrainStationDataSource.ctrip,
+                  title: '某大厂数据源',
+                  description: '没有里程查看',
+                  icon: Icons.factory,
+                ),
+              ),
+            ],
+          ),
+        ),
         // 数据源设置
         _buildSection(
           icon: Icons.storage,

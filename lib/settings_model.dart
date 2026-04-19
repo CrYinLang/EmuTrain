@@ -4,13 +4,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsModel extends ChangeNotifier {
   static final SettingsModel _instance = SettingsModel._internal();
+
   factory SettingsModel() => _instance;
+
   SettingsModel._internal();
 
   bool _forceLocationManager = false;
   double _pollIntervalSeconds = 1.0;
 
   bool get forceLocationManager => _forceLocationManager;
+
   double get pollIntervalSeconds => _pollIntervalSeconds;
 
   // ✅ 可安全重复调用，每次都从 SharedPreferences 同步最新值

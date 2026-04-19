@@ -1,8 +1,10 @@
 // lib/speed_service.dart
 import 'dart:async';
 import 'dart:io' show Platform;
+
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
+
 import 'settings_model.dart';
 import 'track_record.dart';
 
@@ -22,7 +24,9 @@ class TrackPoint {
 class SpeedService extends ChangeNotifier {
   // ── 单例 ──────────────────────────────────────────────────────
   static final SpeedService _instance = SpeedService._internal();
+
   factory SpeedService() => _instance;
+
   SpeedService._internal();
 
   // ── 状态数据 ──────────────────────────────────────────────────
@@ -140,8 +144,9 @@ class SpeedService extends ChangeNotifier {
     if (!isTracking) return;
 
     // 实时读取间隔
-    final intervalMs =
-        (SettingsModel().pollIntervalSeconds * 1000).round().clamp(100, 5000);
+    final intervalMs = (SettingsModel().pollIntervalSeconds * 1000)
+        .round()
+        .clamp(100, 5000);
 
     _pollTimer?.cancel();
     _pollTimer = Timer(Duration(milliseconds: intervalMs), () async {
@@ -149,8 +154,9 @@ class SpeedService extends ChangeNotifier {
 
       try {
         // 实时读取 timeout（间隔的3倍，最少5秒最多15秒）
-        final timeoutSec =
-            (SettingsModel().pollIntervalSeconds * 3).ceil().clamp(5, 15);
+        final timeoutSec = (SettingsModel().pollIntervalSeconds * 3)
+            .ceil()
+            .clamp(5, 15);
 
         final position = await Geolocator.getCurrentPosition(
           locationSettings: _buildLocationSettings(),
@@ -197,11 +203,13 @@ class SpeedService extends ChangeNotifier {
     if (currentSpeedKmh > maxSpeedKmh) maxSpeedKmh = currentSpeedKmh;
     statusMsg = '正在测速';
 
-    trackPoints.add(TrackPoint(
-      latitude: position.latitude,
-      longitude: position.longitude,
-      speedKmh: currentSpeedKmh,
-    ));
+    trackPoints.add(
+      TrackPoint(
+        latitude: position.latitude,
+        longitude: position.longitude,
+        speedKmh: currentSpeedKmh,
+      ),
+    );
 
     notifyListeners();
   }

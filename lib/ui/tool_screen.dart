@@ -1,11 +1,12 @@
 // tool_screen.dart
 import 'package:flutter/material.dart';
 
+import '../tool.dart';
 import 'about_page.dart';
 import 'gallery_page.dart';
 import 'gps.dart';
+import 'coach_search_page.dart';
 import 'station_screen.dart';
-import '../tool.dart';
 
 class ToolScreen extends StatelessWidget {
   const ToolScreen({super.key});
@@ -29,6 +30,22 @@ class ToolScreen extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => const StationScreen(),
+                    ),
+                  );
+                },
+              ),
+            ),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.train, size: 32),
+                title: const Text('客车查询'),
+                subtitle: const Text('查询普速客车'),
+                trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CoachSearchPage(),
                     ),
                   );
                 },
@@ -115,17 +132,20 @@ class MoreAppsPage extends StatelessWidget {
         child: Column(
           children: [
             ListTile(
-                leading: Image.asset(
+              leading: Image.asset(
                 'assets/icon/llt.png',
-                  width: 32,
-                  height: 32,
-                  fit: BoxFit.contain,
-                ),
-                title: const Text('路路通'),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () {
-                  Tool.launchBrowser(context, 'https://sj.qq.com/appdetail/com.lltskb.lltskb');
-                },
+                width: 32,
+                height: 32,
+                fit: BoxFit.contain,
+              ),
+              title: const Text('路路通'),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                Tool.launchBrowser(
+                  context,
+                  'https://sj.qq.com/appdetail/com.lltskb.lltskb',
+                );
+              },
             ),
             ListTile(
               leading: Image.asset(

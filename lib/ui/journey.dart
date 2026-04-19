@@ -667,7 +667,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
       if (trainNumber.isEmpty) return;
       setState(() => _trainLoading[index] = true);
       try {
-        final stopData = await _fetchStopInfo_sharyou(trainNumber);
+        final stopData = await _fetchStopInfo(trainNumber);
         setState(() {
           _trainDetails[index] = stopData;
           _trainLoading[index] = false;
@@ -679,6 +679,16 @@ class _AddJourneyPageState extends State<AddJourneyPage>
     }
   }
 
+  Future<List<dynamic>> _fetchStopInfo(String trainNumber) async {
+    final settings = Provider.of<AppSettings>(context);
+    switch (settings.dataStationSource) {
+      case TrainStationDataSource.moeFactory:
+        return await _fetchStopInfo_sharyou(trainNumber);
+      default:
+        return await _fetchStopInfo_ctrip(trainNumber);
+    }
+  }
+
   Future<List<dynamic>> _fetchStopInfo_sharyou(String trainNumber) async {
     final baseUrl = 'https://sharyou.moefactory.com/api/trainNumber/query';
 
@@ -686,7 +696,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
       'Content-Type': 'application/x-www-form-urlencoded',
       'Accept': 'application/json, text/plain, */*',
       'User-Agent':
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0',
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0',
     };
 
     try {
@@ -694,14 +704,12 @@ class _AddJourneyPageState extends State<AddJourneyPage>
       /// 第一步：获取 trainIndex
       /// =========================
       print(_formattedDate);
-      final firstBody = 'date=$_formattedDate&trainNumber=$trainNumber&cursor=0&count=15';
+      final firstBody =
+          'date=$_formattedDate&trainNumber=$trainNumber&cursor=0&count=15';
 
       final firstResp = await http
-          .post(
-        Uri.parse(baseUrl),
-        headers: headers,
-        body: firstBody,
-      ).timeout(const Duration(seconds: 10));
+          .post(Uri.parse(baseUrl), headers: headers, body: firstBody)
+          .timeout(const Duration(seconds: 10));
 
       if (firstResp.statusCode != 200) {
         throw Exception('第一步请求失败: ${firstResp.statusCode}');
@@ -725,14 +733,15 @@ class _AddJourneyPageState extends State<AddJourneyPage>
       /// =========================
       /// 第二步：用 trainIndex 查经停站
       /// =========================
-      final secondBody = 'trainIndex=$trainIndex&includeCheckoutNames=true&date=$_formattedDate';
+      final secondBody =
+          'trainIndex=$trainIndex&includeCheckoutNames=true&date=$_formattedDate';
 
       final secondResp = await http
           .post(
-        Uri.parse('https://sharyou.moefactory.com/api/trainDetails/query'),
-        headers: headers,
-        body: secondBody,
-      )
+            Uri.parse('https://sharyou.moefactory.com/api/trainDetails/query'),
+            headers: headers,
+            body: secondBody,
+          )
           .timeout(const Duration(seconds: 10));
 
       if (secondResp.statusCode != 200) {
@@ -745,8 +754,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
         throw Exception('第二步 API 错误: ${secondData['message']}');
       }
 
-      final List<dynamic> viaStations =
-          secondData['data']['viaStations'] ?? [];
+      final List<dynamic> viaStations = secondData['data']['viaStations'] ?? [];
 
       /// =========================
       /// 映射为你原来的结构
@@ -781,7 +789,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'User-Agent':
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
       'Referer': 'https://m.ctrip.com/',
       'Origin': 'https://m.ctrip.com',
     };
@@ -800,20 +808,20 @@ class _AddJourneyPageState extends State<AddJourneyPage>
           return stopList
               .map(
                 (stop) => {
-              'stationNo': stop['StationNo'] ?? '',
-              'stationName': _cleanStationName(stop['StationName']),
-              'arriveTime': stop['ArriveTime'] ?? '--:--',
-              'departTime': stop['DepartTime'] ?? '--:--',
-              'stayTime': stop['StayWayStationTime'] ?? '0',
-              'distance': stop['distance'] ?? '0',
-              'DayDifference': stop['DayDifference'] ?? 0,
-              'telCode': stop['TelCode'] ?? '',
-              'isFirst': stop['StationNo'] == '01',
-              'isLast':
-              stop['StationNo'] ==
-                  stopList.length.toString().padLeft(2, '0'),
-            },
-          )
+                  'stationNo': stop['StationNo'] ?? '',
+                  'stationName': _cleanStationName(stop['StationName']),
+                  'arriveTime': stop['ArriveTime'] ?? '--:--',
+                  'departTime': stop['DepartTime'] ?? '--:--',
+                  'stayTime': stop['StayWayStationTime'] ?? '0',
+                  'distance': stop['distance'] ?? '0',
+                  'DayDifference': stop['DayDifference'] ?? 0,
+                  'telCode': stop['TelCode'] ?? '',
+                  'isFirst': stop['StationNo'] == '01',
+                  'isLast':
+                      stop['StationNo'] ==
+                      stopList.length.toString().padLeft(2, '0'),
+                },
+              )
               .toList();
         } else if (data['RetCode'] != 1) {
           throw Exception(
@@ -2510,7 +2518,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
           final arr = stop['arriveTime']?.toString() ?? '--:--';
           final dep = stop['departTime']?.toString() ?? '--:--';
           final stay = int.tryParse(stop['stayTime']?.toString() ?? '0') ?? 0;
-          final mile = int.tryParse(stop['distance']?.toString() ?? '0') ?? 0;
+          final mile = int.tryParse(stop['distance']?.toString() ?? '-1') ?? -1;
           final first = (stop['isFirst'] as bool?) ?? false;
           final last = (stop['isLast'] as bool?) ?? false;
           final terminal = first || last;
@@ -2788,14 +2796,17 @@ class _AddJourneyPageState extends State<AddJourneyPage>
                                 passed,
                                 first,
                               ),
-                              Text(
-                                '里程:$mile',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w500,
-                                  color: Theme.of(context).colorScheme.onSurface,
+                              if (mile > -1)
+                                Text(
+                                  '里程:$mile',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w500,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface,
+                                  ),
                                 ),
-                              ),
                               const SizedBox(height: 5),
                               if (stay > 0)
                                 Column(

@@ -1,11 +1,13 @@
 // lib/track_record.dart
 import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'speed_service.dart';
 
 /// 一次行程记录
 class TrackRecord {
-  final String id;           // 唯一ID（时间戳字符串）
+  final String id; // 唯一ID（时间戳字符串）
   final DateTime startTime;
   final DateTime endTime;
   final double maxSpeedKmh;
@@ -32,11 +34,7 @@ class TrackRecord {
     'avgSpeedKmh': avgSpeedKmh,
     'totalDistanceM': totalDistanceM,
     'points': points
-        .map((p) => {
-      'lat': p.latitude,
-      'lng': p.longitude,
-      'spd': p.speedKmh,
-    })
+        .map((p) => {'lat': p.latitude, 'lng': p.longitude, 'spd': p.speedKmh})
         .toList(),
   };
 
@@ -48,11 +46,13 @@ class TrackRecord {
     avgSpeedKmh: (json['avgSpeedKmh'] as num).toDouble(),
     totalDistanceM: (json['totalDistanceM'] as num).toDouble(),
     points: (json['points'] as List)
-        .map((e) => TrackPoint(
-      latitude: (e['lat'] as num).toDouble(),
-      longitude: (e['lng'] as num).toDouble(),
-      speedKmh: (e['spd'] as num).toDouble(),
-    ))
+        .map(
+          (e) => TrackPoint(
+            latitude: (e['lat'] as num).toDouble(),
+            longitude: (e['lng'] as num).toDouble(),
+            speedKmh: (e['spd'] as num).toDouble(),
+          ),
+        )
         .toList(),
   );
 

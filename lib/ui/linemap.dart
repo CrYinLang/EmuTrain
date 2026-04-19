@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -83,8 +82,7 @@ class LineMapDialog extends StatelessWidget {
                   ),
                   Text(
                     '全程${journey.getTotalDuration()} • ${journey.stations.length}个站点',
-                    style:
-                        TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                   ),
                 ],
               ),
@@ -99,6 +97,7 @@ class LineMapDialog extends StatelessWidget {
 // ============================================================
 class LineMapContent extends StatefulWidget {
   final Journey journey;
+
   const LineMapContent({super.key, required this.journey});
 
   @override
@@ -198,7 +197,9 @@ class _LineMapContentState extends State<LineMapContent> {
         lastPast = i;
       }
     }
-    if (lastPast >= 0 && lastPast + 1 < n && statuses[lastPast + 1] == 'future') {
+    if (lastPast >= 0 &&
+        lastPast + 1 < n &&
+        statuses[lastPast + 1] == 'future') {
       statuses[lastPast + 1] = 'current';
     }
 
@@ -209,8 +210,9 @@ class _LineMapContentState extends State<LineMapContent> {
 
   Future<void> _loadRouteMapData() async {
     try {
-      final fullFromApi = await _fetchStationsFromApi(widget.journey.trainCode)
-          .timeout(const Duration(seconds: 10));
+      final fullFromApi = await _fetchStationsFromApi(
+        widget.journey.trainCode,
+      ).timeout(const Duration(seconds: 10));
 
       // 停车站：从全量API结果中筛选，注入 journey 时间信息
       final filtered = _filterApiStations(fullFromApi, widget.journey.stations);
@@ -284,8 +286,10 @@ class _LineMapContentState extends State<LineMapContent> {
       final a = _fullRouteStations[i - 1];
       final b = _fullRouteStations[i];
       if (a['hasLocation'] == true && b['hasLocation'] == true) {
-        final dx = ((b['relativeX'] as double) - (a['relativeX'] as double)) * 100;
-        final dy = ((b['relativeY'] as double) - (a['relativeY'] as double)) * 100;
+        final dx =
+            ((b['relativeX'] as double) - (a['relativeX'] as double)) * 100;
+        final dy =
+            ((b['relativeY'] as double) - (a['relativeY'] as double)) * 100;
         if (sqrt(dx * dx + dy * dy) > 30) return true;
       }
     }
@@ -298,8 +302,10 @@ class _LineMapContentState extends State<LineMapContent> {
       final a = _fullRouteStations[i - 1];
       final b = _fullRouteStations[i];
       if (a['hasLocation'] == true && b['hasLocation'] == true) {
-        final dx = ((b['relativeX'] as double) - (a['relativeX'] as double)) * 100;
-        final dy = ((b['relativeY'] as double) - (a['relativeY'] as double)) * 100;
+        final dx =
+            ((b['relativeX'] as double) - (a['relativeX'] as double)) * 100;
+        final dy =
+            ((b['relativeY'] as double) - (a['relativeY'] as double)) * 100;
         final len = sqrt(dx * dx + dy * dy);
         if (len > 30) {
           res.add('${a['name']} → ${b['name']}: ${len.toStringAsFixed(2)}单位');
@@ -314,11 +320,13 @@ class _LineMapContentState extends State<LineMapContent> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Row(children: [
-          Icon(Icons.warning_amber, color: Colors.orange),
-          SizedBox(width: 8),
-          Text('走向图数据异常'),
-        ]),
+        title: const Row(
+          children: [
+            Icon(Icons.warning_amber, color: Colors.orange),
+            SizedBox(width: 8),
+            Text('走向图数据异常'),
+          ],
+        ),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -326,18 +334,25 @@ class _LineMapContentState extends State<LineMapContent> {
             children: [
               const Text('检测到以下异常线段，可能影响显示效果：'),
               const SizedBox(height: 12),
-              ...anomalies.map((a) => Padding(
+              ...anomalies.map(
+                (a) => Padding(
                   padding: const EdgeInsets.symmetric(vertical: 2),
-                  child: Text('• $a'))),
+                  child: Text('• $a'),
+                ),
+              ),
               const SizedBox(height: 16),
-              const Text('请联系技术支持。',
-                  style: TextStyle(fontSize: 12, color: Colors.grey)),
+              const Text(
+                '请联系技术支持。',
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
             ],
           ),
         ),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(ctx), child: const Text('确定'))
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('确定'),
+          ),
         ],
       ),
     );
@@ -364,24 +379,26 @@ class _LineMapContentState extends State<LineMapContent> {
         final double px = rx * cw;
         final double py = ry * ch;
 
-        markers.add(Positioned(
-          left: px - dotSize / 2,
-          top: py - dotSize / 2,
-          child: IgnorePointer(
-            child: Container(
-              width: dotSize,
-              height: dotSize,
-              decoration: BoxDecoration(
-                color: Colors.orange,
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Colors.white,
-                  width: (0.8 / _currentScale).clamp(0.3, 1.2),
+        markers.add(
+          Positioned(
+            left: px - dotSize / 2,
+            top: py - dotSize / 2,
+            child: IgnorePointer(
+              child: Container(
+                width: dotSize,
+                height: dotSize,
+                decoration: BoxDecoration(
+                  color: Colors.orange,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.white,
+                    width: (0.8 / _currentScale).clamp(0.3, 1.2),
+                  ),
                 ),
               ),
             ),
           ),
-        ));
+        );
       }
     }
 
@@ -408,55 +425,57 @@ class _LineMapContentState extends State<LineMapContent> {
         _ => Colors.blue.shade600,
       };
 
-      markers.add(Positioned(
-        left: px - hitSize / 2,
-        top: py - hitSize / 2,
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => _toggleLabel(index),
-          child: SizedBox(
-            width: hitSize,
-            height: hitSize,
-            child: Center(
-              child: Container(
-                width: dotSize,
-                height: dotSize,
-                decoration: BoxDecoration(
-                  color: dotColor,
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.white,
-                    width: (2.0 / _currentScale).clamp(0.5, 2.0),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withAlpha(80),
-                      blurRadius: 3 / _currentScale,
-                      offset: Offset(0, 1 / _currentScale),
-                    ),
-                  ],
-                ),
-                // 序号：仅当视觉圆点够大时渲染（避免溢出）
-                child: Center(
-                  child: Text(
-                    '${index + 1}',
-                    style: TextStyle(
+      markers.add(
+        Positioned(
+          left: px - hitSize / 2,
+          top: py - hitSize / 2,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => _toggleLabel(index),
+            child: SizedBox(
+              width: hitSize,
+              height: hitSize,
+              child: Center(
+                child: Container(
+                  width: dotSize,
+                  height: dotSize,
+                  decoration: BoxDecoration(
+                    color: dotColor,
+                    shape: BoxShape.circle,
+                    border: Border.all(
                       color: Colors.white,
-                      // 字号恒定约5px屏幕像素
-                      fontSize: (5.0 / _currentScale).clamp(2.0, 5.5),
-                      fontWeight: FontWeight.bold,
-                      height: 1.0,
+                      width: (2.0 / _currentScale).clamp(0.5, 2.0),
                     ),
-                    overflow: TextOverflow.clip,
-                    softWrap: false,
-                    textAlign: TextAlign.center,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withAlpha(80),
+                        blurRadius: 3 / _currentScale,
+                        offset: Offset(0, 1 / _currentScale),
+                      ),
+                    ],
+                  ),
+                  // 序号：仅当视觉圆点够大时渲染（避免溢出）
+                  child: Center(
+                    child: Text(
+                      '${index + 1}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        // 字号恒定约5px屏幕像素
+                        fontSize: (5.0 / _currentScale).clamp(2.0, 5.5),
+                        fontWeight: FontWeight.bold,
+                        height: 1.0,
+                      ),
+                      overflow: TextOverflow.clip,
+                      softWrap: false,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
               ),
             ),
           ),
         ),
-      ));
+      );
     }
 
     return markers;
@@ -491,18 +510,17 @@ class _LineMapContentState extends State<LineMapContent> {
       final double py = ry * ch;
 
       // 所有尺寸除以 scale，使标签在屏幕上保持固定视觉大小
-      final double fs1 = 11.0 / _currentScale;  // 站名字号
-      final double fs2 = 9.0 / _currentScale;   // 副文字字号
+      final double fs1 = 11.0 / _currentScale; // 站名字号
+      final double fs2 = 9.0 / _currentScale; // 副文字字号
       final double padH = 8.0 / _currentScale;
       final double padV = 5.0 / _currentScale;
       final double radius = 6.0 / _currentScale;
       final double borderW = 1.0 / _currentScale;
-      final double lw = 96.0 / _currentScale;   // 估算标签宽
-      final double lh = 52.0 / _currentScale;   // 估算标签高
+      final double lw = 96.0 / _currentScale; // 估算标签宽
+      final double lh = 52.0 / _currentScale; // 估算标签高
       final double mg = 8.0 / _currentScale;
 
-      final Offset pos =
-          _pickLabelPos(px, py, lw, lh, mg, cw, ch);
+      final Offset pos = _pickLabelPos(px, py, lw, lh, mg, cw, ch);
 
       final String name = (st['name'] as String?) ?? '';
       final bool hasLoc = st['hasLocation'] as bool? ?? false;
@@ -510,82 +528,95 @@ class _LineMapContentState extends State<LineMapContent> {
       final String? arr = st['arrivalTime'] as String?;
       final String? dep = st['departureTime'] as String?;
 
-      labels.add(Positioned(
-        left: pos.dx,
-        top: pos.dy,
-        child: GestureDetector(
-          onTap: () => _toggleLabel(index),
-          child: Container(
-            padding:
-                EdgeInsets.symmetric(horizontal: padH, vertical: padV),
-            decoration: BoxDecoration(
-              color: Colors.white.withAlpha(242),
-              borderRadius: BorderRadius.circular(radius),
-              border: Border.all(
-                  color: Colors.grey.shade400, width: borderW),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withAlpha(60),
-                  blurRadius: 6 / _currentScale,
-                  offset: Offset(0, 2 / _currentScale),
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      '$name站',
-                      style: TextStyle(
-                        fontSize: fs1,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                        height: 1.2,
+      labels.add(
+        Positioned(
+          left: pos.dx,
+          top: pos.dy,
+          child: GestureDetector(
+            onTap: () => _toggleLabel(index),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
+              decoration: BoxDecoration(
+                color: Colors.white.withAlpha(242),
+                borderRadius: BorderRadius.circular(radius),
+                border: Border.all(color: Colors.grey.shade400, width: borderW),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withAlpha(60),
+                    blurRadius: 6 / _currentScale,
+                    offset: Offset(0, 2 / _currentScale),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        '$name站',
+                        style: TextStyle(
+                          fontSize: fs1,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                          height: 1.2,
+                        ),
                       ),
-                    ),
-                    if (!hasLoc)
-                      Padding(
-                        padding: EdgeInsets.only(left: 2 / _currentScale),
-                        child: Icon(Icons.warning_amber,
+                      if (!hasLoc)
+                        Padding(
+                          padding: EdgeInsets.only(left: 2 / _currentScale),
+                          child: Icon(
+                            Icons.warning_amber,
                             size: 9 / _currentScale,
-                            color: Colors.orange),
-                      ),
-                  ],
-                ),
-                if (city.isNotEmpty)
-                  Text('$city市',
+                            color: Colors.orange,
+                          ),
+                        ),
+                    ],
+                  ),
+                  if (city.isNotEmpty)
+                    Text(
+                      '$city市',
                       style: TextStyle(
-                          fontSize: fs2,
-                          color: Colors.black54,
-                          height: 1.3)),
-                if (arr != null || dep != null)
-                  Text(
-                    '${arr ?? ""} - ${dep ?? ""}',
-                    style: TextStyle(
                         fontSize: fs2,
                         color: Colors.black54,
-                        height: 1.3),
-                  ),
-              ],
+                        height: 1.3,
+                      ),
+                    ),
+                  if (arr != null || dep != null)
+                    Text(
+                      '${arr ?? ""} - ${dep ?? ""}',
+                      style: TextStyle(
+                        fontSize: fs2,
+                        color: Colors.black54,
+                        height: 1.3,
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         ),
-      ));
+      );
     }
     return labels;
   }
 
   Offset _pickLabelPos(
-      double px, double py, double lw, double lh, double mg, double cw, double ch) {
+    double px,
+    double py,
+    double lw,
+    double lh,
+    double mg,
+    double cw,
+    double ch,
+  ) {
     final candidates = [
-      Offset(px + mg, py - lh / 2),       // 右
-      Offset(px - lw - mg, py - lh / 2),  // 左
-      Offset(px - lw / 2, py - lh - mg),  // 上
-      Offset(px - lw / 2, py + mg),        // 下
+      Offset(px + mg, py - lh / 2), // 右
+      Offset(px - lw - mg, py - lh / 2), // 左
+      Offset(px - lw / 2, py - lh - mg), // 上
+      Offset(px - lw / 2, py + mg), // 下
     ];
     for (final p in candidates) {
       if (p.dx >= 0 && p.dx + lw <= cw && p.dy >= 0 && p.dy + lh <= ch) {
@@ -608,10 +639,12 @@ class _LineMapContentState extends State<LineMapContent> {
     if (targetStations.isEmpty) return [];
 
     final valid = refStations
-        .where((s) =>
-            s['hasLocation'] == true &&
-            ((s['longitude'] as num).toDouble() != 0 ||
-                (s['latitude'] as num).toDouble() != 0))
+        .where(
+          (s) =>
+              s['hasLocation'] == true &&
+              ((s['longitude'] as num).toDouble() != 0 ||
+                  (s['latitude'] as num).toDouble() != 0),
+        )
         .toList();
 
     if (valid.isEmpty) return _evenPositions(targetStations);
@@ -663,15 +696,22 @@ class _LineMapContentState extends State<LineMapContent> {
   }
 
   List<Map<String, dynamic>> _evenPositions(
-      List<Map<String, dynamic>> stations) {
+    List<Map<String, dynamic>> stations,
+  ) {
     final n = stations.length;
-    return stations.asMap().entries.map((e) => {
-          ...e.value,
-          'relativeX': n > 1 ? 0.1 + 0.8 * (e.key / (n - 1)) : 0.5,
-          'relativeY': 0.5,
-          'index': e.key,
-          'hasLocation': true,
-        }).toList();
+    return stations
+        .asMap()
+        .entries
+        .map(
+          (e) => {
+            ...e.value,
+            'relativeX': n > 1 ? 0.1 + 0.8 * (e.key / (n - 1)) : 0.5,
+            'relativeY': 0.5,
+            'index': e.key,
+            'hasLocation': true,
+          },
+        )
+        .toList();
   }
 
   // ==================== API / 数据处理 ====================
@@ -719,14 +759,15 @@ class _LineMapContentState extends State<LineMapContent> {
   }
 
   Future<List<Map<String, dynamic>>> _fetchStationsFromApi(
-      String trainNumber) async {
+    String trainNumber,
+  ) async {
     try {
       final bool real = await _getSetting('show_real_train_map');
       if (!real) return _createFallbackStationData();
       final url = Uri.parse(
-          'https://rail.moefactory.com/api/trainDetails/queryTrainRoutes');
-      final response =
-          await http.post(url, body: {'trainNumber': trainNumber});
+        'https://rail.moefactory.com/api/trainDetails/queryTrainRoutes',
+      );
+      final response = await http.post(url, body: {'trainNumber': trainNumber});
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['code'] == 200 && data['data'] != null) {
@@ -752,19 +793,20 @@ class _LineMapContentState extends State<LineMapContent> {
   }
 
   Future<List<Map<String, dynamic>>> _matchStationsWithLocalData(
-      List<Map<String, dynamic>> apiStations) async {
+    List<Map<String, dynamic>> apiStations,
+  ) async {
     try {
       final List<dynamic> all = await DataFileHelper.loadStations();
 
       return apiStations.map((api) {
-        final clean =
-            (api['stationName'] as String? ?? '').replaceAll('站', '').trim();
+        final clean = (api['stationName'] as String? ?? '')
+            .replaceAll('站', '')
+            .trim();
         final matched = all.cast<Map<String, dynamic>>().firstWhere(
-              (s) =>
-                  (s['name'] as String? ?? '').replaceAll('站', '').trim() ==
-                  clean,
-              orElse: () => <String, dynamic>{},
-            );
+          (s) =>
+              (s['name'] as String? ?? '').replaceAll('站', '').trim() == clean,
+          orElse: () => <String, dynamic>{},
+        );
 
         if (matched.isNotEmpty) {
           final loc = matched['location']?.toString() ?? '';
@@ -801,7 +843,14 @@ class _LineMapContentState extends State<LineMapContent> {
       }).toList();
     } catch (_) {
       return apiStations
-          .map((s) => {...s, 'hasLocation': false, 'longitude': 0.0, 'latitude': 0.0})
+          .map(
+            (s) => {
+              ...s,
+              'hasLocation': false,
+              'longitude': 0.0,
+              'latitude': 0.0,
+            },
+          )
           .toList();
     }
   }
@@ -842,7 +891,9 @@ class _LineMapContentState extends State<LineMapContent> {
             Text('加载失败: $_errorMessage'),
             const SizedBox(height: 16),
             ElevatedButton(
-                onPressed: _loadRouteMapData, child: const Text('重试')),
+              onPressed: _loadRouteMapData,
+              child: const Text('重试'),
+            ),
           ],
         ),
       );
@@ -855,8 +906,10 @@ class _LineMapContentState extends State<LineMapContent> {
             child: AspectRatio(
               aspectRatio: 1.0,
               child: Container(
-                constraints:
-                    const BoxConstraints(maxWidth: 440, maxHeight: 440),
+                constraints: const BoxConstraints(
+                  maxWidth: 440,
+                  maxHeight: 440,
+                ),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(12),
@@ -883,8 +936,10 @@ class _LineMapContentState extends State<LineMapContent> {
                       // 锁定旋转
                       if (_getRotationAngle(matrix).abs() > 0.001) {
                         _transformationController.value = Matrix4.identity()
-                          ..translate(matrix.getTranslation().x,
-                              matrix.getTranslation().y)
+                          ..translate(
+                            matrix.getTranslation().x,
+                            matrix.getTranslation().y,
+                          )
                           ..scale(scale);
                       }
                       setState(() {
@@ -892,36 +947,43 @@ class _LineMapContentState extends State<LineMapContent> {
                             .getMaxScaleOnAxis();
                       });
                     },
-                    child: LayoutBuilder(builder: (ctx, constraints) {
-                      final side = constraints.biggest.shortestSide;
-                      final sz = Size(side, side);
-                      final statuses = _computeStationStatuses();
-                      return Stack(children: [
-                        GestureDetector(
-                          onTap: _handleBackgroundTap,
-                          child: Container(
-                              width: sz.width,
-                              height: sz.height,
-                              color: Colors.transparent),
-                        ),
-                        // 全路线底线
-                        CustomPaint(
-                          size: sz,
-                          painter: _FullRouteLinePainter(_fullRouteStations),
-                        ),
-                        // 彩色分段覆盖
-                        CustomPaint(
-                          size: sz,
-                          painter: _SegmentedLinePainter(
-                            filteredStations: _filteredStations,
-                            fullRouteStations: _fullRouteStations,
-                            statuses: statuses,
-                          ),
-                        ),
-                        ..._buildStationMarkers(sz.width, sz.height),
-                        ..._buildStationLabels(sz.width, sz.height),
-                      ]);
-                    }),
+                    child: LayoutBuilder(
+                      builder: (ctx, constraints) {
+                        final side = constraints.biggest.shortestSide;
+                        final sz = Size(side, side);
+                        final statuses = _computeStationStatuses();
+                        return Stack(
+                          children: [
+                            GestureDetector(
+                              onTap: _handleBackgroundTap,
+                              child: Container(
+                                width: sz.width,
+                                height: sz.height,
+                                color: Colors.transparent,
+                              ),
+                            ),
+                            // 全路线底线
+                            CustomPaint(
+                              size: sz,
+                              painter: _FullRouteLinePainter(
+                                _fullRouteStations,
+                              ),
+                            ),
+                            // 彩色分段覆盖
+                            CustomPaint(
+                              size: sz,
+                              painter: _SegmentedLinePainter(
+                                filteredStations: _filteredStations,
+                                fullRouteStations: _fullRouteStations,
+                                statuses: statuses,
+                              ),
+                            ),
+                            ..._buildStationMarkers(sz.width, sz.height),
+                            ..._buildStationLabels(sz.width, sz.height),
+                          ],
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -938,12 +1000,12 @@ class _LineMapContentState extends State<LineMapContent> {
 // ============================================================
 class _FullRouteLinePainter extends CustomPainter {
   final List<Map<String, dynamic>> stations;
+
   const _FullRouteLinePainter(this.stations);
 
   @override
   void paint(Canvas canvas, Size size) {
-    final valid =
-        stations.where((s) => s['hasLocation'] == true).toList();
+    final valid = stations.where((s) => s['hasLocation'] == true).toList();
     if (valid.length < 2) return;
 
     final paint = Paint()
@@ -954,11 +1016,15 @@ class _FullRouteLinePainter extends CustomPainter {
       ..strokeJoin = StrokeJoin.round;
 
     final path = Path();
-    path.moveTo((valid.first['relativeX'] as double) * size.width,
-        (valid.first['relativeY'] as double) * size.height);
+    path.moveTo(
+      (valid.first['relativeX'] as double) * size.width,
+      (valid.first['relativeY'] as double) * size.height,
+    );
     for (int i = 1; i < valid.length; i++) {
-      path.lineTo((valid[i]['relativeX'] as double) * size.width,
-          (valid[i]['relativeY'] as double) * size.height);
+      path.lineTo(
+        (valid[i]['relativeX'] as double) * size.width,
+        (valid[i]['relativeY'] as double) * size.height,
+      );
     }
     canvas.drawPath(path, paint);
   }
@@ -986,8 +1052,9 @@ class _SegmentedLinePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (filteredStations.length < 2) return;
 
-    final fullValid =
-        fullRouteStations.where((s) => s['hasLocation'] == true).toList();
+    final fullValid = fullRouteStations
+        .where((s) => s['hasLocation'] == true)
+        .toList();
     if (fullValid.length < 2) return;
 
     // 建立站名→索引映射
@@ -995,7 +1062,7 @@ class _SegmentedLinePainter extends CustomPainter {
     for (int i = 0; i < fullValid.length; i++) {
       final name =
           ((fullValid[i]['name'] ?? fullValid[i]['stationName']) as String? ??
-              '');
+          '');
       if (name.isNotEmpty) idx[name] = i;
     }
 
@@ -1011,8 +1078,7 @@ class _SegmentedLinePainter extends CustomPainter {
         _ => throw UnimplementedError(),
       };
 
-      final fromName =
-          ((from['name'] ?? from['stationName']) as String? ?? '');
+      final fromName = ((from['name'] ?? from['stationName']) as String? ?? '');
       final toName = ((to['name'] ?? to['stationName']) as String? ?? '');
       final fi0 = idx[fromName];
       final ti0 = idx[toName];
@@ -1039,10 +1105,14 @@ class _SegmentedLinePainter extends CustomPainter {
         canvas.drawPath(path, paint);
       } else if (from['hasLocation'] == true && to['hasLocation'] == true) {
         canvas.drawLine(
-          Offset((from['relativeX'] as double) * size.width,
-              (from['relativeY'] as double) * size.height),
-          Offset((to['relativeX'] as double) * size.width,
-              (to['relativeY'] as double) * size.height),
+          Offset(
+            (from['relativeX'] as double) * size.width,
+            (from['relativeY'] as double) * size.height,
+          ),
+          Offset(
+            (to['relativeX'] as double) * size.width,
+            (to['relativeY'] as double) * size.height,
+          ),
           paint,
         );
       }

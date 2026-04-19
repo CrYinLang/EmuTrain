@@ -138,7 +138,8 @@ class TrainModelUtils {
 
     if (modelC == 'CR200JD') return 'CR200JC';
 
-    if (modelC == 'CRH2E' && cleanedNumber == '2461' || cleanedNumber == '2462') return 'CRH2E-NG';
+    if (modelC == 'CRH2E' && cleanedNumber == '2461' || cleanedNumber == '2462')
+      return 'CRH2E-NG';
     if (modelC == 'CRH2G') return 'CRH2E-NG';
     if (modelC == 'CRH2B') return 'CRH2BE';
     if (modelC == 'CRH2E') return 'CRH2BE';
@@ -149,10 +150,14 @@ class TrainModelUtils {
     if (modelC == 'CRH6F' && cleanedNumber == '0001') return 'CRH6-2';
     if (modelC == 'CR400BF' && cleanedNumber == '0031') return 'CR400BF-0031';
     if (modelC == 'CR400BF-G' && cleanedNumber == '0051') return 'CR400BF-0031';
-    if (modelC == 'CR400BF-C' && cleanedNumber == '5162') return 'CR400BF-C-5162';
-    if (modelC == 'CR400BF-J' && cleanedNumber == '0001')return 'CR400BF-J-0001';
-    if (modelC == 'CR400BF-J' && cleanedNumber == '0003') return 'CR400BF-J-0003';
-    if (modelC == 'CR400BF-Z' && cleanedNumber == '0524') return 'CR400BF-Z-0524';
+    if (modelC == 'CR400BF-C' && cleanedNumber == '5162')
+      return 'CR400BF-C-5162';
+    if (modelC == 'CR400BF-J' && cleanedNumber == '0001')
+      return 'CR400BF-J-0001';
+    if (modelC == 'CR400BF-J' && cleanedNumber == '0003')
+      return 'CR400BF-J-0003';
+    if (modelC == 'CR400BF-Z' && cleanedNumber == '0524')
+      return 'CR400BF-Z-0524';
 
     if (modelC == 'CRH6A-A') return 'CRH6A';
     if (modelC == 'CRH6A-AZ') return 'CRH6A';

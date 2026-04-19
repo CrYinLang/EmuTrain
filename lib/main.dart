@@ -10,10 +10,11 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'journey_provider.dart';
-import 'train_model.dart';
-import 'ui/search_page.dart';
-import 'ui/settings.dart';
 import 'speed_service.dart';
+import 'train_model.dart';
+import 'ui/coach_search_page.dart';
+import 'ui/emu_search_page.dart';
+import 'ui/settings.dart';
 import 'ui/tool_screen.dart';
 import 'ui/travel_screen.dart';
 import 'update.dart';
@@ -27,8 +28,10 @@ class Vars {
   static const String commandServer = 'remote';
   static const String stationData = 'assets/stations';
   static const String trainData = 'assets/train';
+  static const String coachTrainData = 'assets/coach';
   static String defaultStationBuild = '3';
   static String defaultTrainBuild = '3';
+  static String defaultCoachTrainBuild = '3';
 
   // ---------- stationBuild ----------
   static String _stationBuild = defaultStationBuild;
@@ -69,6 +72,25 @@ class Vars {
     _trainBuild = value;
     _isTrainBuildInitialized = true;
   }
+  // ---------- coachTrainBuild ----------
+  static String _coachTrainBuild = defaultCoachTrainBuild;
+  static bool _isCoachTrainBuildInitialized = false;
+
+  static String get coachTrainBuild => _coachTrainBuild;
+
+  static Future<void> initCoachTrainBuild() async {
+    if (_isCoachTrainBuildInitialized) return;
+    final prefs = await SharedPreferences.getInstance();
+    _coachTrainBuild = prefs.getString('coachTrainBuild') ?? defaultCoachTrainBuild;
+    _isCoachTrainBuildInitialized = true;
+  }
+
+  static Future<void> setCoachTrainBuild(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('coachTrainBuild', value);
+    _coachTrainBuild = value;
+    _isCoachTrainBuildInitialized = true;
+  }
 
   // ---------- 网络 ----------
   static Future<Map<String, dynamic>?> fetchVersionInfo() async {
@@ -93,7 +115,8 @@ class Vars {
         .timeout(const Duration(seconds: 10));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      if (data is List && data.isNotEmpty) return data[0] as Map<String, dynamic>;
+      if (data is List && data.isNotEmpty)
+        return data[0] as Map<String, dynamic>;
       if (data is Map<String, dynamic>) return data;
     }
     return null;
@@ -104,6 +127,34 @@ class Vars {
 
 /// 统一处理"优先读下载文件，失败/不存在则回退 assets"
 class DataFileHelper {
+
+  static Future<List<CoachRecord>> loadCoaches() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/coach.json');
+    String? jsonString;
+    if (await file.exists()) {
+      try {
+        jsonString = await file.readAsString();
+        json.decode(jsonString); // 验证 JSON 合法
+        debugPrint('[DataFileHelper] 已加载下载版本 coach.json');
+      } catch (e) {
+        debugPrint('[DataFileHelper] coach.json 损坏，回退 assets: $e');
+        jsonString = null;
+      }
+    }
+    jsonString ??= await rootBundle.loadString('assets/coach.json');
+    debugPrint('[DataFileHelper] 已加载 assets/coach.json');
+
+    final Map<String, dynamic> dataJson = json.decode(jsonString);
+    final List<CoachRecord> result = [];
+    for (final model in dataJson.keys) {
+      for (final record in dataJson[model]) {
+        result.add(CoachRecord.fromJson(Map<String, dynamic>.from(record)));
+      }
+    }
+    return result;
+  }
+
   /// 读取车站数据（List 结构）
   static Future<List<dynamic>> loadStations() async {
     final directory = await getApplicationDocumentsDirectory();
@@ -159,9 +210,13 @@ class DataFileHelper {
     }
     return result;
   }
+
 }
 
 // ==================== 数据源枚举 ====================
+
+/// 车次查询数据源
+enum TrainStationDataSource { moeFactory, ctrip }
 
 /// 车次查询数据源
 enum TrainDataSource { railRe, railGo, official12306 }
@@ -211,10 +266,13 @@ class AppSettings extends ChangeNotifier {
   // ---------- 数据源 ----------
   TrainDataSource _dataSource = TrainDataSource.railRe;
   TrainEmuDataSource _dataEmuSource = TrainEmuDataSource.railRe;
+  TrainStationDataSource _dataStationSource = TrainStationDataSource.moeFactory;
 
   TrainDataSource get dataSource => _dataSource;
 
   TrainEmuDataSource get dataEmuSource => _dataEmuSource;
+
+  TrainStationDataSource get dataStationSource => _dataStationSource;
 
   String get dataSourceDisplayName {
     switch (_dataSource) {
@@ -264,6 +322,14 @@ class AppSettings extends ChangeNotifier {
     _dataEmuSource = source;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('dataEmuSource', source.index);
+    notifyListeners();
+  }
+
+  Future<void> setStationDataSource(TrainStationDataSource source) async {
+    if (_dataStationSource == source) return;
+    _dataStationSource = source;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('dataStationSource', source.index);
     notifyListeners();
   }
 
@@ -772,7 +838,8 @@ class BureauIconWidget extends StatelessWidget {
                 width: size,
                 height: size,
                 fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) => _buildFallbackIcon(),
+                errorBuilder: (context, error, stackTrace) =>
+                    _buildFallbackIcon(),
               ),
             );
           } else {
