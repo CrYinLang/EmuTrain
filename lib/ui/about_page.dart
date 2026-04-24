@@ -43,7 +43,7 @@ class AboutPage extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Text(
-          '这个合并了之前两个软件,可以看交路,记录旅途等',
+          'EmuTrain 是一款面向铁路爱好者与旅行记录者的综合查询工具，整合了动车组交路查询与个人旅途记录两大核心功能。支持按车次或车号查询当日运行交路，显示停靠站点、时刻与所用车型，并可通过路线图直观浏览全程站点信息。旅途功能支持保存乘车记录，方便回顾历次出行。此外，还提供车站实时大屏、普速客车查询、GPS 测速、动车图鉴等实用工具，满足铁路迷的多样需求。',
           style: TextStyle(
             fontSize: 16,
             color: theme.colorScheme.onSurfaceVariant,
