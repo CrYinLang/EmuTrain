@@ -296,9 +296,9 @@ class _CoachSearchPageState extends State<CoachSearchPage> {
 
     final queryTime = DateTime.now().toLocal().toString().substring(0, 19);
     final newResults = pageRecords.map((r) => CoachSearchResult(
-          record: r,
-          queryTime: queryTime,
-        )).toList();
+      record: r,
+      queryTime: queryTime,
+    )).toList();
 
     setState(() {
       _searchResults
@@ -415,8 +415,8 @@ class _CoachSearchPageState extends State<CoachSearchPage> {
                                   result.score! >= 0.8
                                       ? Colors.green
                                       : result.score! >= 0.5
-                                          ? Colors.orange
-                                          : Colors.red,
+                                      ? Colors.orange
+                                      : Colors.red,
                                 ),
                               ),
                             ),
@@ -430,8 +430,8 @@ class _CoachSearchPageState extends State<CoachSearchPage> {
                               color: result.score! >= 0.8
                                   ? Colors.green
                                   : result.score! >= 0.5
-                                      ? Colors.orange
-                                      : Colors.red,
+                                  ? Colors.orange
+                                  : Colors.red,
                             ),
                           ),
                         ],
@@ -554,8 +554,8 @@ class _CoachSearchPageState extends State<CoachSearchPage> {
             _searchType == 'number'
                 ? '请输入车号进行查询\n（例如：080003 或 892151）'
                 : _searchType == 'depot'
-                    ? '请输入配属段名称进行查询\n（例如：广铁 或 成局）'
-                    : '请输入车型代号进行查询',
+                ? '请输入配属段名称进行查询\n（例如：广铁 或 成局）'
+                : '请输入车型代号进行查询',
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 16),
           ),
@@ -611,7 +611,7 @@ class _CoachSearchPageState extends State<CoachSearchPage> {
   Widget build(BuildContext context) {
     final displayedCount = _searchResults.length;
     final totalCount =
-        (_searchType == 'depot' || _searchType == 'model') ? _totalResults : displayedCount;
+    (_searchType == 'depot' || _searchType == 'model') ? _totalResults : displayedCount;
 
     return Scaffold(
       appBar: AppBar(title: const Text('客车查询')),
@@ -631,13 +631,13 @@ class _CoachSearchPageState extends State<CoachSearchPage> {
                       labelText: _searchType == 'number'
                           ? '输入车号'
                           : _searchType == 'depot'
-                              ? '输入配属段名称'
-                              : '输入车型代号',
+                          ? '输入配属段名称'
+                          : '输入车型代号',
                       hintText: _searchType == 'number'
                           ? '如: 080003'
                           : _searchType == 'depot'
-                              ? '如: 广铁 或 成局贵段'
-                              : '如: CA25G',
+                          ? '如: 广铁 或 成局贵段'
+                          : '如: CA25G',
                       border: const OutlineInputBorder(),
                       filled: true,
                       prefixIcon: const Icon(Icons.search),
@@ -689,10 +689,10 @@ class _CoachSearchPageState extends State<CoachSearchPage> {
               }),
               style: SegmentedButton.styleFrom(
                 backgroundColor:
-                    Theme.of(context).colorScheme.surfaceContainerHighest,
+                Theme.of(context).colorScheme.surfaceContainerHighest,
                 selectedBackgroundColor: Theme.of(context).colorScheme.primary,
                 selectedForegroundColor:
-                    Theme.of(context).colorScheme.onPrimary,
+                Theme.of(context).colorScheme.onPrimary,
               ),
             ),
 
