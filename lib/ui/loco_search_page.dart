@@ -148,11 +148,7 @@ class _LocoSearchPageState extends State<LocoSearchPage> {
   }
 
   List<String> _getAllModels() {
-    return _locoData
-        .map((r) => r['model'] as String)
-        .toSet()
-        .toList()
-      ..sort();
+    return _locoData.map((r) => r['model'] as String).toSet().toList()..sort();
   }
 
   List<String> _getAllDepots() {
@@ -194,7 +190,9 @@ class _LocoSearchPageState extends State<LocoSearchPage> {
 
   // ==================== 车号搜索（模糊 + 评分） ====================
   void _searchByLocoId(String input) {
-    final cleanInput = input.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '').toUpperCase();
+    final cleanInput = input
+        .replaceAll(RegExp(r'[^a-zA-Z0-9]'), '')
+        .toUpperCase();
 
     final List<MapEntry<Map<String, dynamic>, double>> scored = [];
 
@@ -234,19 +232,22 @@ class _LocoSearchPageState extends State<LocoSearchPage> {
     scored.sort((a, b) => b.value.compareTo(a.value));
     final topScore = scored.first.value;
     // 只保留与最高分同分段的结果，最多10条，避免低分误匹配
-    final top = scored.where((e) => e.value >= topScore - 0.05).take(10).toList();
+    final top = scored
+        .where((e) => e.value >= topScore - 0.05)
+        .take(10)
+        .toList();
 
     setState(() {
       _results.addAll(
         top.asMap().entries.map(
-              (e) => LocoResult(
-                model: e.value.key['model'],
-                number: e.value.key['number'],
-                depot: e.value.key['depot'],
-                score: e.value.value,
-                rank: e.key + 1,
-              ),
-            ),
+          (e) => LocoResult(
+            model: e.value.key['model'],
+            number: e.value.key['number'],
+            depot: e.value.key['depot'],
+            score: e.value.value,
+            rank: e.key + 1,
+          ),
+        ),
       );
       _totalResults = _results.length;
       _currentSearchLabel = input;
@@ -271,7 +272,9 @@ class _LocoSearchPageState extends State<LocoSearchPage> {
 
     matched.sort((a, b) {
       final mc = (a['model'] as String).compareTo(b['model'] as String);
-      return mc != 0 ? mc : (a['number'] as String).compareTo(b['number'] as String);
+      return mc != 0
+          ? mc
+          : (a['number'] as String).compareTo(b['number'] as String);
     });
 
     _allPageRecords = matched;
@@ -295,7 +298,9 @@ class _LocoSearchPageState extends State<LocoSearchPage> {
       return;
     }
 
-    matched.sort((a, b) => (a['number'] as String).compareTo(b['number'] as String));
+    matched.sort(
+      (a, b) => (a['number'] as String).compareTo(b['number'] as String),
+    );
 
     _allPageRecords = matched;
     _totalResults = matched.length;
@@ -332,7 +337,10 @@ class _LocoSearchPageState extends State<LocoSearchPage> {
   }
 
   void _goToPage(int page) {
-    if (page == _currentPage || _loadingPage || page < 1 || page > _totalPages) {
+    if (page == _currentPage ||
+        _loadingPage ||
+        page < 1 ||
+        page > _totalPages) {
       _pageController.text = _currentPage.toString();
       return;
     }
@@ -440,8 +448,8 @@ class _LocoSearchPageState extends State<LocoSearchPage> {
                                     color: result.score! >= 0.8
                                         ? Colors.green
                                         : result.score! >= 0.5
-                                            ? Colors.orange
-                                            : Colors.red,
+                                        ? Colors.orange
+                                        : Colors.red,
                                     borderRadius: BorderRadius.circular(3),
                                   ),
                                 ),
@@ -456,27 +464,30 @@ class _LocoSearchPageState extends State<LocoSearchPage> {
                                 color: result.score! >= 0.8
                                     ? Colors.green
                                     : result.score! >= 0.5
-                                        ? Colors.orange
-                                        : Colors.red,
+                                    ? Colors.orange
+                                    : Colors.red,
                               ),
                             ),
                             if (result.rank != null) ...[
                               const SizedBox(width: 8),
                               Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 6, vertical: 2),
+                                  horizontal: 6,
+                                  vertical: 2,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .primary
-                                      .withAlpha(20),
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.primary.withAlpha(20),
                                   borderRadius: BorderRadius.circular(4),
                                 ),
                                 child: Text(
                                   '#${result.rank!}',
                                   style: TextStyle(
                                     fontSize: 10,
-                                    color: Theme.of(context).colorScheme.primary,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -496,12 +507,11 @@ class _LocoSearchPageState extends State<LocoSearchPage> {
               ],
             ),
             const SizedBox(height: 12),
-            if (result.depot.isNotEmpty) Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildInfoRow('配属段', result.depot),
-              ],
-            ),
+            if (result.depot.isNotEmpty)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [_buildInfoRow('配属段', result.depot)],
+              ),
           ],
         ),
       ),
@@ -521,7 +531,8 @@ class _LocoSearchPageState extends State<LocoSearchPage> {
               width: 32,
               height: 32,
               fit: BoxFit.contain,
-              errorBuilder: (context, error, stackTrace) => _fallbackTrainIcon(),
+              errorBuilder: (context, error, stackTrace) =>
+                  _fallbackTrainIcon(),
             ),
           );
         }
@@ -553,7 +564,8 @@ class _LocoSearchPageState extends State<LocoSearchPage> {
             width: 32,
             height: 32,
             fit: BoxFit.contain,
-            errorBuilder: (context, error, stackTrace) => const SizedBox(width: 32, height: 32),
+            errorBuilder: (context, error, stackTrace) =>
+                const SizedBox(width: 32, height: 32),
           );
         }
         return const SizedBox(width: 32, height: 32);
@@ -637,8 +649,8 @@ class _LocoSearchPageState extends State<LocoSearchPage> {
             _searchType == 'depot'
                 ? Icons.business
                 : _searchType == 'carType'
-                    ? Icons.category
-                    : Icons.train,
+                ? Icons.category
+                : Icons.train,
             size: 64,
             color: Colors.grey,
           ),
@@ -647,8 +659,8 @@ class _LocoSearchPageState extends State<LocoSearchPage> {
             _searchType == 'locoId'
                 ? '请输入机车车号进行查询\n（例如：DF11-0001 或 0001）'
                 : _searchType == 'depot'
-                    ? '请输入配属段进行查询\n（例如：京局京段）'
-                    : '请输入车型进行查询（例如：DF11）',
+                ? '请输入配属段进行查询\n（例如：京局京段）'
+                : '请输入车型进行查询（例如：DF11）',
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 16),
           ),
@@ -717,13 +729,13 @@ class _LocoSearchPageState extends State<LocoSearchPage> {
                       labelText: _searchType == 'locoId'
                           ? '输入机车车号'
                           : _searchType == 'depot'
-                              ? '输入配属段'
-                              : '输入车型',
+                          ? '输入配属段'
+                          : '输入车型',
                       hintText: _searchType == 'locoId'
                           ? '如: DF11-0001 或 0001'
                           : _searchType == 'depot'
-                              ? '如: 京局京段'
-                              : '如: DF11',
+                          ? '如: 京局京段'
+                          : '如: DF11',
                       border: const OutlineInputBorder(),
                       filled: true,
                     ),
@@ -745,7 +757,7 @@ class _LocoSearchPageState extends State<LocoSearchPage> {
               ],
             ),
             const SizedBox(height: 20),
-            
+
             // 搜索类型选择器
             _buildSearchTypeSelector(),
             const SizedBox(height: 20),
@@ -777,9 +789,14 @@ class _LocoSearchPageState extends State<LocoSearchPage> {
                 children: [
                   Expanded(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 12,
+                      ),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.surfaceContainerHighest,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
@@ -791,9 +808,7 @@ class _LocoSearchPageState extends State<LocoSearchPage> {
                             isPaged
                                 ? '$_currentSearchLabel 共 $totalCount 条（当前 $displayedCount 条）'
                                 : '共找到 $totalCount 条结果',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall
+                            style: Theme.of(context).textTheme.titleSmall
                                 ?.copyWith(fontWeight: FontWeight.w600),
                           ),
                         ],
@@ -819,7 +834,8 @@ class _LocoSearchPageState extends State<LocoSearchPage> {
 
               for (final r in _results) _buildResultCard(r),
 
-              if (_loadingPage) const Center(child: CircularProgressIndicator()),
+              if (_loadingPage)
+                const Center(child: CircularProgressIndicator()),
             ],
 
             const SizedBox(height: 40),

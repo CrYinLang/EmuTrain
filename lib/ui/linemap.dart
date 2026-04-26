@@ -937,9 +937,9 @@ class _LineMapContentState extends State<LineMapContent> {
                       if (_getRotationAngle(matrix).abs() > 0.001) {
                         final translation = matrix.getTranslation();
                         _transformationController.value = Matrix4.identity()
-                          ..setEntry(0, 3, translation.x)  // 设置平移X
-                          ..setEntry(1, 3, translation.y)  // 设置平移Y
-                          ..scale(scale, scale, 1.0);  // 提供三个参数
+                          ..setEntry(0, 3, translation.x) // 设置平移X
+                          ..setEntry(1, 3, translation.y) // 设置平移Y
+                          ..scale(scale, scale, 1.0); // 提供三个参数
                       }
                       setState(() {
                         _currentScale = _transformationController.value

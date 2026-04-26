@@ -9,7 +9,6 @@ import 'package:provider/provider.dart';
 
 import '../main.dart';
 import '../tool.dart';
-import '../train_model.dart';
 import 'journey.dart';
 
 // 搜索结果数据类（统一所有查询类型的结果）
@@ -50,6 +49,37 @@ class SearchResult {
 }
 
 class SearchPage extends StatefulWidget {
+  static List<String> getBureauFullNames() {
+    return List<String>.from([
+      '北京铁路局',
+      '上海铁路局',
+      '广州铁路局',
+      '郑州铁路局',
+      '西安铁路局',
+      '成都铁路局',
+      '沈阳铁路局',
+      '哈尔滨铁路局',
+      '呼和浩特铁路局',
+      '太原铁路局',
+      '济南铁路局',
+      '南昌铁路局',
+      '兰州铁路局',
+      '乌鲁木齐铁路局',
+      '青藏铁路局',
+      '昆明铁路局',
+      '南宁铁路局',
+      '武汉铁路局',
+      '广东城际',
+      '贵阳市域铁路',
+      '金台铁路',
+      '阳大铁路',
+      '铁科院',
+      '银狼铁路局',
+      '香港铁路有限公司',
+      '国铁集团',
+    ]);
+  }
+
   const SearchPage({super.key});
 
   @override
@@ -184,7 +214,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   String _getBureauFullName(String bureauCode) {
-    List<String> allBureauNames = TrainModelUtils.getBureauFullNames();
+    List<String> allBureauNames = SearchPage.getBureauFullNames();
     for (String fullName in allBureauNames) {
       if (fullName.contains(bureauCode) || bureauCode.contains(fullName)) {
         return fullName;
@@ -204,7 +234,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   List<String> _getCommonBureauCodes() {
-    List<String> allBureauNames = TrainModelUtils.getBureauFullNames();
+    List<String> allBureauNames = SearchPage.getBureauFullNames();
     return allBureauNames.map((name) => name.substring(0, 2)).toSet().toList();
   }
 

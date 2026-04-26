@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../main.dart';
-import '../train_model.dart';
 
 class GalleryPage extends StatefulWidget {
   const GalleryPage({super.key});
@@ -29,7 +28,185 @@ class TrainInfo {
     this.sectionTitle,
   });
 
-  String get iconModelName => TrainModelUtils.getTrainIconModel(model, number);
+  static String getTrainIconModel(String model, String number) {
+    String modelC = model.trim();
+    String cleanedNumber = number.trim();
+
+    if (modelC == 'CRH6A') {
+      int? num = int.tryParse(cleanedNumber.replaceAll(RegExp(r'[^0-9]'), ''));
+      if (num != null) {
+        if ((num >= 401 && num <= 408) ||
+            (num >= 602 && num <= 610) ||
+            num == 420 ||
+            num == 421) {
+          return 'CRH6-2';
+        }
+      }
+    }
+
+    if (modelC == 'CRH3A-A') {
+      int? num = int.tryParse(cleanedNumber.replaceAll(RegExp(r'[^0-9]'), ''));
+      if (num != null) {
+        if ((num >= 511 && num <= 521)) {
+          return 'CRH3A-A-GKCJ';
+        }
+      }
+    }
+
+    if (modelC == 'CRH3A-A') {
+      int? num = int.tryParse(cleanedNumber.replaceAll(RegExp(r'[^0-9]'), ''));
+      if (num != null) {
+        if ((num >= 524 && num <= 528)) {
+          return 'CRH3A-A-ZKCJ';
+        }
+      }
+    }
+
+    if (modelC == 'CRH1B') {
+      int? num = int.tryParse(cleanedNumber.replaceAll(RegExp(r'[^0-9]'), ''));
+      if (num != null) {
+        if ((num >= 1076 && num <= 1080)) {
+          return 'CRH1E';
+        }
+      }
+    }
+
+    if (modelC == 'CRH1E') {
+      int? num = int.tryParse(cleanedNumber.replaceAll(RegExp(r'[^0-9]'), ''));
+      if (num != null) {
+        if ((num >= 1229 && num <= 1233)) {
+          return 'CRH1A-A';
+        }
+      }
+    }
+
+    if (modelC == 'CRH6F') {
+      int? num = int.tryParse(cleanedNumber.replaceAll(RegExp(r'[^0-9]'), ''));
+      if (num != null && num >= 409 && num <= 413) {
+        return 'CRH6F';
+      }
+      if (num != null && num >= 430 && num <= 435) {
+        return 'CRH6F';
+      }
+    }
+    if (modelC == 'CRH6F-A') {
+      int? num = int.tryParse(cleanedNumber.replaceAll(RegExp(r'[^0-9]'), ''));
+      if (num != null && num >= 445 && num <= 450) {
+        return 'CRH6F';
+      }
+    }
+
+    if (modelC == 'CRH6A') {
+      int? num = int.tryParse(cleanedNumber.replaceAll(RegExp(r'[^0-9]'), ''));
+      if (num != null && num >= 401 && num <= 408) {
+        return 'CRH6-2';
+      }
+      if (num != null && num >= 601 && num <= 610) {
+        return 'CRH6-2';
+      }
+    }
+
+    if (modelC == 'CRH6F' && cleanedNumber == '4512') return 'CRH6-2';
+
+    if (modelC == 'CRH6F-A') return 'CRH6A';
+
+    if (modelC.contains('CRH6F')) {
+      return 'CRH6A';
+    }
+
+    // 列车图标模型映射规则
+    if (modelC == 'CRH1B') return 'CRH1A';
+    if (modelC == 'CRH3A' && cleanedNumber == '0302') return 'CRH3A-YC';
+    if (modelC == 'CRH3A' && cleanedNumber == '0502') return 'CRH3A-YC';
+    if (modelC == 'CRH380AL' || modelC == 'CRH380AN') return 'CRH380A';
+    if (modelC == 'CRH2B') {
+      int? num = int.tryParse(cleanedNumber.replaceAll(RegExp(r'[^0-9]'), ''));
+      if (num != null && num >= 2466 && num <= 2472) {
+        return 'CRH2A';
+      }
+      if (num != null && num >= 4096 && num <= 4105) {
+        return 'CRH2A';
+      }
+    }
+
+    if (modelC == 'CRH5G') {
+      int? num = int.tryParse(cleanedNumber.replaceAll(RegExp(r'[^0-9]'), ''));
+      if (num != null && num >= 5218 && num <= 5229) {
+        return 'CRH5G';
+      }
+    }
+    if (modelC == 'CRH5G') return 'CRH5A';
+
+    if (modelC == 'CR200JD') return 'CR200JC';
+
+    if (modelC == 'CRH2E' && cleanedNumber == '2461' || cleanedNumber == '2462')
+      return 'CRH2E-NG';
+    if (modelC == 'CRH2G') return 'CRH2E-NG';
+    if (modelC == 'CRH2B') return 'CRH2BE';
+    if (modelC == 'CRH2E') return 'CRH2BE';
+    if (modelC == 'CRH380BL') return 'CRH380B';
+    if (modelC == 'CRH380BG') return 'CRH380B';
+    if (modelC == 'CRH2A' && cleanedNumber == '2460') return 'CRH2A-2460';
+    if (modelC == 'CRH2C' && cleanedNumber == '2150') return 'CRH380A';
+    if (modelC == 'CRH6F' && cleanedNumber == '0001') return 'CRH6-2';
+    if (modelC == 'CR400BF' && cleanedNumber == '0031') return 'CR400BF-0031';
+    if (modelC == 'CR400BF-G' && cleanedNumber == '0051') return 'CR400BF-0031';
+    if (modelC == 'CR400BF-C' && cleanedNumber == '5162')
+      return 'CR400BF-C-5162';
+    if (modelC == 'CR400BF-J' && cleanedNumber == '0001')
+      return 'CR400BF-J-0001';
+    if (modelC == 'CR400BF-J' && cleanedNumber == '0003')
+      return 'CR400BF-J-0003';
+    if (modelC == 'CR400BF-Z' && cleanedNumber == '0524')
+      return 'CR400BF-Z-0524';
+
+    if (modelC == 'CRH6A-A') return 'CRH6A';
+    if (modelC == 'CRH6A-AZ') return 'CRH6A';
+
+    if (modelC == 'CR400AF-Z' ||
+        modelC == 'CR400AF-AZ' ||
+        modelC == 'CR400AF-BZ' ||
+        modelC == 'CR400AF-S' ||
+        modelC == 'CR400AF-AS' ||
+        modelC == 'CR400AF-BS' ||
+        modelC == 'CR400AF-AE' ||
+        modelC == 'CR400AF-C') {
+      return 'CR400AF-SZE';
+    }
+    if (modelC == 'CR400BF-S' ||
+        modelC == 'CR400BF-AS' ||
+        modelC == 'CR400BF-BS' ||
+        modelC == 'CR400BF-GS') {
+      return 'CR400BF-S';
+    }
+    if (modelC == 'CR400BF-Z' ||
+        modelC == 'CR400BF-AZ' ||
+        modelC == 'CR400BF-BZ' ||
+        modelC == 'CR400BF-GZ') {
+      return 'CR400BF-Z';
+    }
+    if (modelC == 'CR400AF-A' ||
+        modelC == 'CR400AF-B' ||
+        modelC == 'CR400AF-G') {
+      return 'CR400AF';
+    }
+    if (modelC == 'CR400BF-A' ||
+        modelC == 'CR400BF-B' ||
+        modelC == 'CR400BF-G') {
+      return 'CR400BF';
+    }
+
+    if (modelC == 'CRH380A') {
+      int? num = int.tryParse(cleanedNumber.replaceAll(RegExp(r'[^0-9]'), ''));
+      if (num != null && num >= 251 && num <= 259) {
+        return 'CRH380AD';
+      }
+    }
+
+    return modelC;
+  }
+
+  String get iconModelName => getTrainIconModel(model, number);
 }
 
 class _GalleryPageState extends State<GalleryPage> {

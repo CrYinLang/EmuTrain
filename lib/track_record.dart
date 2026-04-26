@@ -100,10 +100,12 @@ class TrackRecord {
     final dir = await _recordDir(record.id);
     await dir.create(recursive: true);
 
-    await File('${dir.path}/meta.json')
-        .writeAsString(jsonEncode(record.toMetaJson()));
-    await File('${dir.path}/points.json')
-        .writeAsString(jsonEncode(record.toPointsJson()));
+    await File(
+      '${dir.path}/meta.json',
+    ).writeAsString(jsonEncode(record.toMetaJson()));
+    await File(
+      '${dir.path}/points.json',
+    ).writeAsString(jsonEncode(record.toPointsJson()));
 
     return true;
   }
@@ -111,10 +113,7 @@ class TrackRecord {
   /// 读取所有记录的摘要，按时间倒序（不加载轨迹点，适合列表页）
   static Future<List<TrackRecord>> loadAllMeta() async {
     final root = await _tracksDir();
-    final entries = root
-        .listSync()
-        .whereType<Directory>()
-        .toList();
+    final entries = root.listSync().whereType<Directory>().toList();
 
     // 文件夹名即时间戳，直接倒序排
     entries.sort((a, b) => b.path.compareTo(a.path));

@@ -5,9 +5,10 @@
   "StationBuild": "4",
   "TrainBuild": "7",
   "CoachTrainBuild": "4",
+  "LocoBuild": "1",
   "github": "https://gh-proxy.com/https://github.com/CrYinLang/EmuTrain/releases/download/1.2.1.1/app-release.apk",
   "gitee": "https://gitee.com/CrYinLang/EmuTrain/releases/download/1.2.1.1/app-release.apk",
   "qq": "https://qm.qq.com/q/fk5M9PJGyk",
-  "describe": "修复了一些已知问题",
+  "describe": "添加了机车查询，客车查询功能，优化了一点性能",
   "Announcement": "公告:QQ群:667933194\n官网:https://emutrain.github.io/"
 }

@@ -118,13 +118,21 @@ class _CoachSearchPageState extends State<CoachSearchPage> {
       input.replaceAll(RegExp(r'[^a-zA-Z0-9\u4e00-\u9fff]'), '').toUpperCase();
 
   List<String> _getAllModels() {
-    final models = _allRecords.map((r) => r.model).where((m) => m.isNotEmpty).toSet().toList();
+    final models = _allRecords
+        .map((r) => r.model)
+        .where((m) => m.isNotEmpty)
+        .toSet()
+        .toList();
     models.sort();
     return models;
   }
 
   List<String> _getAllDepots() {
-    final depots = _allRecords.map((r) => r.depot).where((d) => d.isNotEmpty).toSet().toList();
+    final depots = _allRecords
+        .map((r) => r.depot)
+        .where((d) => d.isNotEmpty)
+        .toSet()
+        .toList();
     depots.sort();
     return depots;
   }
@@ -220,7 +228,8 @@ class _CoachSearchPageState extends State<CoachSearchPage> {
       return;
     }
 
-    final sorted = scored.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+    final sorted = scored.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
     final topScore = sorted.first.value;
     final best = topScore >= 0.9
         ? sorted.where((e) => e.value >= topScore - 0.05).toList()
@@ -228,12 +237,14 @@ class _CoachSearchPageState extends State<CoachSearchPage> {
 
     setState(() {
       for (int i = 0; i < best.length; i++) {
-        _searchResults.add(CoachSearchResult(
-          record: best[i].key,
-          score: best[i].value,
-          rank: i + 1,
-          queryTime: queryTime,
-        ));
+        _searchResults.add(
+          CoachSearchResult(
+            record: best[i].key,
+            score: best[i].value,
+            rank: i + 1,
+            queryTime: queryTime,
+          ),
+        );
       }
       _isLoading = false;
     });
@@ -242,7 +253,9 @@ class _CoachSearchPageState extends State<CoachSearchPage> {
   // ---- 配属段查询 ----
   void _searchByDepot(String input) {
     final pattern = input.trim().toLowerCase();
-    final matches = _allRecords.where((r) => r.depot.toLowerCase().contains(pattern)).toList();
+    final matches = _allRecords
+        .where((r) => r.depot.toLowerCase().contains(pattern))
+        .toList();
 
     if (matches.isEmpty) {
       setState(() {
@@ -266,7 +279,9 @@ class _CoachSearchPageState extends State<CoachSearchPage> {
   // ---- 型号查询 ----
   void _searchByModel(String input) {
     final pattern = input.trim().toUpperCase();
-    final matches = _allRecords.where((r) => r.model.toUpperCase() == pattern).toList();
+    final matches = _allRecords
+        .where((r) => r.model.toUpperCase() == pattern)
+        .toList();
 
     if (matches.isEmpty) {
       setState(() {
@@ -295,10 +310,9 @@ class _CoachSearchPageState extends State<CoachSearchPage> {
     final pageRecords = _pagedSource.sublist(start, end);
 
     final queryTime = DateTime.now().toLocal().toString().substring(0, 19);
-    final newResults = pageRecords.map((r) => CoachSearchResult(
-      record: r,
-      queryTime: queryTime,
-    )).toList();
+    final newResults = pageRecords
+        .map((r) => CoachSearchResult(record: r, queryTime: queryTime))
+        .toList();
 
     setState(() {
       _searchResults
@@ -312,7 +326,10 @@ class _CoachSearchPageState extends State<CoachSearchPage> {
   }
 
   void _goToPage(int page) {
-    if (page == _currentPage || _loadingPage || page < 1 || page > _totalPages) {
+    if (page == _currentPage ||
+        _loadingPage ||
+        page < 1 ||
+        page > _totalPages) {
       _pageController.text = _currentPage.toString();
       return;
     }
@@ -359,7 +376,10 @@ class _CoachSearchPageState extends State<CoachSearchPage> {
               children: [
                 // 车型徽章
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.primaryContainer,
                     borderRadius: BorderRadius.circular(8),
@@ -390,7 +410,9 @@ class _CoachSearchPageState extends State<CoachSearchPage> {
                           record.depot,
                           style: TextStyle(
                             fontSize: 12,
-                            color: Theme.of(context).colorScheme.onSurface.withAlpha(150),
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withAlpha(150),
                           ),
                         ),
                     ],
@@ -439,9 +461,14 @@ class _CoachSearchPageState extends State<CoachSearchPage> {
                       if (result.rank != null)
                         Container(
                           margin: const EdgeInsets.only(top: 4),
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.primary.withAlpha(20),
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.primary.withAlpha(20),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(
@@ -509,7 +536,9 @@ class _CoachSearchPageState extends State<CoachSearchPage> {
               textAlign: TextAlign.center,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               decoration: InputDecoration(
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
                 contentPadding: const EdgeInsets.symmetric(vertical: 8),
               ),
               onSubmitted: (v) {
@@ -610,8 +639,9 @@ class _CoachSearchPageState extends State<CoachSearchPage> {
   @override
   Widget build(BuildContext context) {
     final displayedCount = _searchResults.length;
-    final totalCount =
-    (_searchType == 'depot' || _searchType == 'model') ? _totalResults : displayedCount;
+    final totalCount = (_searchType == 'depot' || _searchType == 'model')
+        ? _totalResults
+        : displayedCount;
 
     return Scaffold(
       appBar: AppBar(title: const Text('客车查询')),
@@ -688,11 +718,13 @@ class _CoachSearchPageState extends State<CoachSearchPage> {
                 _resetPagination();
               }),
               style: SegmentedButton.styleFrom(
-                backgroundColor:
-                Theme.of(context).colorScheme.surfaceContainerHighest,
+                backgroundColor: Theme.of(
+                  context,
+                ).colorScheme.surfaceContainerHighest,
                 selectedBackgroundColor: Theme.of(context).colorScheme.primary,
-                selectedForegroundColor:
-                Theme.of(context).colorScheme.onPrimary,
+                selectedForegroundColor: Theme.of(
+                  context,
+                ).colorScheme.onPrimary,
               ),
             ),
 
@@ -728,9 +760,14 @@ class _CoachSearchPageState extends State<CoachSearchPage> {
                 children: [
                   Expanded(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 12,
+                      ),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.surfaceContainerHighest,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
@@ -742,9 +779,7 @@ class _CoachSearchPageState extends State<CoachSearchPage> {
                             (_searchType == 'depot' || _searchType == 'model')
                                 ? '「$_currentSearchLabel」共 $totalCount 条（当前 $displayedCount 条）'
                                 : '共找到 $totalCount 条结果',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall
+                            style: Theme.of(context).textTheme.titleSmall
                                 ?.copyWith(fontWeight: FontWeight.w600),
                           ),
                         ],

@@ -915,17 +915,19 @@ class _TrackHistoryPageState extends State<TrackHistoryPage> {
           : ListView.separated(
               padding: const EdgeInsets.all(16),
               itemCount: _records!.length,
-              separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 10),
+              separatorBuilder: (BuildContext context, int index) =>
+                  const SizedBox(height: 10),
               itemBuilder: (context, index) {
                 final r = _records![index];
                 return _RecordCard(
                   record: r,
                   onDelete: () => _delete(r.id),
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => TrackDetailPage(recordId: r.id),   // ← 改成传 id
-                      ),
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          TrackDetailPage(recordId: r.id), // ← 改成传 id
                     ),
+                  ),
                 );
               },
             ),
@@ -1075,10 +1077,7 @@ class _RecordCard extends StatelessWidget {
 class TrackDetailPage extends StatefulWidget {
   final String recordId;
 
-  const TrackDetailPage({
-    super.key,
-    required this.recordId,
-  });
+  const TrackDetailPage({super.key, required this.recordId});
 
   @override
   State<TrackDetailPage> createState() => _TrackDetailPageState();
@@ -1152,7 +1151,8 @@ class _TrackDetailPageState extends State<TrackDetailPage> {
     final duration = record.endTime.difference(record.startTime);
 
     // 顶部日期
-    final dateStr = '${record.startTime.year}-'
+    final dateStr =
+        '${record.startTime.year}-'
         '${record.startTime.month.toString().padLeft(2, '0')}-'
         '${record.startTime.day.toString().padLeft(2, '0')}';
 
@@ -1161,10 +1161,7 @@ class _TrackDetailPageState extends State<TrackDetailPage> {
         : '${(record.totalDistanceM / 1000).toStringAsFixed(2)} km';
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(dateStr),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text(dateStr), centerTitle: true),
       body: Column(
         children: [
           Expanded(child: _TrackDetailMapView(points: record.points)),
@@ -1174,7 +1171,9 @@ class _TrackDetailPageState extends State<TrackDetailPage> {
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF141218) : Colors.white,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(20),
+              ),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.12),
@@ -1244,7 +1243,6 @@ class _TrackDetailPageState extends State<TrackDetailPage> {
     return '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
   }
 
-
   String _formatDuration(Duration d) {
     if (d.inHours > 0) return '${d.inHours}h ${d.inMinutes.remainder(60)}m';
     if (d.inMinutes > 0) return '${d.inMinutes}m ${d.inSeconds.remainder(60)}s';
@@ -1265,7 +1263,9 @@ class _TrackDetailPageState extends State<TrackDetailPage> {
           const SizedBox(height: 4),
           Text(
             value,
-            style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+            style: theme.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
             textAlign: TextAlign.center,
           ),
           Text(

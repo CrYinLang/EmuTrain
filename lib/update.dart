@@ -337,9 +337,7 @@ class _DataUpdateDialog extends StatelessWidget {
                                 );
                                 await file.writeAsString(response.body);
 
-                                await saveBuild(
-                                  capturedRemoteBuild.toString(),
-                                );
+                                await saveBuild(capturedRemoteBuild.toString());
 
                                 if (context.mounted) {
                                   Navigator.of(
@@ -353,8 +351,7 @@ class _DataUpdateDialog extends StatelessWidget {
                                   );
                                 }
                               } else {
-                                throw Exception(
-                                    '下载失败: ${response.statusCode}');
+                                throw Exception('下载失败: ${response.statusCode}');
                               }
                             } catch (e) {
                               if (context.mounted) {
@@ -511,7 +508,9 @@ class AppUpdateResultDialog extends StatelessWidget {
                   width: double.infinity,
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: SelectableText(

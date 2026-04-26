@@ -11,7 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'journey_provider.dart';
 import 'speed_service.dart';
-import 'train_model.dart';
+import 'ui/gallery_page.dart';
 import 'ui/coach_search_page.dart';
 import 'ui/emu_search_page.dart';
 import 'ui/settings.dart';
@@ -31,9 +31,9 @@ class Vars {
   static const String coachTrainData = 'assets/coach';
   static const String locoData = 'assets/loco';
 
-  static String defaultStationBuild = '3';
-  static String defaultTrainBuild = '3';
-  static String defaultCoachTrainBuild = '3';
+  static String defaultStationBuild = '4';
+  static String defaultTrainBuild = '7';
+  static String defaultCoachTrainBuild = '4';
   static String defaultLocoBuild = '1';
 
   // ---------- stationBuild ----------
@@ -140,7 +140,8 @@ class Vars {
         .timeout(const Duration(seconds: 10));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      if (data is List && data.isNotEmpty) return data[0] as Map<String, dynamic>;
+      if (data is List && data.isNotEmpty)
+        return data[0] as Map<String, dynamic>;
       if (data is Map<String, dynamic>) return data;
     }
     return null;
@@ -686,8 +687,7 @@ class _MainScreenState extends State<MainScreen> {
               BottomNavigationBarItem(icon: Icon(Icons.home), label: '旅途'),
               BottomNavigationBarItem(icon: Icon(Icons.search), label: '搜索'),
               BottomNavigationBarItem(icon: Icon(Icons.build), label: '其他'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.settings), label: '设置'),
+              BottomNavigationBarItem(icon: Icon(Icons.settings), label: '设置'),
             ],
           ),
         );
@@ -746,7 +746,7 @@ class TrainIconWidget extends StatelessWidget {
       return SizedBox(width: size, height: size);
     }
 
-    final iconModel = TrainModelUtils.getTrainIconModel(model, number);
+    final iconModel = TrainInfo.getTrainIconModel(model, number);
     final cleanName = _removePngExtension(iconModel);
     final assetPath = 'assets/icon/train/$cleanName.png';
 
@@ -944,4 +944,3 @@ class BureauIconWidget extends StatelessWidget {
     );
   }
 }
-
