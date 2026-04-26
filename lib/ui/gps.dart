@@ -25,7 +25,6 @@ class _SpeedometerPageState extends State<SpeedometerPage>
   static const double _snapThreshold = 0.5;
 
   double _panelRatio = _collapsedRatio;
-  double _dragStartRatio = _collapsedRatio;
   bool _isExpanded = true;
 
   late AnimationController _snapController;
@@ -54,7 +53,6 @@ class _SpeedometerPageState extends State<SpeedometerPage>
 
   void _onDragStart(DragStartDetails _) {
     _snapController.stop();
-    _dragStartRatio = _panelRatio;
   }
 
   void _onDragUpdate(DragUpdateDetails details, double availableHeight) {
@@ -917,7 +915,7 @@ class _TrackHistoryPageState extends State<TrackHistoryPage> {
           : ListView.separated(
               padding: const EdgeInsets.all(16),
               itemCount: _records!.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 10),
+              separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 10),
               itemBuilder: (context, index) {
                 final r = _records![index];
                 return _RecordCard(

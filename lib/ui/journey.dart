@@ -651,7 +651,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
       if (trainNumber.isEmpty) return;
       setState(() => _stationLoading[index] = true);
       try {
-        final stopData = await _fetchStopInfo_sharyou(trainNumber);
+        final stopData = await _fetchStopInfoSharyou(trainNumber);
         setState(() {
           _stationDetails[index] = stopData;
           _stationLoading[index] = false;
@@ -683,13 +683,13 @@ class _AddJourneyPageState extends State<AddJourneyPage>
     final settings = Provider.of<AppSettings>(context);
     switch (settings.dataStationSource) {
       case TrainStationDataSource.moeFactory:
-        return await _fetchStopInfo_sharyou(trainNumber);
+        return await _fetchStopInfoSharyou(trainNumber);
       default:
-        return await _fetchStopInfo_ctrip(trainNumber);
+        return await _fetchStopInfoCtrip(trainNumber);
     }
   }
 
-  Future<List<dynamic>> _fetchStopInfo_sharyou(String trainNumber) async {
+  Future<List<dynamic>> _fetchStopInfoSharyou(String trainNumber) async {
     final baseUrl = 'https://sharyou.moefactory.com/api/trainNumber/query';
 
     final headers = {
@@ -700,10 +700,6 @@ class _AddJourneyPageState extends State<AddJourneyPage>
     };
 
     try {
-      /// =========================
-      /// 第一步：获取 trainIndex
-      /// =========================
-      print(_formattedDate);
       final firstBody =
           'date=$_formattedDate&trainNumber=$trainNumber&cursor=0&count=15';
 
@@ -781,7 +777,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
     }
   }
 
-  Future<List<dynamic>> _fetchStopInfo_ctrip(String trainNumber) async {
+  Future<List<dynamic>> _fetchStopInfoCtrip(String trainNumber) async {
     final url = Uri.parse(
       'https://m.ctrip.com/restapi/soa2/14674/json/GetTrainStopTimeInfo',
     );

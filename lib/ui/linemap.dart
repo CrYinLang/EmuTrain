@@ -935,12 +935,11 @@ class _LineMapContentState extends State<LineMapContent> {
                       final scale = matrix.getMaxScaleOnAxis();
                       // 锁定旋转
                       if (_getRotationAngle(matrix).abs() > 0.001) {
+                        final translation = matrix.getTranslation();
                         _transformationController.value = Matrix4.identity()
-                          ..translate(
-                            matrix.getTranslation().x,
-                            matrix.getTranslation().y,
-                          )
-                          ..scale(scale);
+                          ..setEntry(0, 3, translation.x)  // 设置平移X
+                          ..setEntry(1, 3, translation.y)  // 设置平移Y
+                          ..scale(scale, scale, 1.0);  // 提供三个参数
                       }
                       setState(() {
                         _currentScale = _transformationController.value
@@ -1069,7 +1068,6 @@ class _SegmentedLinePainter extends CustomPainter {
     for (int fi = 1; fi < filteredStations.length; fi++) {
       final from = filteredStations[fi - 1];
       final to = filteredStations[fi];
-      final fs = fi - 1 < statuses.length ? statuses[fi - 1] : 'future';
       final ts = fi < statuses.length ? statuses[fi] : 'future';
 
       final Color color = switch (ts) {
