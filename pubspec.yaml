@@ -29,7 +29,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
+    - assets/emu/
     - assets/icon/
     - assets/icon/bureau/
     - assets/icon/train/
-    - assets/icon/emu/

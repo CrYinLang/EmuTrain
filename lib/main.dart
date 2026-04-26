@@ -14,6 +14,7 @@ import 'speed_service.dart';
 import 'train_model.dart';
 import 'ui/coach_search_page.dart';
 import 'ui/emu_search_page.dart';
+import 'ui/loco_search_page.dart';
 import 'ui/settings.dart';
 import 'ui/tool_screen.dart';
 import 'ui/travel_screen.dart';
@@ -29,9 +30,12 @@ class Vars {
   static const String stationData = 'assets/stations';
   static const String trainData = 'assets/train';
   static const String coachTrainData = 'assets/coach';
+  static const String locoData = 'assets/loco';
+
   static String defaultStationBuild = '3';
   static String defaultTrainBuild = '3';
   static String defaultCoachTrainBuild = '3';
+  static String defaultLocoBuild = '1';
 
   // ---------- stationBuild ----------
   static String _stationBuild = defaultStationBuild;
@@ -72,6 +76,7 @@ class Vars {
     _trainBuild = value;
     _isTrainBuildInitialized = true;
   }
+
   // ---------- coachTrainBuild ----------
   static String _coachTrainBuild = defaultCoachTrainBuild;
   static bool _isCoachTrainBuildInitialized = false;
@@ -81,7 +86,8 @@ class Vars {
   static Future<void> initCoachTrainBuild() async {
     if (_isCoachTrainBuildInitialized) return;
     final prefs = await SharedPreferences.getInstance();
-    _coachTrainBuild = prefs.getString('coachTrainBuild') ?? defaultCoachTrainBuild;
+    _coachTrainBuild =
+        prefs.getString('coachTrainBuild') ?? defaultCoachTrainBuild;
     _isCoachTrainBuildInitialized = true;
   }
 
@@ -90,6 +96,26 @@ class Vars {
     await prefs.setString('coachTrainBuild', value);
     _coachTrainBuild = value;
     _isCoachTrainBuildInitialized = true;
+  }
+
+  // ---------- locoBuild ----------
+  static String _locoBuild = defaultLocoBuild;
+  static bool _isLocoBuildInitialized = false;
+
+  static String get locoBuild => _locoBuild;
+
+  static Future<void> initLocoBuild() async {
+    if (_isLocoBuildInitialized) return;
+    final prefs = await SharedPreferences.getInstance();
+    _locoBuild = prefs.getString('locoBuild') ?? defaultLocoBuild;
+    _isLocoBuildInitialized = true;
+  }
+
+  static Future<void> setLocoBuild(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('locoBuild', value);
+    _locoBuild = value;
+    _isLocoBuildInitialized = true;
   }
 
   // ---------- 网络 ----------
@@ -125,9 +151,7 @@ class Vars {
 
 // ==================== 数据文件帮助类 ====================
 
-/// 统一处理"优先读下载文件，失败/不存在则回退 assets"
 class DataFileHelper {
-
   static Future<List<CoachRecord>> loadCoaches() async {
     final directory = await getApplicationDocumentsDirectory();
     final file = File('${directory.path}/coach.json');
@@ -211,6 +235,39 @@ class DataFileHelper {
     return result;
   }
 
+  static Future<List<Map<String, dynamic>>> loadLocos() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/loco.json');
+
+    String? jsonString;
+
+    if (await file.exists()) {
+      try {
+        jsonString = await file.readAsString();
+        json.decode(jsonString); // 验证 JSON 合法
+        debugPrint('[DataFileHelper] 已加载下载版本 loco.json');
+      } catch (e) {
+        debugPrint('[DataFileHelper] loco.json 损坏，回退 assets: $e');
+        jsonString = null;
+      }
+    }
+
+    jsonString ??= await rootBundle.loadString('assets/loco.json');
+    debugPrint('[DataFileHelper] 已加载 assets/loco.json');
+
+    final Map<String, dynamic> dataJson = json.decode(jsonString);
+    final List<Map<String, dynamic>> result = [];
+    for (final model in dataJson.keys) {
+      for (final record in dataJson[model]) {
+        result.add({
+          'model': model,
+          'number': (record['车组号'] ?? '').toString(),
+          'depot': (record['配属段'] ?? '').toString(),
+        });
+      }
+    }
+    return result;
+  }
 }
 
 // ==================== 数据源枚举 ====================
@@ -359,6 +416,13 @@ class AppSettings extends ChangeNotifier {
             0,
             TrainEmuDataSource.values.length - 1,
           )];
+
+      final dataStationSourceIndex = prefs.getInt('dataStationSource') ?? 0;
+      _dataStationSource =
+          TrainStationDataSource.values[dataStationSourceIndex.clamp(
+            0,
+            TrainStationDataSource.values.length - 1,
+          )];
     } catch (_) {
       _setDefaultValues();
     } finally {
@@ -459,6 +523,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Vars.initStationBuild();
   await Vars.initTrainBuild();
+  await Vars.initCoachTrainBuild();
+  await Vars.initLocoBuild();
   runApp(
     MultiProvider(
       providers: [
@@ -622,7 +688,8 @@ class _MainScreenState extends State<MainScreen> {
               BottomNavigationBarItem(icon: Icon(Icons.home), label: '旅途'),
               BottomNavigationBarItem(icon: Icon(Icons.search), label: '搜索'),
               BottomNavigationBarItem(icon: Icon(Icons.build), label: '其他'),
-              BottomNavigationBarItem(icon: Icon(Icons.settings), label: '设置'),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.settings), label: '设置'),
             ],
           ),
         );
@@ -879,3 +946,4 @@ class BureauIconWidget extends StatelessWidget {
     );
   }
 }
+

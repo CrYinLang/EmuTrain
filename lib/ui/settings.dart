@@ -162,150 +162,116 @@ class _SettingsScreenState extends State<SettingsScreen>
     );
   }
 
-  // ==================== 数据源卡片 ====================
+  // ==================== 数据源选择行（复用样式） ====================
 
-  Widget _buildEmuDataSourceCard({
-    required AppSettings settings,
-    required TrainEmuDataSource source,
-    required String title,
-    required String description,
-    required IconData icon,
+  Widget _buildDataSourceRow<T>({
+    required T currentValue,
+    required T optionA,
+    required String titleA,
+    required String descA,
+    required IconData iconA,
+    required T optionB,
+    required String titleB,
+    required String descB,
+    required IconData iconB,
+    required void Function(T) onSelect,
   }) {
-    final isSelected = settings.dataEmuSource == source;
-    final primary = Theme.of(context).colorScheme.primary;
-    final onSurface = Theme.of(context).colorScheme.onSurface;
-
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: isSelected ? primary : Colors.transparent,
-          width: 2,
-        ),
-      ),
-      child: InkWell(
-        onTap: () {
-          if (!isSelected) settings.setEmuDataSource(source);
-        },
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          constraints: const BoxConstraints(minHeight: 100),
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                icon,
-                size: 28,
-                color: isSelected ? primary : onSurface.withValues(alpha: 0.7),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                title,
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                  color: isSelected ? primary : onSurface,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                description,
-                maxLines: 2,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: isSelected
-                      ? primary.withValues(alpha: 0.8)
-                      : onSurface.withValues(alpha: 0.6),
-                ),
-              ),
-              if (isSelected) ...[
-                const SizedBox(height: 8),
-                Icon(Icons.check_circle_rounded, size: 16, color: primary),
-              ],
-            ],
+    return IntrinsicHeight(
+      child: Row(
+        children: [
+          Expanded(
+            child: _buildSourceChip(
+              isSelected: currentValue == optionA,
+              title: titleA,
+              description: descA,
+              icon: iconA,
+              onTap: () => onSelect(optionA),
+            ),
           ),
-        ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: _buildSourceChip(
+              isSelected: currentValue == optionB,
+              title: titleB,
+              description: descB,
+              icon: iconB,
+              onTap: () => onSelect(optionB),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildStationDataSourceCard({
-    required AppSettings settings,
-    required TrainStationDataSource source,
+  Widget _buildSourceChip({
+    required bool isSelected,
     required String title,
     required String description,
     required IconData icon,
+    required VoidCallback onTap,
   }) {
-    final isSelected = settings.dataStationSource == source;
     final primary = Theme.of(context).colorScheme.primary;
     final onSurface = Theme.of(context).colorScheme.onSurface;
+    final surface = Theme.of(context).colorScheme.surfaceContainerHighest;
 
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: isSelected ? primary : Colors.transparent,
-          width: 2,
-        ),
-      ),
-      child: InkWell(
-        onTap: () {
-          if (!isSelected) settings.setStationDataSource(source);
-        },
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          constraints: const BoxConstraints(minHeight: 100),
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                icon,
-                size: 28,
-                color: isSelected ? primary : onSurface.withValues(alpha: 0.7),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                title,
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                  color: isSelected ? primary : onSurface,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                description,
-                maxLines: 2,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: isSelected
-                      ? primary.withValues(alpha: 0.8)
-                      : onSurface.withValues(alpha: 0.6),
-                ),
-              ),
-              if (isSelected) ...[
-                const SizedBox(height: 8),
-                Icon(Icons.check_circle_rounded, size: 16, color: primary),
-              ],
-            ],
+    return GestureDetector(
+      onTap: isSelected ? null : onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        constraints: const BoxConstraints(minHeight: 90),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? primary.withValues(alpha: 0.10)
+              : surface.withValues(alpha: 0.5),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: isSelected ? primary : Colors.transparent,
+            width: 1.5,
           ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 22,
+              color: isSelected ? primary : onSurface.withValues(alpha: 0.6),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              title,
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 13,
+                color: isSelected ? primary : onSurface,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              description,
+              maxLines: 2,
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 11,
+                color: isSelected
+                    ? primary.withValues(alpha: 0.8)
+                    : onSurface.withValues(alpha: 0.55),
+              ),
+            ),
+            if (isSelected) ...[
+              const SizedBox(height: 6),
+              Icon(Icons.check_circle_rounded, size: 14, color: primary),
+            ],
+          ],
         ),
       ),
     );
   }
 
   // ==================== 旅途 Tab ====================
-  // 主题设置 + 列车显示 + 应用信息
 
   Widget _buildTravelTab() {
     final settings = Provider.of<AppSettings>(context);
@@ -400,6 +366,7 @@ class _SettingsScreenState extends State<SettingsScreen>
         ),
 
         // 应用信息
+        const SizedBox(height: 16),
         _buildSection(
           icon: Icons.info,
           title: '应用信息',
@@ -421,6 +388,7 @@ class _SettingsScreenState extends State<SettingsScreen>
         ),
 
         // 应用设置
+        const SizedBox(height: 16),
         _buildSection(
           icon: Icons.info,
           title: '应用设置',
@@ -444,6 +412,14 @@ class _SettingsScreenState extends State<SettingsScreen>
               subtitle: 'V${Vars.coachTrainBuild}',
               trailingIcon: Icons.arrow_forward_ios,
               onTap: () => UpdateUI.showCoachTrainUpdateFlow(context),
+            ),
+            const Divider(height: 1),
+            // ★ 新增：机车配属数据版本
+            _buildTile(
+              title: '机车配属数据版本',
+              subtitle: 'V${Vars.locoBuild}',
+              trailingIcon: Icons.arrow_forward_ios,
+              onTap: () => UpdateUI.showLocoUpdateFlow(context),
             ),
             const Divider(height: 1),
             Tool.buildSwitch(
@@ -471,7 +447,7 @@ class _SettingsScreenState extends State<SettingsScreen>
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        // 图标显示设置
+        // ── 图标显示 + 站点数据源，合并为一个卡片 ──
         _buildSection(
           icon: Icons.photo_library,
           title: '图标显示设置 (查询)',
@@ -491,37 +467,40 @@ class _SettingsScreenState extends State<SettingsScreen>
               value: settings.showBureauIcons,
               onChanged: settings.toggleBureauIcons,
             ),
+            const Divider(height: 1),
+            // ── 站点数据源选择，融入本区域 ──
+            Padding(
+              padding: const EdgeInsets.only(top: 10, bottom: 4, left: 4),
+              child: Text(
+                '站点数据源',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: onSurface.withValues(alpha: 0.85),
+                ),
+              ),
+            ),
+            _buildDataSourceRow<TrainStationDataSource>(
+              currentValue: settings.dataStationSource,
+              optionA: TrainStationDataSource.moeFactory,
+              titleA: 'MoeFactory',
+              descA: '有里程查看',
+              iconA: Icons.cloud_upload,
+              optionB: TrainStationDataSource.ctrip,
+              titleB: '某大厂数据源',
+              descB: '没有里程查看',
+              iconB: Icons.factory,
+              onSelect: settings.setStationDataSource,
+            ),
           ],
         ),
-        IntrinsicHeight(
-          child: Row(
-            children: [
-              Expanded(
-                child: _buildStationDataSourceCard(
-                  settings: settings,
-                  source: TrainStationDataSource.moeFactory,
-                  title: 'MoeFactory',
-                  description: '有里程查看',
-                  icon: Icons.cloud_upload,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildStationDataSourceCard(
-                  settings: settings,
-                  source: TrainStationDataSource.ctrip,
-                  title: '某大厂数据源',
-                  description: '没有里程查看',
-                  icon: Icons.factory,
-                ),
-              ),
-            ],
-          ),
-        ),
+
+        const SizedBox(height: 16),
+
         // 数据源设置
         _buildSection(
           icon: Icons.storage,
-          title: '数据源设置  (查询)',
+          title: '数据源设置 (查询)',
           children: [
             // 车次数据源
             Padding(
@@ -587,30 +566,17 @@ class _SettingsScreenState extends State<SettingsScreen>
                 ),
               ),
             ),
-            IntrinsicHeight(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _buildEmuDataSourceCard(
-                      settings: settings,
-                      source: TrainEmuDataSource.railRe,
-                      title: 'Rail.re',
-                      description: '第三方数据源',
-                      icon: Icons.cloud_upload,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildEmuDataSourceCard(
-                      settings: settings,
-                      source: TrainEmuDataSource.moeFactory,
-                      title: 'MoeFactory',
-                      description: '第三方数据源',
-                      icon: Icons.factory,
-                    ),
-                  ),
-                ],
-              ),
+            _buildDataSourceRow<TrainEmuDataSource>(
+              currentValue: settings.dataEmuSource,
+              optionA: TrainEmuDataSource.railRe,
+              titleA: 'Rail.re',
+              descA: '第三方数据源',
+              iconA: Icons.cloud_upload,
+              optionB: TrainEmuDataSource.moeFactory,
+              titleB: 'MoeFactory',
+              descB: '第三方数据源',
+              iconB: Icons.factory,
+              onSelect: settings.setEmuDataSource,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
@@ -624,6 +590,7 @@ class _SettingsScreenState extends State<SettingsScreen>
             ),
           ],
         ),
+
         const SizedBox(height: 16),
         const Divider(height: 1),
         const SizedBox(height: 16),

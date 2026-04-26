@@ -5,6 +5,7 @@ import '../tool.dart';
 import 'about_page.dart';
 import 'gallery_page.dart';
 import 'gps.dart';
+import 'loco_search_page.dart';
 import 'coach_search_page.dart';
 import 'station_screen.dart';
 
@@ -53,6 +54,38 @@ class ToolScreen extends StatelessWidget {
             ),
             Card(
               child: ListTile(
+                leading: const Icon(Icons.train, size: 32),
+                title: const Text('机车查询'),
+                subtitle: const Text('查询机车车头'),
+                trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const LocoSearchPage(),
+                    ),
+                  );
+                },
+              ),
+            ),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.av_timer, size: 32),
+                title: const Text('速度计'),
+                subtitle: const Text('实验性功能，可能不准'),
+                trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SpeedometerPage(),
+                    ),
+                  );
+                },
+              ),
+            ),
+            Card(
+              child: ListTile(
                 leading: const Icon(Icons.photo_library, size: 32),
                 title: const Text('动车图鉴'),
                 subtitle: const Text('精选了一批特殊的列车'),
@@ -77,22 +110,6 @@ class ToolScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const AboutPage()),
-                  );
-                },
-              ),
-            ),
-            Card(
-              child: ListTile(
-                leading: const Icon(Icons.av_timer, size: 32),
-                title: const Text('速度计'),
-                subtitle: const Text('实验性功能，可能不准'),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SpeedometerPage(),
-                    ),
                   );
                 },
               ),

@@ -2796,7 +2796,7 @@ class _AddJourneyPageState extends State<AddJourneyPage>
                                 passed,
                                 first,
                               ),
-                              if (mile > -1)
+                              if (mile != 0)
                                 Text(
                                   '里程:$mile',
                                   style: TextStyle(

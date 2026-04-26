@@ -845,7 +845,7 @@ class _TrackHistoryPageState extends State<TrackHistoryPage> {
   }
 
   Future<void> _load() async {
-    final records = await TrackRecord.loadAll();
+    final records = await TrackRecord.loadAllMeta();
     if (mounted) setState(() => _records = records);
   }
 
@@ -923,11 +923,11 @@ class _TrackHistoryPageState extends State<TrackHistoryPage> {
                 return _RecordCard(
                   record: r,
                   onDelete: () => _delete(r.id),
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => TrackDetailPage(record: r),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => TrackDetailPage(recordId: r.id),   // ← 改成传 id
+                      ),
                     ),
-                  ),
                 );
               },
             ),
@@ -1074,39 +1074,109 @@ class _RecordCard extends StatelessWidget {
 // ══════════════════════════════════════════════════════════════════
 //  行程详情页（轨迹回放）
 // ══════════════════════════════════════════════════════════════════
-class TrackDetailPage extends StatelessWidget {
-  final TrackRecord record;
+class TrackDetailPage extends StatefulWidget {
+  final String recordId;
 
-  const TrackDetailPage({super.key, required this.record});
+  const TrackDetailPage({
+    super.key,
+    required this.recordId,
+  });
+
+  @override
+  State<TrackDetailPage> createState() => _TrackDetailPageState();
+}
+
+class _TrackDetailPageState extends State<TrackDetailPage> {
+  TrackRecord? _fullRecord;
+  bool _isLoading = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFullRecord();
+  }
+
+  Future<void> _loadFullRecord() async {
+    try {
+      final record = await TrackRecord.loadFull(widget.recordId);
+      if (mounted) {
+        setState(() {
+          _fullRecord = record;
+          _isLoading = false;
+          if (record == null) _error = '记录不存在或已损坏';
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _error = '加载失败';
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('加载中...')),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (_fullRecord == null || _error != null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('记录详情')),
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.error_outline, size: 64, color: Colors.red),
+              const SizedBox(height: 16),
+              Text(_error ?? '无法加载该行程记录'),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('返回'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final record = _fullRecord!;
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
     final duration = record.endTime.difference(record.startTime);
+
+    // 顶部日期
+    final dateStr = '${record.startTime.year}-'
+        '${record.startTime.month.toString().padLeft(2, '0')}-'
+        '${record.startTime.day.toString().padLeft(2, '0')}';
+
     final distStr = record.totalDistanceM < 1000
         ? '${record.totalDistanceM.toStringAsFixed(0)} m'
         : '${(record.totalDistanceM / 1000).toStringAsFixed(2)} km';
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_formatDate(record.startTime)),
+        title: Text(dateStr),
         centerTitle: true,
       ),
       body: Column(
         children: [
-          // ── 轨迹地图（支持手势）──────────────────────────────
           Expanded(child: _TrackDetailMapView(points: record.points)),
 
-          // ── 数据卡片 ──────────────────────────────────────────
+          // 数据卡片
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF141218) : Colors.white,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(20),
-              ),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.12),
@@ -1118,7 +1188,7 @@ class TrackDetailPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 时间段
+                // 时间段（已修复）
                 Row(
                   children: [
                     Icon(
@@ -1128,7 +1198,8 @@ class TrackDetailPage extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      '${_formatTime(record.startTime)} → ${_formatTime(record.endTime)}  （${_formatDuration(duration)}）',
+                      '${_formatTime(record.startTime)} → ${_formatTime(record.endTime)} '
+                      '（${_formatDuration(duration)}）',
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                       ),
@@ -1136,7 +1207,8 @@ class TrackDetailPage extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 16),
-                // 四项数据
+
+                // 四项统计
                 Row(
                   children: [
                     _detailStat(context, distStr, '移动距离', Icons.straighten),
@@ -1168,6 +1240,19 @@ class TrackDetailPage extends StatelessWidget {
     );
   }
 
+  // ==================== 辅助格式化方法 ====================
+
+  String _formatTime(DateTime dt) {
+    return '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+  }
+
+
+  String _formatDuration(Duration d) {
+    if (d.inHours > 0) return '${d.inHours}h ${d.inMinutes.remainder(60)}m';
+    if (d.inMinutes > 0) return '${d.inMinutes}m ${d.inSeconds.remainder(60)}s';
+    return '${d.inSeconds}s';
+  }
+
   Widget _detailStat(
     BuildContext context,
     String value,
@@ -1182,9 +1267,7 @@ class TrackDetailPage extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             value,
-            style: theme.textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
           Text(
@@ -1197,23 +1280,8 @@ class TrackDetailPage extends StatelessWidget {
       ),
     );
   }
-
-  String _formatDate(DateTime dt) => '${dt.year}-${_p(dt.month)}-${_p(dt.day)}';
-
-  String _formatTime(DateTime dt) => '${_p(dt.hour)}:${_p(dt.minute)}';
-
-  String _formatDuration(Duration d) {
-    if (d.inHours > 0) return '${d.inHours}h ${d.inMinutes.remainder(60)}m';
-    if (d.inMinutes > 0) return '${d.inMinutes}m ${d.inSeconds.remainder(60)}s';
-    return '${d.inSeconds}s';
-  }
-
-  String _p(int n) => n.toString().padLeft(2, '0');
 }
 
-// ══════════════════════════════════════════════════════════════════
-//  历史轨迹地图（支持双指缩放 / 旋转 / 平移 / 双击复位）
-// ══════════════════════════════════════════════════════════════════
 class _TrackDetailMapView extends StatefulWidget {
   final List<TrackPoint> points;
 
