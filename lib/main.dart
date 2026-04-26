@@ -33,7 +33,7 @@ class Vars {
 
   static String defaultStationBuild = '4';
   static String defaultTrainBuild = '7';
-  static String defaultCoachTrainBuild = '4';
+  static String defaultCoachTrainBuild = '1';
   static String defaultLocoBuild = '1';
 
   // ---------- stationBuild ----------
