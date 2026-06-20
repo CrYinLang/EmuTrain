@@ -6,10 +6,10 @@
   "minVersion": "1212",
   "message": "",
 
-  "StationBuild": "202606200",
-  "TrainBuild": "202606200",
-  "CoachTrainBuild": "202605240",
-  "LocoBuild": "202605240",
+  "StationBuild": "20260621000",
+  "TrainBuild": "20260621000",
+  "CoachTrainBuild": "20260621000",
+  "LocoBuild": "20260621000",
 
   "github": "https://gh-proxy.com/https://github.com/CrYinLang/EmuTrain/releases/download/1.2.5.1/app-release.apk",
   "gitee": "https://gitee.com/CrYinLang/EmuTrain/releases/download/1.2.5.1/app-release.apk",
