@@ -27136,7 +27136,7 @@
     "city": "三亚",
     "pinyin": "nanshanbei",
     "short_code": "nsb",
-    "location": "109.210215,18.317575"
+    "location": "109.20982648167787,18.31748264271144"
   },
   {
     "code": "nto",
@@ -79865,15 +79865,6 @@
     "tmis": "51478",
     "location": "108.789803,18.508870",
     "crstation": "false"
-  },
-  {
-    "code": "nsb",
-    "name": "南山北",
-    "telecode": "NEQ",
-    "pinyin": "nanshanbei",
-    "short_code": "NSB",
-    "tmis": "51483",
-    "location": "113.930478,22.533191"
   },
   {
     "code": "sya",
