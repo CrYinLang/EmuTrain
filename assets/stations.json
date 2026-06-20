@@ -2511,7 +2511,7 @@
     "city": "广州",
     "pinyin": "baiyunjichangbei",
     "short_code": "byjcb",
-    "location": "113.273200,23.157159",
+    "location": "113.30569372248867,23.396744450855017",
     "province": "广东省",
     "district": "白云区"
   },
@@ -18541,7 +18541,7 @@
     "city": "广州",
     "pinyin": "baiyunjichangdong",
     "short_code": "byjcd",
-    "location": "113.273200,23.157159"
+    "location": "113.32040957309383,23.364774292590283"
   },
   {
     "code": "byg",
@@ -18603,7 +18603,7 @@
     "city": "广州",
     "pinyin": "baiyunjichangnan",
     "short_code": "byjcn",
-    "location": "113.273200,23.157159"
+    "location": "113.30373936124505,23.383139043441307"
   },
   {
     "code": "bys",
@@ -18773,7 +18773,7 @@
     "city": "佛山",
     "pinyin": "chencun",
     "short_code": "cc",
-    "location": "112.756500,22.925325",
+    "location": "113.23823756594776,22.969508149944918",
     "province": "广东省",
     "district": "高明区"
   },
