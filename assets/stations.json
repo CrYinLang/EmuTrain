@@ -5574,7 +5574,7 @@
     "city": "佳木斯",
     "pinyin": "hebei",
     "short_code": "hb",
-    "location": "130.318916,46.800002",
+    "location": "130.470415,47.541779",
     "province": "黑龙江省",
     "district": "[]"
   },
@@ -18793,7 +18793,7 @@
     "city": "承德",
     "pinyin": "chengdexianbei",
     "short_code": "cdxb",
-    "location": "118.291801,40.937206",
+    "location": "118.2842,40.9347",
     "province": "河北省",
     "district": "承德县"
   },
@@ -29789,7 +29789,7 @@
     "city": "牡丹江",
     "pinyin": "shitou",
     "short_code": "st",
-    "location": "129.632928,44.551486",
+    "location": "129.32986,44.17526",
     "province": "黑龙江省",
     "district": "[]"
   },
@@ -46095,7 +46095,8 @@
     "name": "靖江",
     "telecode": "QCH",
     "tmis": "19091",
-    "crstation": "false"
+    "crstation": "false",
+    "location": "120.2519,32.0367"
   },
   {
     "code": "jjn",

@@ -1,11 +1,8 @@
-config_secbote.json
 
 secbote.py
 
-dict/
+bote/
 
 .git/
 
 push
-
-data/
