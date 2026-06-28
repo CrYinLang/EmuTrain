@@ -6,3 +6,7 @@ bote/
 .git/
 
 push
+
+__pycache__
+
+tools

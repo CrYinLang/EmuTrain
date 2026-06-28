@@ -1,0 +1,389 @@
+[
+  {
+    "id": "route_1779111224367",
+    "name": "兴泉铁路",
+    "author": "麻酱涛子",
+    "icon": "bureau/南昌铁路局.png",
+    "createdAt": "2026-05-18T21:33:44.367755",
+    "updatedAt": "2026-06-27T02:53:42.354571",
+    "stations": [
+      {
+        "tel": "EUG"
+      },
+      {
+        "tel": "YYG"
+      },
+      {
+        "tel": "NIG"
+      },
+      {
+        "tel": "SDG"
+      },
+      {
+        "tel": "NHS"
+      },
+      {
+        "tel": "QLS"
+      },
+      {
+        "tel": "MOS"
+      },
+      {
+        "tel": "YQS"
+      },
+      {
+        "tel": "DTS"
+      },
+      {
+        "tel": "DKS"
+      },
+      {
+        "tel": "ACS"
+      },
+      {
+        "tel": "ANS"
+      },
+      {
+        "tel": "NUS"
+      },
+      {
+        "tel": "QYS"
+      }
+    ]
+  },
+  {
+    "id": "route_1781336471316",
+    "name": "宝成铁路",
+    "author": "滢·千问",
+    "icon": "bureau/国铁集团.png",
+    "createdAt": "2026-06-13T15:41:11.316506",
+    "updatedAt": "2026-06-13T17:57:37.691935",
+    "stations": [
+      {
+        "tel": "BJY",
+        "mile": 7.0
+      },
+      {
+        "tel": "BBY",
+        "mile": 9.0
+      },
+      {
+        "tel": "YJY",
+        "mile": 11.0
+      },
+      {
+        "tel": "GYY",
+        "mile": 7.0
+      },
+      {
+        "tel": "QSY",
+        "mile": 7.0
+      },
+      {
+        "tel": "QLY",
+        "mile": 10.0
+      },
+      {
+        "tel": "HNY",
+        "mile": 12.0
+      },
+      {
+        "tel": "HHY",
+        "mile": 12.0
+      },
+      {
+        "tel": "YFY",
+        "mile": 12.0
+      },
+      {
+        "tel": "FZY",
+        "mile": 7.0
+      },
+      {
+        "tel": "QPY",
+        "mile": 10.0
+      },
+      {
+        "tel": "FXY",
+        "mile": 12.0
+      },
+      {
+        "tel": "HEY",
+        "mile": 12.0
+      },
+      {
+        "tel": "LEY",
+        "mile": 10.0
+      },
+      {
+        "tel": "LDY",
+        "mile": 7.0
+      },
+      {
+        "tel": "NJY",
+        "mile": 9.0
+      },
+      {
+        "tel": "HYY",
+        "mile": 12.0
+      },
+      {
+        "tel": "YGY",
+        "mile": 11.0
+      },
+      {
+        "tel": "BSY",
+        "mile": 8.0
+      },
+      {
+        "tel": "HWY",
+        "mile": 8.0
+      },
+      {
+        "tel": "MTY",
+        "mile": 9.0
+      },
+      {
+        "tel": "XJY",
+        "mile": 9.0
+      },
+      {
+        "tel": "HIY",
+        "mile": 9.0
+      },
+      {
+        "tel": "LYY",
+        "mile": 9.0
+      },
+      {
+        "tel": "WJY",
+        "mile": 9.0
+      },
+      {
+        "tel": "LSY",
+        "mile": 13.0
+      },
+      {
+        "tel": "GTY",
+        "mile": 10.0
+      },
+      {
+        "tel": "JTY",
+        "mile": 12.0
+      },
+      {
+        "tel": "YAY",
+        "mile": 12.0
+      },
+      {
+        "tel": "YZY",
+        "mile": 8.0
+      },
+      {
+        "tel": "DBY",
+        "mile": 11.0
+      },
+      {
+        "tel": "DTY",
+        "mile": 11.0
+      },
+      {
+        "tel": "JMY",
+        "mile": 10.0
+      },
+      {
+        "tel": "CTE",
+        "mile": 10.0
+      },
+      {
+        "tel": "GBY",
+        "mile": 12.0
+      },
+      {
+        "tel": "RJY",
+        "mile": 12.0
+      },
+      {
+        "tel": "GYW",
+        "mile": 5.0
+      },
+      {
+        "tel": "GAW",
+        "mile": 10.0
+      },
+      {
+        "tel": "ZLW",
+        "mile": 6.0
+      },
+      {
+        "tel": "ZHW",
+        "mile": 20.0
+      },
+      {
+        "tel": "SBW",
+        "mile": 24.0
+      },
+      {
+        "tel": "ZAW",
+        "mile": 23.0
+      },
+      {
+        "tel": "BYW",
+        "mile": 17.0
+      },
+      {
+        "tel": "MBW",
+        "mile": 5.0
+      },
+      {
+        "tel": "RLW",
+        "mile": 11.0
+      },
+      {
+        "tel": "HBW",
+        "mile": 12.0
+      },
+      {
+        "tel": "XXW",
+        "mile": 15.0
+      },
+      {
+        "tel": "SHW",
+        "mile": 15.0
+      },
+      {
+        "tel": "JFW",
+        "mile": 7.0
+      },
+      {
+        "tel": "SEW",
+        "mile": 23.0
+      },
+      {
+        "tel": "SDW",
+        "mile": 23.0
+      },
+      {
+        "tel": "MAW",
+        "mile": 6.0
+      },
+      {
+        "tel": "MYW",
+        "mile": 8.0
+      },
+      {
+        "tel": "ZPW",
+        "mile": 8.0
+      },
+      {
+        "tel": "LJW",
+        "mile": 24.0
+      },
+      {
+        "tel": "HXW",
+        "mile": 14.0
+      },
+      {
+        "tel": "DYW",
+        "mile": 23.0
+      },
+      {
+        "tel": "GHW",
+        "mile": 23.0
+      },
+      {
+        "tel": "QBW",
+        "mile": 10.0
+      },
+      {
+        "tel": "XDW",
+        "mile": 10.0
+      },
+      {
+        "tel": "THW",
+        "mile": 8.0
+      },
+      {
+        "tel": "CDW"
+      }
+    ]
+  },
+  {
+    "id": "route_1781345152704",
+    "name": "德天铁路",
+    "author": "滢·千问",
+    "icon": "bureau/成都铁路局.png",
+    "createdAt": "2026-06-13T18:05:52.704435",
+    "updatedAt": "2026-06-13T18:05:52.704435",
+    "stations": [
+      {
+        "tel": "DYW",
+        "mile": 7.0
+      },
+      {
+        "tel": "YRW",
+        "mile": 9.0
+      },
+      {
+        "tel": "XQW",
+        "mile": 12.0
+      },
+      {
+        "tel": "MIW",
+        "mile": 8.8
+      },
+      {
+        "tel": "HIW"
+      }
+    ]
+  },
+  {
+    "id": "route_1781344962187",
+    "name": "广岳铁路(无终点站岳家山)",
+    "author": "滢·千问",
+    "icon": "bureau/成都铁路局.png",
+    "createdAt": "2026-06-13T18:02:42.187233",
+    "updatedAt": "2026-06-13T18:02:42.187234",
+    "stations": [
+      {
+        "tel": "GHW",
+        "mile": 10.0
+      },
+      {
+        "tel": "VRW",
+        "mile": 6.0
+      },
+      {
+        "tel": "OFW",
+        "mile": 6.0
+      },
+      {
+        "tel": "ULW",
+        "mile": 7.0
+      },
+      {
+        "tel": "UJW",
+        "mile": 6.0
+      },
+      {
+        "tel": "YDW",
+        "mile": 6.0
+      },
+      {
+        "tel": "ESW",
+        "mile": 5.0
+      },
+      {
+        "tel": "CVW",
+        "mile": 7.0
+      },
+      {
+        "tel": "HVW",
+        "mile": 7.0
+      },
+      {
+        "tel": "MWW"
+      }
+    ]
+  }
+]
