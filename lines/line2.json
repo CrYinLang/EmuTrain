@@ -1450,5 +1450,1336 @@
         "tel": "TMI"
       }
     ]
+  },
+  {
+    "id": "route_1783047876022",
+    "name": "长白快速铁路",
+    "author": "DF11-0444",
+    "icon": "bureau/哈尔滨铁路局.png",
+    "createdAt": "2026-07-03T11:04:36.022632",
+    "updatedAt": "2026-07-03T11:04:36.022632",
+    "stations": [
+      {
+        "tel": "CBT",
+        "mile": 12.0
+      },
+      {
+        "tel": "XWT",
+        "mile": 15.0
+      },
+      {
+        "tel": "KAT",
+        "mile": 15.0
+      },
+      {
+        "tel": "HJT",
+        "mile": 16.0
+      },
+      {
+        "tel": "NAT",
+        "mile": 28.0
+      },
+      {
+        "tel": "HIT",
+        "mile": 24.0
+      },
+      {
+        "tel": "WUT",
+        "mile": 21.0
+      },
+      {
+        "tel": "QCT",
+        "mile": 11.0
+      },
+      {
+        "tel": "VYT",
+        "mile": 8.0
+      },
+      {
+        "tel": "STT",
+        "mile": 24.0
+      },
+      {
+        "tel": "VAT",
+        "mile": 7.0
+      },
+      {
+        "tel": "CVT",
+        "mile": 24.0
+      },
+      {
+        "tel": "RAT",
+        "mile": 12.0
+      },
+      {
+        "tel": "RUT",
+        "mile": 16.0
+      },
+      {
+        "tel": "UJT",
+        "mile": 14.0
+      },
+      {
+        "tel": "AGT",
+        "mile": 35.0
+      },
+      {
+        "tel": "OUT",
+        "mile": 15.0
+      },
+      {
+        "tel": "RBT",
+        "mile": 28.0
+      },
+      {
+        "tel": "BCT"
+      }
+    ]
+  },
+  {
+    "id": "route_1783048019846",
+    "name": "朝开线",
+    "author": "DF11-0444",
+    "icon": "bureau/沈阳铁路局.png",
+    "createdAt": "2026-07-03T11:06:59.846093",
+    "updatedAt": "2026-07-03T11:06:59.846094",
+    "stations": [
+      {
+        "tel": "CYL",
+        "mile": 10.0
+      },
+      {
+        "tel": "SFL",
+        "mile": 9.0
+      },
+      {
+        "tel": "LJL",
+        "mile": 10.0
+      },
+      {
+        "tel": "DEL",
+        "mile": 12.0
+      },
+      {
+        "tel": "BDL",
+        "mile": 17.0
+      },
+      {
+        "tel": "KSL"
+      }
+    ]
+  },
+  {
+    "id": "route_1783048248790",
+    "name": "和龙线",
+    "author": "DF11-0444",
+    "icon": "bureau/沈阳铁路局.png",
+    "createdAt": "2026-07-03T11:10:48.790561",
+    "updatedAt": "2026-07-03T11:10:48.790561",
+    "stations": [
+      {
+        "tel": "LJL",
+        "mile": 20.0
+      },
+      {
+        "tel": "LCL",
+        "mile": 11.0
+      },
+      {
+        "tel": "BZL",
+        "mile": 21.4
+      },
+      {
+        "tel": "HLL"
+      }
+    ]
+  },
+  {
+    "id": "route_1783048378234",
+    "name": "白和线",
+    "author": "DF11-0444",
+    "icon": "bureau/沈阳铁路局.png",
+    "createdAt": "2026-07-03T11:12:58.234014",
+    "updatedAt": "2026-07-03T11:12:58.234014",
+    "stations": [
+      {
+        "tel": "HLL",
+        "mile": 17.0
+      },
+      {
+        "tel": "SKL",
+        "mile": 20.0
+      },
+      {
+        "tel": "ZTL",
+        "mile": 20.0
+      },
+      {
+        "tel": "HGL",
+        "mile": 26.0
+      },
+      {
+        "tel": "OZL",
+        "mile": 20.0
+      },
+      {
+        "tel": "CUL"
+      }
+    ]
+  },
+  {
+    "id": "route_1783048563501",
+    "name": "浑白线",
+    "author": "DF11-0444",
+    "icon": "bureau/沈阳铁路局.png",
+    "createdAt": "2026-07-03T11:16:03.501681",
+    "updatedAt": "2026-07-03T11:16:03.501681",
+    "stations": [
+      {
+        "tel": "HJL",
+        "mile": 13.0
+      },
+      {
+        "tel": "BBL",
+        "mile": 3.0
+      },
+      {
+        "tel": "SZL",
+        "mile": 20.0
+      },
+      {
+        "tel": "DDL",
+        "mile": 11.0
+      },
+      {
+        "tel": "WGL",
+        "mile": 14.0
+      },
+      {
+        "tel": "XCL",
+        "mile": 13.0
+      },
+      {
+        "tel": "SSL",
+        "mile": 6.0
+      },
+      {
+        "tel": "YOL",
+        "mile": 19.0
+      },
+      {
+        "tel": "XRL",
+        "mile": 13.0
+      },
+      {
+        "tel": "ZBL",
+        "mile": 9.0
+      },
+      {
+        "tel": "XSL",
+        "mile": 6.0
+      },
+      {
+        "tel": "SJL",
+        "mile": 14.0
+      },
+      {
+        "tel": "BNL",
+        "mile": 10.0
+      },
+      {
+        "tel": "QYL",
+        "mile": 17.0
+      },
+      {
+        "tel": "YBL",
+        "mile": 8.0
+      },
+      {
+        "tel": "LVL",
+        "mile": 11.0
+      },
+      {
+        "tel": "LUL",
+        "mile": 19.0
+      },
+      {
+        "tel": "HKL",
+        "mile": 11.0
+      },
+      {
+        "tel": "CUL"
+      }
+    ]
+  },
+  {
+    "id": "route_1783048981441",
+    "name": "四梅线",
+    "author": "DF11-0444",
+    "icon": "bureau/沈阳铁路局.png",
+    "createdAt": "2026-07-03T11:23:01.441983",
+    "updatedAt": "2026-07-03T11:23:01.441983",
+    "stations": [
+      {
+        "tel": "SPT",
+        "mile": 4.0
+      },
+      {
+        "tel": "POT",
+        "mile": 14.0
+      },
+      {
+        "tel": "HFL",
+        "mile": 16.0
+      },
+      {
+        "tel": "SOL",
+        "mile": 24.0
+      },
+      {
+        "tel": "PGL",
+        "mile": 9.0
+      },
+      {
+        "tel": "BQL",
+        "mile": 12.0
+      },
+      {
+        "tel": "LYL",
+        "mile": 5.0
+      },
+      {
+        "tel": "UDL",
+        "mile": 15.0
+      },
+      {
+        "tel": "WJL",
+        "mile": 12.0
+      },
+      {
+        "tel": "DZL",
+        "mile": 16.0
+      },
+      {
+        "tel": "DIL",
+        "mile": 27.0
+      },
+      {
+        "tel": "MHL"
+      }
+    ]
+  },
+  {
+    "id": "route_1783048911382",
+    "name": "梅集线",
+    "author": "DF11-0444",
+    "icon": "bureau/沈阳铁路局.png",
+    "createdAt": "2026-07-03T11:21:51.382382",
+    "updatedAt": "2026-07-03T11:21:51.382382",
+    "stations": [
+      {
+        "tel": "MHL",
+        "mile": 21.3
+      },
+      {
+        "tel": "XJL",
+        "mile": 11.1
+      },
+      {
+        "tel": "LNL",
+        "mile": 9.1
+      },
+      {
+        "tel": "ZPL",
+        "mile": 11.1
+      },
+      {
+        "tel": "TIL",
+        "mile": 7.4
+      },
+      {
+        "tel": "WDL",
+        "mile": 14.3
+      },
+      {
+        "tel": "SYL",
+        "mile": 13.0
+      },
+      {
+        "tel": "TOL",
+        "mile": 12.4
+      },
+      {
+        "tel": "GGL",
+        "mile": 14.0
+      },
+      {
+        "tel": "RML",
+        "mile": 15.9
+      },
+      {
+        "tel": "THL",
+        "mile": 7.5
+      },
+      {
+        "tel": "DTL",
+        "mile": 7.9
+      },
+      {
+        "tel": "SIL",
+        "mile": 5.9
+      },
+      {
+        "tel": "YYL",
+        "mile": 5.5
+      },
+      {
+        "tel": "TCL",
+        "mile": 15.7
+      },
+      {
+        "tel": "GSL",
+        "mile": 39.5
+      },
+      {
+        "tel": "HBL",
+        "mile": 18.6
+      },
+      {
+        "tel": "YAL",
+        "mile": 13.9
+      },
+      {
+        "tel": "JAL",
+        "mile": 7.4
+      },
+      {
+        "tel": "JAI"
+      }
+    ]
+  },
+  {
+    "id": "route_1783048812340",
+    "name": "鸭大线",
+    "author": "DF11-0444",
+    "icon": "bureau/沈阳铁路局.png",
+    "createdAt": "2026-07-03T11:20:12.340818",
+    "updatedAt": "2026-07-03T11:20:12.340818",
+    "stations": [
+      {
+        "tel": "YYL",
+        "mile": 8.8
+      },
+      {
+        "tel": "GYL",
+        "mile": 8.1
+      },
+      {
+        "tel": "DML",
+        "mile": 7.8
+      },
+      {
+        "tel": "LXL",
+        "mile": 12.9
+      },
+      {
+        "tel": "HJL",
+        "mile": 9.0
+      },
+      {
+        "tel": "SRL",
+        "mile": 15.0
+      },
+      {
+        "tel": "YLL",
+        "mile": 38.4
+      },
+      {
+        "tel": "LQL",
+        "mile": 14.4
+      },
+      {
+        "tel": "DLL"
+      }
+    ]
+  },
+  {
+    "id": "route_1783052548848",
+    "name": "绥佳线下行（绥化-佳木斯）",
+    "author": "DF11-0444",
+    "icon": "bureau/哈尔滨铁路局.png",
+    "createdAt": "2026-07-03T12:22:28.848690",
+    "updatedAt": "2026-07-03T12:22:28.848690",
+    "stations": [
+      {
+        "tel": "SHB",
+        "mile": 12.5
+      },
+      {
+        "tel": "XEB",
+        "mile": 10.0
+      },
+      {
+        "tel": "DKB",
+        "mile": 23.2
+      },
+      {
+        "tel": "LCB",
+        "mile": 9.2
+      },
+      {
+        "tel": "QAB",
+        "mile": 24.6
+      },
+      {
+        "tel": "OFB",
+        "mile": 12.8
+      },
+      {
+        "tel": "WYB",
+        "mile": 10.3
+      },
+      {
+        "tel": "TLB",
+        "mile": 11.3
+      },
+      {
+        "tel": "TAB",
+        "mile": 12.1
+      },
+      {
+        "tel": "OCB",
+        "mile": 10.1
+      },
+      {
+        "tel": "SWB",
+        "mile": 9.7
+      },
+      {
+        "tel": "OVB",
+        "mile": 12.2
+      },
+      {
+        "tel": "JSB",
+        "mile": 9.8
+      },
+      {
+        "tel": "XBB",
+        "mile": 13.8
+      },
+      {
+        "tel": "LXB",
+        "mile": 14.1
+      },
+      {
+        "tel": "DLB",
+        "mile": 11.6
+      },
+      {
+        "tel": "OBB",
+        "mile": 20.6
+      },
+      {
+        "tel": "NCB",
+        "mile": 8.4
+      },
+      {
+        "tel": "LTB",
+        "mile": 22.7
+      },
+      {
+        "tel": "CMB",
+        "mile": 14.2
+      },
+      {
+        "tel": "WNB",
+        "mile": 20.0
+      },
+      {
+        "tel": "HHB",
+        "mile": 17.6
+      },
+      {
+        "tel": "XNB",
+        "mile": 19.1
+      },
+      {
+        "tel": "TYB",
+        "mile": 24.6
+      },
+      {
+        "tel": "WJB",
+        "mile": 10.4
+      },
+      {
+        "tel": "XGB",
+        "mile": 2.6
+      },
+      {
+        "tel": "LHB",
+        "mile": 8.1
+      },
+      {
+        "tel": "EMB",
+        "mile": 4.5
+      },
+      {
+        "tel": "JMB"
+      }
+    ]
+  },
+  {
+    "id": "route_1783052497156",
+    "name": "绥佳线上行（佳木斯-绥化）",
+    "author": "DF11-0444",
+    "icon": "bureau/哈尔滨铁路局.png",
+    "createdAt": "2026-07-03T12:21:37.156031",
+    "updatedAt": "2026-07-03T12:21:37.156031",
+    "stations": [
+      {
+        "tel": "JMB",
+        "mile": 4.6
+      },
+      {
+        "tel": "EMB",
+        "mile": 8.0
+      },
+      {
+        "tel": "LHB",
+        "mile": 2.6
+      },
+      {
+        "tel": "XGB",
+        "mile": 10.5
+      },
+      {
+        "tel": "WJB",
+        "mile": 24.6
+      },
+      {
+        "tel": "TYB",
+        "mile": 19.0
+      },
+      {
+        "tel": "XNB",
+        "mile": 17.7
+      },
+      {
+        "tel": "HHB",
+        "mile": 19.9
+      },
+      {
+        "tel": "WNB",
+        "mile": 14.3
+      },
+      {
+        "tel": "CMB",
+        "mile": 22.7
+      },
+      {
+        "tel": "LTB",
+        "mile": 8.4
+      },
+      {
+        "tel": "NCB",
+        "mile": 20.5
+      },
+      {
+        "tel": "OBB",
+        "mile": 11.6
+      },
+      {
+        "tel": "DLB",
+        "mile": 14.1
+      },
+      {
+        "tel": "LXB",
+        "mile": 13.7
+      },
+      {
+        "tel": "XBB",
+        "mile": 9.9
+      },
+      {
+        "tel": "JSB",
+        "mile": 12.2
+      },
+      {
+        "tel": "OVB",
+        "mile": 9.6
+      },
+      {
+        "tel": "SWB",
+        "mile": 10.1
+      },
+      {
+        "tel": "OCB",
+        "mile": 12.2
+      },
+      {
+        "tel": "TAB",
+        "mile": 11.2
+      },
+      {
+        "tel": "TLB",
+        "mile": 10.3
+      },
+      {
+        "tel": "WYB",
+        "mile": 12.8
+      },
+      {
+        "tel": "OFB",
+        "mile": 24.6
+      },
+      {
+        "tel": "QAB",
+        "mile": 9.2
+      },
+      {
+        "tel": "LCB",
+        "mile": 23.9
+      },
+      {
+        "tel": "DKB",
+        "mile": 10.0
+      },
+      {
+        "tel": "XEB",
+        "mile": 11.7
+      },
+      {
+        "tel": "SHB"
+      }
+    ]
+  },
+  {
+    "id": "route_1783052191331",
+    "name": "嫩黑线",
+    "author": "DF11-0444",
+    "icon": "bureau/哈尔滨铁路局.png",
+    "createdAt": "2026-07-03T12:16:31.331712",
+    "updatedAt": "2026-07-03T12:16:31.331712",
+    "stations": [
+      {
+        "tel": "NGX",
+        "mile": 40.4
+      },
+      {
+        "tel": "BGX",
+        "mile": 38.1
+      },
+      {
+        "tel": "ZVX",
+        "mile": 22.6
+      },
+      {
+        "tel": "HZX",
+        "mile": 17.7
+      },
+      {
+        "tel": "YTX",
+        "mile": 31.2
+      },
+      {
+        "tel": "XEX",
+        "mile": 5.7
+      },
+      {
+        "tel": "HXX",
+        "mile": 18.1
+      },
+      {
+        "tel": "HPX"
+      }
+    ]
+  },
+  {
+    "id": "route_1783052117690",
+    "name": "北黑铁路",
+    "author": "DF11-0444",
+    "icon": "bureau/哈尔滨铁路局.png",
+    "createdAt": "2026-07-03T12:15:17.690469",
+    "updatedAt": "2026-07-03T12:15:17.690469",
+    "stations": [
+      {
+        "tel": "BAB",
+        "mile": 15.8
+      },
+      {
+        "tel": "RJB",
+        "mile": 19.1
+      },
+      {
+        "tel": "RTB",
+        "mile": 16.7
+      },
+      {
+        "tel": "WRB",
+        "mile": 11.1
+      },
+      {
+        "tel": "LZA",
+        "mile": 18.4
+      },
+      {
+        "tel": "XXB",
+        "mile": 14.1
+      },
+      {
+        "tel": "LUB",
+        "mile": 41.9
+      },
+      {
+        "tel": "CQB",
+        "mile": 30.1
+      },
+      {
+        "tel": "QUB",
+        "mile": 19.6
+      },
+      {
+        "tel": "SKB",
+        "mile": 31.4
+      },
+      {
+        "tel": "EVB",
+        "mile": 16.0
+      },
+      {
+        "tel": "CAB",
+        "mile": 23.1
+      },
+      {
+        "tel": "NBB",
+        "mile": 29.8
+      },
+      {
+        "tel": "JHB",
+        "mile": 15.7
+      },
+      {
+        "tel": "HJB"
+      }
+    ]
+  },
+  {
+    "id": "route_1783052042990",
+    "name": "平齐线",
+    "author": "DF11-0444",
+    "icon": "",
+    "createdAt": "2026-07-03T12:14:02.990679",
+    "updatedAt": "2026-07-03T12:14:02.990679",
+    "stations": [
+      {
+        "tel": "SPT",
+        "mile": 11.0
+      },
+      {
+        "tel": "QGD",
+        "mile": 17.0
+      },
+      {
+        "tel": "BMD",
+        "mile": 11.0
+      },
+      {
+        "tel": "QND",
+        "mile": 25.0
+      },
+      {
+        "tel": "SKD",
+        "mile": 12.0
+      },
+      {
+        "tel": "JBD",
+        "mile": 14.0
+      },
+      {
+        "tel": "ZJD",
+        "mile": 26.0
+      },
+      {
+        "tel": "WOD",
+        "mile": 35.0
+      },
+      {
+        "tel": "MLD",
+        "mile": 19.0
+      },
+      {
+        "tel": "BKD",
+        "mile": 34.0
+      },
+      {
+        "tel": "TIT",
+        "mile": 49.0
+      },
+      {
+        "tel": "KTT",
+        "mile": 52.0
+      },
+      {
+        "tel": "HOT",
+        "mile": 16.0
+      },
+      {
+        "tel": "TVT",
+        "mile": 32.0
+      },
+      {
+        "tel": "BCT",
+        "mile": 38.0
+      },
+      {
+        "tel": "ZLT",
+        "mile": 40.0
+      },
+      {
+        "tel": "TTT",
+        "mile": 13.0
+      },
+      {
+        "tel": "JJT",
+        "mile": 11.0
+      },
+      {
+        "tel": "TLX",
+        "mile": 26.0
+      },
+      {
+        "tel": "PYX",
+        "mile": 22.0
+      },
+      {
+        "tel": "JQX",
+        "mile": 13.0
+      },
+      {
+        "tel": "DXX",
+        "mile": 12.0
+      },
+      {
+        "tel": "TCX",
+        "mile": 13.0
+      },
+      {
+        "tel": "SFX",
+        "mile": 8.0
+      },
+      {
+        "tel": "YSX",
+        "mile": 15.0
+      },
+      {
+        "tel": "DMX",
+        "mile": 7.0
+      },
+      {
+        "tel": "QHX"
+      }
+    ]
+  },
+  {
+    "id": "route_1783051953142",
+    "name": "开源线",
+    "author": "DF11-0444",
+    "icon": "bureau/沈阳铁路局.png",
+    "createdAt": "2026-07-03T12:12:33.142305",
+    "updatedAt": "2026-07-03T12:12:33.142306",
+    "stations": [
+      {
+        "tel": "LYL",
+        "mile": 20.0
+      },
+      {
+        "tel": "ATT",
+        "mile": 13.4
+      },
+      {
+        "tel": "ANT",
+        "mile": 15.2
+      },
+      {
+        "tel": "XFT",
+        "mile": 30.8
+      },
+      {
+        "tel": "SUT",
+        "mile": 35.6
+      },
+      {
+        "tel": "KYT"
+      }
+    ]
+  },
+  {
+    "id": "route_1783053170075",
+    "name": "神朔铁路",
+    "author": "太局湖段",
+    "icon": "bureau/兰州铁路局.png",
+    "createdAt": "2026-07-03T12:32:50.075709",
+    "updatedAt": "2026-07-03T12:32:50.075709",
+    "stations": [
+      {
+        "tel": "OMV",
+        "mile": 14.0
+      },
+      {
+        "tel": "DUY",
+        "mile": 19.0
+      },
+      {
+        "tel": "HIV",
+        "mile": 25.0
+      },
+      {
+        "tel": "FUV",
+        "mile": 21.0
+      },
+      {
+        "tel": "WIV",
+        "mile": 17.0
+      },
+      {
+        "tel": "BAV",
+        "mile": 44.0
+      },
+      {
+        "tel": "HKV",
+        "mile": 23.0
+      },
+      {
+        "tel": "WZV",
+        "mile": 46.0
+      },
+      {
+        "tel": "SMV",
+        "mile": 15.0
+      },
+      {
+        "tel": "ONV",
+        "mile": 14.0
+      },
+      {
+        "tel": "SXV"
+      }
+    ]
+  },
+  {
+    "id": "route_1782899751156",
+    "name": "浩吉铁路",
+    "author": "太局湖段",
+    "icon": "bureau/国铁集团.png",
+    "createdAt": "2026-07-01T17:55:51.156978",
+    "updatedAt": "2026-07-01T17:55:51.156979",
+    "stations": [
+      {
+        "tel": "KNY",
+        "mile": 32.0
+      },
+      {
+        "tel": "NHY",
+        "mile": 44.0
+      },
+      {
+        "tel": "TLY",
+        "mile": 36.0
+      },
+      {
+        "tel": "WQY",
+        "mile": 46.0
+      },
+      {
+        "tel": "KZY",
+        "mile": 53.0
+      },
+      {
+        "tel": "JOY",
+        "mile": 22.0
+      },
+      {
+        "tel": "JUY",
+        "mile": 150.0
+      },
+      {
+        "tel": "AOY",
+        "mile": 180.0
+      },
+      {
+        "tel": "KBY",
+        "mile": 28.0
+      },
+      {
+        "tel": "KJY",
+        "mile": 17.0
+      },
+      {
+        "tel": "VOM",
+        "mile": 21.0
+      },
+      {
+        "tel": "LWY",
+        "mile": 17.0
+      },
+      {
+        "tel": "YNV",
+        "mile": 22.0
+      },
+      {
+        "tel": "PVY",
+        "mile": 28.0
+      },
+      {
+        "tel": "SXF",
+        "mile": 29.0
+      },
+      {
+        "tel": "LBY",
+        "mile": 43.0
+      },
+      {
+        "tel": "LPY",
+        "mile": 33.0
+      },
+      {
+        "tel": "USY",
+        "mile": 33.0
+      },
+      {
+        "tel": "WCY",
+        "mile": 47.0
+      },
+      {
+        "tel": "CYY",
+        "mile": 42.0
+      },
+      {
+        "tel": "EDY",
+        "mile": 24.0
+      },
+      {
+        "tel": "NXY",
+        "mile": 18.0
+      },
+      {
+        "tel": "DQY",
+        "mile": 27.0
+      },
+      {
+        "tel": "GON",
+        "mile": 41.0
+      },
+      {
+        "tel": "EON",
+        "mile": 64.0
+      },
+      {
+        "tel": "JKN",
+        "mile": 27.0
+      },
+      {
+        "tel": "ZHN",
+        "mile": 36.0
+      },
+      {
+        "tel": "JLN",
+        "mile": 33.0
+      },
+      {
+        "tel": "GAN",
+        "mile": 22.0
+      },
+      {
+        "tel": "OCN",
+        "mile": 23.0
+      },
+      {
+        "tel": "SJN",
+        "mile": 24.0
+      },
+      {
+        "tel": "HRN",
+        "mile": 29.0
+      },
+      {
+        "tel": "PTN",
+        "mile": 82.0
+      },
+      {
+        "tel": "TON",
+        "mile": 32.0
+      },
+      {
+        "tel": "CSN",
+        "mile": 27.0
+      },
+      {
+        "tel": "FIN",
+        "mile": 52.0
+      },
+      {
+        "tel": "OON",
+        "mile": 63.0
+      },
+      {
+        "tel": "GQN",
+        "mile": 19.0
+      },
+      {
+        "tel": "EQN",
+        "mile": 23.0
+      },
+      {
+        "tel": "EPN",
+        "mile": 34.0
+      },
+      {
+        "tel": "ASN",
+        "mile": 56.0
+      },
+      {
+        "tel": "GJN",
+        "mile": 52.0
+      },
+      {
+        "tel": "DWN",
+        "mile": 82.0
+      },
+      {
+        "tel": "VAG"
+      }
+    ]
+  },
+  {
+    "id": "route_1783053456138",
+    "name": "唐呼铁路",
+    "author": "太局湖段",
+    "icon": "train/CR220J.png",
+    "createdAt": "2026-07-03T12:37:36.138606",
+    "updatedAt": "2026-07-03T12:37:36.138606",
+    "stations": [
+      {
+        "tel": "CXV",
+        "mile": 106.0
+      },
+      {
+        "tel": "VRP",
+        "mile": 215.0
+      },
+      {
+        "tel": "CNP",
+        "mile": 246.0
+      },
+      {
+        "tel": "IXP",
+        "mile": 147.0
+      },
+      {
+        "tel": "JAC",
+        "mile": 145.0
+      },
+      {
+        "tel": "TMC"
+      }
+    ]
+  },
+  {
+    "id": "route_1783053407656",
+    "name": "侯月铁路",
+    "author": "太局湖段",
+    "icon": "train/CR200J.png",
+    "createdAt": "2026-07-03T12:36:47.656069",
+    "updatedAt": "2026-07-03T12:36:47.656069",
+    "stations": [
+      {
+        "tel": "HMV",
+        "mile": 16.0
+      },
+      {
+        "tel": "QWV",
+        "mile": 27.0
+      },
+      {
+        "tel": "YHV",
+        "mile": 64.0
+      },
+      {
+        "tel": "YNF",
+        "mile": 76.0
+      },
+      {
+        "tel": "JYF",
+        "mile": 69.0
+      },
+      {
+        "tel": "YBF"
+      }
+    ]
+  },
+  {
+    "id": "route_1783053351322",
+    "name": "大秦铁路",
+    "author": "太局湖段",
+    "icon": "bureau/国铁集团.png",
+    "createdAt": "2026-07-03T12:35:51.322825",
+    "updatedAt": "2026-07-03T12:35:51.322825",
+    "stations": [
+      {
+        "tel": "HAV",
+        "mile": 5.0
+      },
+      {
+        "tel": "DMV",
+        "mile": 7.0
+      },
+      {
+        "tel": "HUV",
+        "mile": 42.0
+      },
+      {
+        "tel": "DFV",
+        "mile": 47.0
+      },
+      {
+        "tel": "YUV",
+        "mile": 63.0
+      },
+      {
+        "tel": "HXV",
+        "mile": 159.0
+      },
+      {
+        "tel": "XAV",
+        "mile": 19.0
+      },
+      {
+        "tel": "CWV",
+        "mile": 59.0
+      },
+      {
+        "tel": "RSV",
+        "mile": 54.0
+      },
+      {
+        "tel": "YBV",
+        "mile": 65.0
+      },
+      {
+        "tel": "QBV",
+        "mile": 48.0
+      },
+      {
+        "tel": "LOV",
+        "mile": 85.0
+      },
+      {
+        "tel": "LNV",
+        "mile": 5.0
+      },
+      {
+        "tel": "QTP"
+      }
+    ]
   }
 ]
