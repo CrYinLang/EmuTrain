@@ -385,5 +385,1070 @@
         "tel": "MWW"
       }
     ]
+  },
+  {
+    "id": "route_1783045046457",
+    "name": "滨洲线",
+    "author": "DF11-0444",
+    "icon": "train/cr400bf.png",
+    "createdAt": "2026-07-03T10:17:26.457897",
+    "updatedAt": "2026-07-03T10:17:26.457897",
+    "stations": [
+      {
+        "tel": "HBB",
+        "mile": 13.0
+      },
+      {
+        "tel": "HTB",
+        "mile": 7.0
+      },
+      {
+        "tel": "WEB",
+        "mile": 11.0
+      },
+      {
+        "tel": "DQB",
+        "mile": 11.0
+      },
+      {
+        "tel": "LMB",
+        "mile": 10.0
+      },
+      {
+        "tel": "JJB",
+        "mile": 11.0
+      },
+      {
+        "tel": "ZDB",
+        "mile": 11.0
+      },
+      {
+        "tel": "SJB",
+        "mile": 22.0
+      },
+      {
+        "tel": "SOB",
+        "mile": 20.0
+      },
+      {
+        "tel": "YAB",
+        "mile": 11.0
+      },
+      {
+        "tel": "ADX",
+        "mile": 21.0
+      },
+      {
+        "tel": "LFX",
+        "mile": 11.0
+      },
+      {
+        "tel": "DZX",
+        "mile": 11.0
+      },
+      {
+        "tel": "RHX",
+        "mile": 10.0
+      },
+      {
+        "tel": "LMX",
+        "mile": 21.0
+      },
+      {
+        "tel": "GJX",
+        "mile": 11.0
+      },
+      {
+        "tel": "TKX",
+        "mile": 26.0
+      },
+      {
+        "tel": "YUX",
+        "mile": 23.0
+      },
+      {
+        "tel": "HQX",
+        "mile": 9.0
+      },
+      {
+        "tel": "AAX",
+        "mile": 14.0
+      },
+      {
+        "tel": "FRX",
+        "mile": 9.0
+      },
+      {
+        "tel": "HHX",
+        "mile": 21.0
+      },
+      {
+        "tel": "BSX",
+        "mile": 9.0
+      },
+      {
+        "tel": "LJX",
+        "mile": 21.0
+      },
+      {
+        "tel": "LUX",
+        "mile": 11.0
+      },
+      {
+        "tel": "NZX",
+        "mile": 10.0
+      },
+      {
+        "tel": "JXX",
+        "mile": 19.0
+      },
+      {
+        "tel": "CJX",
+        "mile": 22.0
+      },
+      {
+        "tel": "GTX",
+        "mile": 10.0
+      },
+      {
+        "tel": "ZTX",
+        "mile": 30.0
+      },
+      {
+        "tel": "HAX",
+        "mile": 10.0
+      },
+      {
+        "tel": "NMX",
+        "mile": 22.0
+      },
+      {
+        "tel": "BLX",
+        "mile": 10.0
+      },
+      {
+        "tel": "LSX",
+        "mile": 22.0
+      },
+      {
+        "tel": "YYX",
+        "mile": 17.0
+      },
+      {
+        "tel": "GKX",
+        "mile": 12.0
+      },
+      {
+        "tel": "BKX",
+        "mile": 25.0
+      },
+      {
+        "tel": "XVX",
+        "mile": 18.0
+      },
+      {
+        "tel": "XKX",
+        "mile": 22.0
+      },
+      {
+        "tel": "WRX",
+        "mile": 30.0
+      },
+      {
+        "tel": "MDX",
+        "mile": 33.0
+      },
+      {
+        "tel": "YKX",
+        "mile": 18.0
+      },
+      {
+        "tel": "DYX",
+        "mile": 9.0
+      },
+      {
+        "tel": "ZMX",
+        "mile": 27.0
+      },
+      {
+        "tel": "HKX",
+        "mile": 20.0
+      },
+      {
+        "tel": "HLX",
+        "mile": 8.0
+      },
+      {
+        "tel": "HRX",
+        "mile": 31.0
+      },
+      {
+        "tel": "WGX",
+        "mile": 31.0
+      },
+      {
+        "tel": "WOX",
+        "mile": 33.0
+      },
+      {
+        "tel": "HDX",
+        "mile": 20.0
+      },
+      {
+        "tel": "HTX",
+        "mile": 10.0
+      },
+      {
+        "tel": "CAX",
+        "mile": 32.0
+      },
+      {
+        "tel": "ZRX",
+        "mile": 6.0
+      },
+      {
+        "tel": "ZXX",
+        "mile": 15.0
+      },
+      {
+        "tel": "LNX",
+        "mile": 8.0
+      },
+      {
+        "tel": "MLX"
+      }
+    ]
+  },
+  {
+    "id": "route_1783045424458",
+    "name": "滨北线",
+    "author": "DF11-0444",
+    "icon": "bureau/哈尔滨铁路局.png",
+    "createdAt": "2026-07-03T10:23:44.458188",
+    "updatedAt": "2026-07-03T10:23:54.104241",
+    "stations": [
+      {
+        "tel": "VBB",
+        "mile": 3.0
+      },
+      {
+        "tel": "TPB",
+        "mile": 3.0
+      },
+      {
+        "tel": "BJB",
+        "mile": 3.0
+      },
+      {
+        "tel": "XOB",
+        "mile": 9.0
+      },
+      {
+        "tel": "XJB",
+        "mile": 10.0
+      },
+      {
+        "tel": "HUB",
+        "mile": 15.0
+      },
+      {
+        "tel": "OJB",
+        "mile": 12.0
+      },
+      {
+        "tel": "KJB",
+        "mile": 13.0
+      },
+      {
+        "tel": "SRB",
+        "mile": 13.0
+      },
+      {
+        "tel": "BKB",
+        "mile": 12.0
+      },
+      {
+        "tel": "XZB",
+        "mile": 11.0
+      },
+      {
+        "tel": "WFB",
+        "mile": 17.0
+      },
+      {
+        "tel": "SHB",
+        "mile": 13.0
+      },
+      {
+        "tel": "OAB",
+        "mile": 5.0
+      },
+      {
+        "tel": "QJB",
+        "mile": 14.0
+      },
+      {
+        "tel": "STB",
+        "mile": 16.0
+      },
+      {
+        "tel": "ZWB",
+        "mile": 11.0
+      },
+      {
+        "tel": "EQB",
+        "mile": 11.0
+      },
+      {
+        "tel": "SIB",
+        "mile": 20.0
+      },
+      {
+        "tel": "DBB",
+        "mile": 12.0
+      },
+      {
+        "tel": "HLB",
+        "mile": 15.0
+      },
+      {
+        "tel": "ZYB",
+        "mile": 12.0
+      },
+      {
+        "tel": "HEB",
+        "mile": 15.0
+      },
+      {
+        "tel": "TBB",
+        "mile": 8.0
+      },
+      {
+        "tel": "YJB",
+        "mile": 13.0
+      },
+      {
+        "tel": "LJB",
+        "mile": 16.0
+      },
+      {
+        "tel": "ZGB",
+        "mile": 27.0
+      },
+      {
+        "tel": "BAB"
+      }
+    ]
+  },
+  {
+    "id": "route_1783045938135",
+    "name": "牙林线",
+    "author": "DF11-0444",
+    "icon": "bureau/哈尔滨铁路局.png",
+    "createdAt": "2026-07-03T10:32:18.135756",
+    "updatedAt": "2026-07-03T10:32:18.135756",
+    "stations": [
+      {
+        "tel": "YKX",
+        "mile": 14.0
+      },
+      {
+        "tel": "HUX",
+        "mile": 27.0
+      },
+      {
+        "tel": "MYX",
+        "mile": 16.0
+      },
+      {
+        "tel": "MTX",
+        "mile": 11.0
+      },
+      {
+        "tel": "WHX",
+        "mile": 24.0
+      },
+      {
+        "tel": "YNX",
+        "mile": 27.0
+      },
+      {
+        "tel": "YWX",
+        "mile": 25.0
+      },
+      {
+        "tel": "KDX",
+        "mile": 20.0
+      },
+      {
+        "tel": "XZX",
+        "mile": 9.0
+      },
+      {
+        "tel": "LWX",
+        "mile": 17.0
+      },
+      {
+        "tel": "LBX",
+        "mile": 22.0
+      },
+      {
+        "tel": "TEX",
+        "mile": 24.0
+      },
+      {
+        "tel": "YEX",
+        "mile": 11.0
+      },
+      {
+        "tel": "HVX",
+        "mile": 15.0
+      },
+      {
+        "tel": "GEX",
+        "mile": 22.0
+      },
+      {
+        "tel": "CZX",
+        "mile": 7.0
+      },
+      {
+        "tel": "CYX",
+        "mile": 23.0
+      },
+      {
+        "tel": "JNX",
+        "mile": 28.0
+      },
+      {
+        "tel": "JHX",
+        "mile": 33.0
+      },
+      {
+        "tel": "NRX",
+        "mile": 19.0
+      },
+      {
+        "tel": "ASX",
+        "mile": 33.0
+      },
+      {
+        "tel": "AWX",
+        "mile": 14.0
+      },
+      {
+        "tel": "MHX"
+      }
+    ]
+  },
+  {
+    "id": "route_1783046433315",
+    "name": "博林线",
+    "author": "DF11-0444",
+    "icon": "train/cr400bf.png",
+    "createdAt": "2026-07-03T10:40:33.315133",
+    "updatedAt": "2026-07-03T10:41:39.292720",
+    "stations": [
+      {
+        "tel": "GKX",
+        "mile": 22.0
+      },
+      {
+        "tel": "ZOX",
+        "mile": 19.0
+      },
+      {
+        "tel": "SZX",
+        "mile": 34.0
+      },
+      {
+        "tel": "XRX",
+        "mile": 5.0
+      },
+      {
+        "tel": "FNWVYP",
+        "mile": 45.0
+      },
+      {
+        "tel": "TVX"
+      }
+    ]
+  },
+  {
+    "id": "route_1783046760572",
+    "name": "朝乌线",
+    "author": "DF11-0444",
+    "icon": "bureau/哈尔滨铁路局.png",
+    "createdAt": "2026-07-03T10:46:00.572453",
+    "updatedAt": "2026-07-03T10:46:00.572453",
+    "stations": [
+      {
+        "tel": "CZX",
+        "mile": 33.0
+      },
+      {
+        "tel": "DRX",
+        "mile": 43.0
+      },
+      {
+        "tel": "MRX"
+      }
+    ]
+  },
+  {
+    "id": "route_1783046911995",
+    "name": "伊加线",
+    "author": "DF11-0444",
+    "icon": "bureau/哈尔滨铁路局.png",
+    "createdAt": "2026-07-03T10:48:31.995127",
+    "updatedAt": "2026-07-03T10:48:31.995127",
+    "stations": [
+      {
+        "tel": "YEX",
+        "mile": 40.0
+      },
+      {
+        "tel": "KQX",
+        "mile": 33.0
+      },
+      {
+        "tel": "KHX",
+        "mile": 30.0
+      },
+      {
+        "tel": "SHX",
+        "mile": 13.0
+      },
+      {
+        "tel": "GAX",
+        "mile": 13.0
+      },
+      {
+        "tel": "JWX",
+        "mile": 42.0
+      },
+      {
+        "tel": "AHX",
+        "mile": 41.0
+      },
+      {
+        "tel": "JGX"
+      }
+    ]
+  },
+  {
+    "id": "route_1783047025659",
+    "name": "富西线",
+    "author": "DF11-0444",
+    "icon": "bureau/哈尔滨铁路局.png",
+    "createdAt": "2026-07-03T10:50:25.659544",
+    "updatedAt": "2026-07-03T10:51:16.269693",
+    "stations": [
+      {
+        "tel": "FYX",
+        "mile": 6.0
+      },
+      {
+        "tel": "XSX",
+        "mile": 13.0
+      },
+      {
+        "tel": "RDX",
+        "mile": 8.0
+      },
+      {
+        "tel": "VSX",
+        "mile": 8.0
+      },
+      {
+        "tel": "TIX",
+        "mile": 13.0
+      },
+      {
+        "tel": "LHX",
+        "mile": 8.0
+      },
+      {
+        "tel": "GMX",
+        "mile": 10.0
+      },
+      {
+        "tel": "LEX",
+        "mile": 11.0
+      },
+      {
+        "tel": "BAX",
+        "mile": 10.0
+      },
+      {
+        "tel": "NHX",
+        "mile": 14.0
+      },
+      {
+        "tel": "VVX",
+        "mile": 9.0
+      },
+      {
+        "tel": "LAX",
+        "mile": 24.0
+      },
+      {
+        "tel": "YLX",
+        "mile": 9.0
+      },
+      {
+        "tel": "SSX",
+        "mile": 9.0
+      },
+      {
+        "tel": "WDX",
+        "mile": 8.0
+      },
+      {
+        "tel": "HSX",
+        "mile": 6.0
+      },
+      {
+        "tel": "XGX",
+        "mile": 6.0
+      },
+      {
+        "tel": "EYX",
+        "mile": 8.0
+      },
+      {
+        "tel": "NGX",
+        "mile": 16.0
+      },
+      {
+        "tel": "HYX",
+        "mile": 10.0
+      },
+      {
+        "tel": "HFX",
+        "mile": 8.0
+      },
+      {
+        "tel": "XIX",
+        "mile": 13.0
+      },
+      {
+        "tel": "VIX",
+        "mile": 26.0
+      },
+      {
+        "tel": "DFX",
+        "mile": 13.0
+      },
+      {
+        "tel": "RYX",
+        "mile": 6.0
+      },
+      {
+        "tel": "DUX",
+        "mile": 10.0
+      },
+      {
+        "tel": "CGX",
+        "mile": 16.0
+      },
+      {
+        "tel": "WBX",
+        "mile": 17.0
+      },
+      {
+        "tel": "CUX",
+        "mile": 17.0
+      },
+      {
+        "tel": "NKX",
+        "mile": 13.0
+      },
+      {
+        "tel": "BPX",
+        "mile": 11.0
+      },
+      {
+        "tel": "JAX",
+        "mile": 12.0
+      },
+      {
+        "tel": "JGX",
+        "mile": 19.0
+      },
+      {
+        "tel": "SXX",
+        "mile": 15.0
+      },
+      {
+        "tel": "CFX",
+        "mile": 22.0
+      },
+      {
+        "tel": "XYX",
+        "mile": 16.0
+      },
+      {
+        "tel": "GUX",
+        "mile": 14.0
+      },
+      {
+        "tel": "DKX",
+        "mile": 7.0
+      },
+      {
+        "tel": "JOX",
+        "mile": 17.0
+      },
+      {
+        "tel": "XXX",
+        "mile": 19.0
+      },
+      {
+        "tel": "TYX",
+        "mile": 17.0
+      },
+      {
+        "tel": "TWX",
+        "mile": 18.0
+      },
+      {
+        "tel": "LXX",
+        "mile": 12.0
+      },
+      {
+        "tel": "XPX",
+        "mile": 16.0
+      },
+      {
+        "tel": "DWX",
+        "mile": 20.0
+      },
+      {
+        "tel": "BOX",
+        "mile": 14.0
+      },
+      {
+        "tel": "CIX",
+        "mile": 25.0
+      },
+      {
+        "tel": "TRX",
+        "mile": 11.0
+      },
+      {
+        "tel": "TXX",
+        "mile": 25.0
+      },
+      {
+        "tel": "XFX",
+        "mile": 12.0
+      },
+      {
+        "tel": "WVX",
+        "mile": 59.0
+      },
+      {
+        "tel": "PGX",
+        "mile": 23.0
+      },
+      {
+        "tel": "NIX",
+        "mile": 39.0
+      },
+      {
+        "tel": "JTX",
+        "mile": 28.0
+      },
+      {
+        "tel": "TQX",
+        "mile": 27.0
+      },
+      {
+        "tel": "MVX",
+        "mile": 17.0
+      },
+      {
+        "tel": "GRX"
+      }
+    ]
+  },
+  {
+    "id": "route_1783047178491",
+    "name": "齐北线",
+    "author": "DF11-0444",
+    "icon": "bureau/哈尔滨铁路局.png",
+    "createdAt": "2026-07-03T10:52:58.491285",
+    "updatedAt": "2026-07-03T10:52:58.491285",
+    "stations": [
+      {
+        "tel": "QHX",
+        "mile": 10.0
+      },
+      {
+        "tel": "GOX",
+        "mile": 7.0
+      },
+      {
+        "tel": "FTX",
+        "mile": 13.0
+      },
+      {
+        "tel": "THX",
+        "mile": 9.0
+      },
+      {
+        "tel": "QIX",
+        "mile": 10.0
+      },
+      {
+        "tel": "ZHX",
+        "mile": 14.0
+      },
+      {
+        "tel": "FYX",
+        "mile": 16.0
+      },
+      {
+        "tel": "SLX",
+        "mile": 17.0
+      },
+      {
+        "tel": "FHB",
+        "mile": 33.0
+      },
+      {
+        "tel": "YDB",
+        "mile": 32.0
+      },
+      {
+        "tel": "GCB",
+        "mile": 14.0
+      },
+      {
+        "tel": "KSB",
+        "mile": 32.0
+      },
+      {
+        "tel": "KOB",
+        "mile": 24.0
+      },
+      {
+        "tel": "BAB"
+      }
+    ]
+  },
+  {
+    "id": "route_1783047593901",
+    "name": "长图线",
+    "author": "DF11-0444",
+    "icon": "bureau/沈阳铁路局.png",
+    "createdAt": "2026-07-03T10:59:53.901274",
+    "updatedAt": "2026-07-03T11:00:01.409133",
+    "stations": [
+      {
+        "tel": "CCT",
+        "mile": 5.0
+      },
+      {
+        "tel": "COT",
+        "mile": 3.9
+      },
+      {
+        "tel": "LWL",
+        "mile": 6.4
+      },
+      {
+        "tel": "XLL",
+        "mile": 10.0
+      },
+      {
+        "tel": "KLL",
+        "mile": 9.6
+      },
+      {
+        "tel": "LPL",
+        "mile": 17.2
+      },
+      {
+        "tel": "JTL",
+        "mile": 7.1
+      },
+      {
+        "tel": "YCL",
+        "mile": 13.4
+      },
+      {
+        "tel": "TNL",
+        "mile": 20.1
+      },
+      {
+        "tel": "HPL",
+        "mile": 11.3
+      },
+      {
+        "tel": "GZL",
+        "mile": 8.2
+      },
+      {
+        "tel": "XUL",
+        "mile": 2.1
+      },
+      {
+        "tel": "JZL",
+        "mile": 7.1
+      },
+      {
+        "tel": "HWL",
+        "mile": 6.1
+      },
+      {
+        "tel": "JLL",
+        "mile": 4.9
+      },
+      {
+        "tel": "LTL",
+        "mile": 2.6
+      },
+      {
+        "tel": "JIL",
+        "mile": 15.2
+      },
+      {
+        "tel": "JFL",
+        "mile": 20.6
+      },
+      {
+        "tel": "DGG",
+        "mile": 11.5
+      },
+      {
+        "tel": "LEL",
+        "mile": 10.2
+      },
+      {
+        "tel": "LLL",
+        "mile": 9.3
+      },
+      {
+        "tel": "XGL",
+        "mile": 10.9
+      },
+      {
+        "tel": "LFL",
+        "mile": 12.4
+      },
+      {
+        "tel": "JHL",
+        "mile": 8.5
+      },
+      {
+        "tel": "WTL",
+        "mile": 18.3
+      },
+      {
+        "tel": "BAL",
+        "mile": 6.6
+      },
+      {
+        "tel": "RDL",
+        "mile": 10.0
+      },
+      {
+        "tel": "HDL",
+        "mile": 14.7
+      },
+      {
+        "tel": "WHL",
+        "mile": 17.0
+      },
+      {
+        "tel": "HHL",
+        "mile": 14.6
+      },
+      {
+        "tel": "QGL",
+        "mile": 13.5
+      },
+      {
+        "tel": "TLL",
+        "mile": 9.6
+      },
+      {
+        "tel": "DHL",
+        "mile": 12.1
+      },
+      {
+        "tel": "DQL",
+        "mile": 11.1
+      },
+      {
+        "tel": "DSL",
+        "mile": 11.9
+      },
+      {
+        "tel": "HRL",
+        "mile": 11.4
+      },
+      {
+        "tel": "NGL",
+        "mile": 11.0
+      },
+      {
+        "tel": "LBL",
+        "mile": 14.2
+      },
+      {
+        "tel": "ATL",
+        "mile": 13.4
+      },
+      {
+        "tel": "CTL",
+        "mile": 11.5
+      },
+      {
+        "tel": "YNL",
+        "mile": 8.4
+      },
+      {
+        "tel": "BYL",
+        "mile": 11.5
+      },
+      {
+        "tel": "TSL",
+        "mile": 10.3
+      },
+      {
+        "tel": "CYL",
+        "mile": 11.1
+      },
+      {
+        "tel": "YJL",
+        "mile": 10.0
+      },
+      {
+        "tel": "XDL",
+        "mile": 6.5
+      },
+      {
+        "tel": "MPL",
+        "mile": 16.2
+      },
+      {
+        "tel": "WZL",
+        "mile": 13.7
+      },
+      {
+        "tel": "QSL",
+        "mile": 5.3
+      },
+      {
+        "tel": "TML",
+        "mile": 2.0
+      },
+      {
+        "tel": "TMI"
+      }
+    ]
   }
 ]

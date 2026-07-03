@@ -1,5 +1,5 @@
 {
-  "LastUpdate": "260627",
+  "LastUpdate": "260703",
   "Version": "1.2.5.1",
   "Build": "1251",
   "minVersion": "1212",
@@ -7,7 +7,7 @@
   "StationBuild": "20260627001",
   "TrainBuild": "20260621000",
   "CoachTrainBuild": "20260621000",
-  "LocoBuild": "20260621000",
+  "LocoBuild": "20260703001",
   "github": "https://gh-proxy.com/https://github.com/CrYinLang/EmuTrain/releases/download/1.2.5.1/app-release.apk",
   "gitee": "https://gitee.com/CrYinLang/EmuTrain/releases/download/1.2.5.1/app-release.apk",
   "qq": "https://qm.qq.com/q/fk5M9PJGyk",

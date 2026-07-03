@@ -1,0 +1,45 @@
+{
+  "1095704629": {
+    "server": "play.simpfun.cn:29814",
+    "password": "Yuebian26",
+    "bindings": {
+      "3990921174": "Yuebian",
+      "2705799013": "CrYinLang"
+    },
+    "admins": [
+      "3990921174"
+    ]
+  },
+  "309498965": {
+    "server": "play.simpfun.cn:43200",
+    "password": "2444666668888888abc",
+    "bindings": {
+      "2705799013": "CrYinLang",
+      "3283809175": "SpaperJ_111",
+      "3289782606": "1145149178136767",
+      "3648093202": "hxzz1",
+      "3938231460": "Chineseflag",
+      "3863998864": "xuyinuo",
+      "2477896562": "Moqiao_",
+      "234484598": "ForeverGuYuan"
+    },
+    "admins": [
+      "3160763932"
+    ]
+  },
+  "1094954718": {
+    "server": "play.simpfun.cn:43200",
+    "password": "CrYinLang666",
+    "bindings": {
+      "2705799013": "CrYinLang"
+    }
+  },
+  "722615898": {
+    "server": "play.simpfun.cn:43200",
+    "password": "2444666668888888abc",
+    "bindings": {},
+    "admins": [
+      "3160763932"
+    ]
+  }
+}
