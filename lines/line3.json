@@ -1,0 +1,1091 @@
+[
+  {
+    "id": "route_1783143668942",
+    "name": "沪昆铁路",
+    "author": "太局湖段",
+    "icon": "train/CR400BF.png",
+    "createdAt": "2026-07-04T13:41:08.942587",
+    "updatedAt": "2026-07-04T13:41:08.942587",
+    "stations": [
+      {
+        "tel": "SHH",
+        "mile": 14.0
+      },
+      {
+        "tel": "SNH",
+        "mile": 7.0
+      },
+      {
+        "tel": "XZH",
+        "mile": 5.0
+      },
+      {
+        "tel": "XQH",
+        "mile": 27.0
+      },
+      {
+        "tel": "SGH",
+        "mile": 7.0
+      },
+      {
+        "tel": "FJH",
+        "mile": 4.0
+      },
+      {
+        "tel": "JSH",
+        "mile": 21.0
+      },
+      {
+        "tel": "JXH",
+        "mile": 12.0
+      },
+      {
+        "tel": "MWH",
+        "mile": 13.0
+      },
+      {
+        "tel": "HNH",
+        "mile": 22.0
+      },
+      {
+        "tel": "CAH",
+        "mile": 20.0
+      },
+      {
+        "tel": "LPH",
+        "mile": 14.0
+      },
+      {
+        "tel": "QAH",
+        "mile": 11.0
+      },
+      {
+        "tel": "HZH",
+        "mile": 17.0
+      },
+      {
+        "tel": "BLH",
+        "mile": 29.0
+      },
+      {
+        "tel": "MCH",
+        "mile": 26.0
+      },
+      {
+        "tel": "ZDH",
+        "mile": 18.0
+      },
+      {
+        "tel": "PTH",
+        "mile": 30.0
+      },
+      {
+        "tel": "YWH",
+        "mile": 63.0
+      },
+      {
+        "tel": "JBH",
+        "mile": 16.0
+      },
+      {
+        "tel": "BUH",
+        "mile": 12.0
+      },
+      {
+        "tel": "TXH",
+        "mile": 14.0
+      },
+      {
+        "tel": "LMH",
+        "mile": 41.0
+      },
+      {
+        "tel": "QEH",
+        "mile": 33.0
+      },
+      {
+        "tel": "JUH",
+        "mile": 13.0
+      },
+      {
+        "tel": "XTH",
+        "mile": 25.0
+      },
+      {
+        "tel": "YNG",
+        "mile": 53.0
+      },
+      {
+        "tel": "SRG",
+        "mile": 119.0
+      },
+      {
+        "tel": "YTG",
+        "mile": 61.0
+      },
+      {
+        "tel": "XTG",
+        "mile": 38.0
+      },
+      {
+        "tel": "NCG",
+        "mile": 162.0
+      },
+      {
+        "tel": "PXG",
+        "mile": 108.0
+      },
+      {
+        "tel": "ZZQ",
+        "mile": 34.0
+      },
+      {
+        "tel": "CSQ",
+        "mile": 107.0
+      },
+      {
+        "tel": "LDQ",
+        "mile": 224.0
+      },
+      {
+        "tel": "HHQ",
+        "mile": 56.0
+      },
+      {
+        "tel": "YZW",
+        "mile": 163.0
+      },
+      {
+        "tel": "GIW",
+        "mile": 206.0
+      },
+      {
+        "tel": "UMW",
+        "mile": 156.0
+      },
+      {
+        "tel": "XWM",
+        "mile": 120.0
+      },
+      {
+        "tel": "QJM",
+        "mile": 142.0
+      },
+      {
+        "tel": "KMM"
+      }
+    ]
+  },
+  {
+    "id": "route_1783143751792",
+    "name": "陇海铁路",
+    "author": "太局湖段",
+    "icon": "train/CRH2A-2460.png",
+    "createdAt": "2026-07-04T13:42:31.792370",
+    "updatedAt": "2026-07-04T13:42:31.792371",
+    "stations": [
+      {
+        "tel": "IHH",
+        "mile": 14.0
+      },
+      {
+        "tel": "UIH",
+        "mile": 9.0
+      },
+      {
+        "tel": "UKH",
+        "mile": 33.0
+      },
+      {
+        "tel": "DQH",
+        "mile": 23.0
+      },
+      {
+        "tel": "WLH",
+        "mile": 21.0
+      },
+      {
+        "tel": "VIH",
+        "mile": 15.0
+      },
+      {
+        "tel": "PCH",
+        "mile": 15.0
+      },
+      {
+        "tel": "PJH",
+        "mile": 76.0
+      },
+      {
+        "tel": "XCH",
+        "mile": 10.0
+      },
+      {
+        "tel": "XEH",
+        "mile": 14.0
+      },
+      {
+        "tel": "TRH",
+        "mile": 25.0
+      },
+      {
+        "tel": "KOH",
+        "mile": 34.0
+      },
+      {
+        "tel": "DKH",
+        "mile": 33.0
+      },
+      {
+        "tel": "AVH",
+        "mile": 27.0
+      },
+      {
+        "tel": "EJH",
+        "mile": 24.0
+      },
+      {
+        "tel": "IXH",
+        "mile": 25.0
+      },
+      {
+        "tel": "SQF",
+        "mile": 95.0
+      },
+      {
+        "tel": "KFF",
+        "mile": 59.0
+      },
+      {
+        "tel": "ZZF",
+        "mile": 139.0
+      },
+      {
+        "tel": "LYF",
+        "mile": 123.0
+      },
+      {
+        "tel": "SMF",
+        "mile": 253.0
+      },
+      {
+        "tel": "XAY",
+        "mile": 181.0
+      },
+      {
+        "tel": "BJY",
+        "mile": 166.0
+      },
+      {
+        "tel": "TSJ",
+        "mile": 218.0
+      },
+      {
+        "tel": "DSJ",
+        "mile": 127.0
+      },
+      {
+        "tel": "LZJ"
+      }
+    ]
+  },
+  {
+    "id": "route_1783144159332",
+    "name": "陇海线兰郑段",
+    "author": "DF11-0444",
+    "icon": "train/CR200J.png",
+    "createdAt": "2026-07-04T13:49:19.332310",
+    "updatedAt": "2026-07-04T13:49:19.332310",
+    "stations": [
+      {
+        "tel": "LZJ",
+        "mile": 11.0
+      },
+      {
+        "tel": "LVJ",
+        "mile": 33.0
+      },
+      {
+        "tel": "SAJ",
+        "mile": 23.0
+      },
+      {
+        "tel": "XGJ",
+        "mile": 27.0
+      },
+      {
+        "tel": "GDJ",
+        "mile": 28.0
+      },
+      {
+        "tel": "CKJ",
+        "mile": 26.0
+      },
+      {
+        "tel": "DSJ",
+        "mile": 45.0
+      },
+      {
+        "tel": "TAJ",
+        "mile": 23.0
+      },
+      {
+        "tel": "YTJ",
+        "mile": 23.0
+      },
+      {
+        "tel": "LXJ",
+        "mile": 23.0
+      },
+      {
+        "tel": "YYJ",
+        "mile": 20.0
+      },
+      {
+        "tel": "WSJ",
+        "mile": 9.0
+      },
+      {
+        "tel": "LMJ",
+        "mile": 11.0
+      },
+      {
+        "tel": "PAJ",
+        "mile": 29.0
+      },
+      {
+        "tel": "GGJ",
+        "mile": 31.0
+      },
+      {
+        "tel": "WNJ",
+        "mile": 8.0
+      },
+      {
+        "tel": "SYJ",
+        "mile": 8.0
+      },
+      {
+        "tel": "NHJ",
+        "mile": 25.0
+      },
+      {
+        "tel": "TSJ",
+        "mile": 8.0
+      },
+      {
+        "tel": "STY",
+        "mile": 22.0
+      },
+      {
+        "tel": "YLY",
+        "mile": 22.0
+      },
+      {
+        "tel": "JHY",
+        "mile": 11.0
+      },
+      {
+        "tel": "FGY",
+        "mile": 21.0
+      },
+      {
+        "tel": "TSY",
+        "mile": 7.0
+      },
+      {
+        "tel": "SJY",
+        "mile": 49.0
+      },
+      {
+        "tel": "BJY",
+        "mile": 38.0
+      },
+      {
+        "tel": "CJY",
+        "mile": 25.0
+      },
+      {
+        "tel": "YSY",
+        "mile": 18.0
+      },
+      {
+        "tel": "XPY",
+        "mile": 22.0
+      },
+      {
+        "tel": "XYY",
+        "mile": 23.0
+      },
+      {
+        "tel": "XAY",
+        "mile": 21.0
+      },
+      {
+        "tel": "YCY",
+        "mile": 10.0
+      },
+      {
+        "tel": "LIY",
+        "mile": 10.0
+      },
+      {
+        "tel": "XFY",
+        "mile": 14.0
+      },
+      {
+        "tel": "LKY",
+        "mile": 16.0
+      },
+      {
+        "tel": "WNY",
+        "mile": 26.0
+      },
+      {
+        "tel": "HXY",
+        "mile": 16.0
+      },
+      {
+        "tel": "HGY",
+        "mile": 24.0
+      },
+      {
+        "tel": "TGY",
+        "mile": 9.0
+      },
+      {
+        "tel": "TEF",
+        "mile": 68.0
+      },
+      {
+        "tel": "LBF",
+        "mile": 47.0
+      },
+      {
+        "tel": "SMF",
+        "mile": 22.0
+      },
+      {
+        "tel": "YHF",
+        "mile": 17.0
+      },
+      {
+        "tel": "MCF",
+        "mile": 18.0
+      },
+      {
+        "tel": "YMF",
+        "mile": 25.0
+      },
+      {
+        "tel": "XAF",
+        "mile": 16.0
+      },
+      {
+        "tel": "CIF",
+        "mile": 12.0
+      },
+      {
+        "tel": "LXF",
+        "mile": 6.0
+      },
+      {
+        "tel": "LYF",
+        "mile": 5.0
+      },
+      {
+        "tel": "LDF",
+        "mile": 10.0
+      },
+      {
+        "tel": "BMF",
+        "mile": 13.0
+      },
+      {
+        "tel": "GXF",
+        "mile": 8.0
+      },
+      {
+        "tel": "ZVF",
+        "mile": 13.0
+      },
+      {
+        "tel": "SJF",
+        "mile": 12.0
+      },
+      {
+        "tel": "XFF",
+        "mile": 25.0
+      },
+      {
+        "tel": "ZZF"
+      }
+    ]
+  },
+  {
+    "id": "route_1783144120023",
+    "name": "陇海线郑连段",
+    "author": "DF11-0444",
+    "icon": "train/CR200J.png",
+    "createdAt": "2026-07-04T13:48:40.023701",
+    "updatedAt": "2026-07-04T13:48:40.023702",
+    "stations": [
+      {
+        "tel": "ZZF",
+        "mile": 17.8
+      },
+      {
+        "tel": "PTF",
+        "mile": 16.2
+      },
+      {
+        "tel": "ZGF",
+        "mile": 15.0
+      },
+      {
+        "tel": "SAF",
+        "mile": 14.0
+      },
+      {
+        "tel": "XHF",
+        "mile": 14.0
+      },
+      {
+        "tel": "KFF",
+        "mile": 37.0
+      },
+      {
+        "tel": "LKF",
+        "mile": 19.0
+      },
+      {
+        "tel": "NHF",
+        "mile": 9.0
+      },
+      {
+        "tel": "YJF",
+        "mile": 12.0
+      },
+      {
+        "tel": "MQF",
+        "mile": 12.0
+      },
+      {
+        "tel": "SSF",
+        "mile": 13.0
+      },
+      {
+        "tel": "NLF",
+        "mile": 14.0
+      },
+      {
+        "tel": "KJF",
+        "mile": 11.0
+      },
+      {
+        "tel": "XEF",
+        "mile": 14.0
+      },
+      {
+        "tel": "SQF",
+        "mile": 10.0
+      },
+      {
+        "tel": "ZFF",
+        "mile": 11.0
+      },
+      {
+        "tel": "IXH",
+        "mile": 20.0
+      },
+      {
+        "tel": "EJH",
+        "mile": 9.0
+      },
+      {
+        "tel": "ZFH",
+        "mile": 9.0
+      },
+      {
+        "tel": "AVH",
+        "mile": 8.0
+      },
+      {
+        "tel": "DKH",
+        "mile": 7.0
+      },
+      {
+        "tel": "HMSQKD",
+        "mile": 7.0
+      },
+      {
+        "tel": "LUH",
+        "mile": 8.0
+      },
+      {
+        "tel": "IYPDOV",
+        "mile": 12.0
+      },
+      {
+        "tel": "KOH",
+        "mile": 21.0
+      },
+      {
+        "tel": "ILH",
+        "mile": 11.0
+      },
+      {
+        "tel": "BHNPPL",
+        "mile": 8.0
+      },
+      {
+        "tel": "IEH",
+        "mile": 8.0
+      },
+      {
+        "tel": "IZH",
+        "mile": 8.0
+      },
+      {
+        "tel": "TRH",
+        "mile": 7.0
+      },
+      {
+        "tel": "XEH",
+        "mile": 6.0
+      },
+      {
+        "tel": "XCH",
+        "mile": 6.0
+      },
+      {
+        "tel": "DPH",
+        "mile": 8.0
+      },
+      {
+        "tel": "DWH",
+        "mile": 9.0
+      },
+      {
+        "tel": "UWH",
+        "mile": 13.0
+      },
+      {
+        "tel": "DXH",
+        "mile": 13.0
+      },
+      {
+        "tel": "BYH",
+        "mile": 11.0
+      },
+      {
+        "tel": "NZH",
+        "mile": 9.0
+      },
+      {
+        "tel": "ZZH",
+        "mile": 9.0
+      },
+      {
+        "tel": "PJH",
+        "mile": 6.0
+      },
+      {
+        "tel": "PIU",
+        "mile": 7.0
+      },
+      {
+        "tel": "PCH",
+        "mile": 9.0
+      },
+      {
+        "tel": "IQH",
+        "mile": 9.0
+      },
+      {
+        "tel": "WLH",
+        "mile": 12.0
+      },
+      {
+        "tel": "VWH",
+        "mile": 6.0
+      },
+      {
+        "tel": "VIH",
+        "mile": 17.0
+      },
+      {
+        "tel": "VTH",
+        "mile": 7.0
+      },
+      {
+        "tel": "AHH",
+        "mile": 9.0
+      },
+      {
+        "tel": "SIH",
+        "mile": 9.0
+      },
+      {
+        "tel": "DQH",
+        "mile": 8.0
+      },
+      {
+        "tel": "TYIMVC",
+        "mile": 9.0
+      },
+      {
+        "tel": "BFH",
+        "mile": 9.0
+      },
+      {
+        "tel": "BEH",
+        "mile": 8.0
+      },
+      {
+        "tel": "HZU",
+        "mile": 5.0
+      },
+      {
+        "tel": "UIH",
+        "mile": 3.0
+      },
+      {
+        "tel": "EBH",
+        "mile": 6.0
+      },
+      {
+        "tel": "TEH",
+        "mile": 5.0
+      },
+      {
+        "tel": "UQH",
+        "mile": 7.0
+      },
+      {
+        "tel": "UKH",
+        "mile": 5.0
+      },
+      {
+        "tel": "EZH",
+        "mile": 7.0
+      },
+      {
+        "tel": "IHH"
+      }
+    ]
+  },
+  {
+    "id": "route_1783144181099",
+    "name": "金山城际",
+    "author": "太局湖段",
+    "icon": "train/CRH6A.png",
+    "createdAt": "2026-07-04T13:49:41.099433",
+    "updatedAt": "2026-07-04T13:49:41.099433",
+    "stations": [
+      {
+        "tel": "SNH",
+        "mile": 10.0
+      },
+      {
+        "tel": "CWH",
+        "mile": 5.0
+      },
+      {
+        "tel": "XQH",
+        "mile": 6.0
+      },
+      {
+        "tel": "MIH",
+        "mile": 5.0
+      },
+      {
+        "tel": "YOH",
+        "mile": 6.0
+      },
+      {
+        "tel": "TVH",
+        "mile": 9.0
+      },
+      {
+        "tel": "REH",
+        "mile": 9.0
+      },
+      {
+        "tel": "BGH",
+        "mile": 6.0
+      },
+      {
+        "tel": "JEH"
+      }
+    ]
+  },
+  {
+    "id": "route_1783143987739",
+    "name": "南何支线",
+    "author": "太局湖段",
+    "icon": "bureau/上海铁路局.png",
+    "createdAt": "2026-07-04T13:46:27.739946",
+    "updatedAt": "2026-07-04T13:46:27.739946",
+    "stations": [
+      {
+        "tel": "NXH",
+        "mile": 6.0
+      },
+      {
+        "tel": "TPH",
+        "mile": 6.0
+      },
+      {
+        "tel": "BCH",
+        "mile": 11.0
+      },
+      {
+        "tel": "HJH"
+      }
+    ]
+  },
+  {
+    "id": "route_1783143904230",
+    "name": "皖赣铁路",
+    "author": "太局湖段",
+    "icon": "train/CRH2A.png",
+    "createdAt": "2026-07-04T13:45:04.230558",
+    "updatedAt": "2026-07-04T13:45:04.230558",
+    "stations": [
+      {
+        "tel": "ECH",
+        "mile": 42.0
+      },
+      {
+        "tel": "NNH",
+        "mile": 64.0
+      },
+      {
+        "tel": "JRH",
+        "mile": 56.0
+      },
+      {
+        "tel": "DFH",
+        "mile": 25.0
+      },
+      {
+        "tel": "QIH",
+        "mile": 79.0
+      },
+      {
+        "tel": "JCG",
+        "mile": 82.0
+      },
+      {
+        "tel": "GXG"
+      }
+    ]
+  },
+  {
+    "id": "route_1783143856627",
+    "name": "合九铁路",
+    "author": "太局湖段",
+    "icon": "train/CRH2A.png",
+    "createdAt": "2026-07-04T13:44:16.627133",
+    "updatedAt": "2026-07-04T13:44:16.627133",
+    "stations": [
+      {
+        "tel": "HFH",
+        "mile": 26.0
+      },
+      {
+        "tel": "FAH",
+        "mile": 34.0
+      },
+      {
+        "tel": "OCH",
+        "mile": 33.0
+      },
+      {
+        "tel": "UJH",
+        "mile": 39.0
+      },
+      {
+        "tel": "TTH",
+        "mile": 46.0
+      },
+      {
+        "tel": "AIU",
+        "mile": 33.0
+      },
+      {
+        "tel": "TKH",
+        "mile": 21.0
+      },
+      {
+        "tel": "OAH",
+        "mile": 13.0
+      },
+      {
+        "tel": "KLG",
+        "mile": 31.0
+      },
+      {
+        "tel": "JJG"
+      }
+    ]
+  },
+  {
+    "id": "route_1783144472089",
+    "name": "陇海铁路[上局段]",
+    "author": "太局湖段",
+    "icon": "train/CRH2A-2460.png",
+    "createdAt": "2026-07-04T13:54:32.089776",
+    "updatedAt": "2026-07-04T13:54:32.089776",
+    "stations": [
+      {
+        "tel": "IHH",
+        "mile": 7.0
+      },
+      {
+        "tel": "EZH",
+        "mile": 16.0
+      },
+      {
+        "tel": "TEH",
+        "mile": 7.0
+      },
+      {
+        "tel": "UIH",
+        "mile": 12.0
+      },
+      {
+        "tel": "HZU",
+        "mile": 14.0
+      },
+      {
+        "tel": "BEH",
+        "mile": 12.0
+      },
+      {
+        "tel": "DQH",
+        "mile": 11.0
+      },
+      {
+        "tel": "SIH",
+        "mile": 8.0
+      },
+      {
+        "tel": "AHH",
+        "mile": 9.0
+      },
+      {
+        "tel": "VTH",
+        "mile": 16.0
+      },
+      {
+        "tel": "VIH",
+        "mile": 13.0
+      },
+      {
+        "tel": "WLH",
+        "mile": 11.0
+      },
+      {
+        "tel": "IQH",
+        "mile": 8.0
+      },
+      {
+        "tel": "PCH",
+        "mile": 14.0
+      },
+      {
+        "tel": "PJH",
+        "mile": 11.0
+      },
+      {
+        "tel": "ZZH",
+        "mile": 9.0
+      },
+      {
+        "tel": "NZH",
+        "mile": 11.0
+      },
+      {
+        "tel": "BYH",
+        "mile": 12.0
+      },
+      {
+        "tel": "DXH",
+        "mile": 7.0
+      },
+      {
+        "tel": "UWH",
+        "mile": 8.0
+      },
+      {
+        "tel": "DWH",
+        "mile": 7.0
+      },
+      {
+        "tel": "DPH",
+        "mile": 7.0
+      },
+      {
+        "tel": "XDH",
+        "mile": 6.0
+      },
+      {
+        "tel": "XCH",
+        "mile": 15.0
+      },
+      {
+        "tel": "IZH",
+        "mile": 9.0
+      },
+      {
+        "tel": "IEH",
+        "mile": 9.0
+      },
+      {
+        "tel": "BHNPPL",
+        "mile": 15.0
+      },
+      {
+        "tel": "ILH",
+        "mile": 18.0
+      },
+      {
+        "tel": "KOH",
+        "mile": 9.0
+      },
+      {
+        "tel": "IYPDOV",
+        "mile": 8.0
+      },
+      {
+        "tel": "LUH",
+        "mile": 7.0
+      },
+      {
+        "tel": "HMSQKD",
+        "mile": 8.0
+      },
+      {
+        "tel": "DKH",
+        "mile": 17.0
+      },
+      {
+        "tel": "AVH",
+        "mile": 7.0
+      },
+      {
+        "tel": "ZFH",
+        "mile": 9.0
+      },
+      {
+        "tel": "EJH",
+        "mile": 15.0
+      },
+      {
+        "tel": "IXH"
+      }
+    ]
+  }
+]
