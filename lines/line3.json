@@ -1087,5 +1087,376 @@
         "tel": "IXH"
       }
     ]
+  },
+  {
+    "id": "route_1783144521065",
+    "name": "陇海铁路[郑局段]",
+    "author": "太局湖段",
+    "icon": "train/CRH2A-2460.png",
+    "createdAt": "2026-07-04T13:55:21.065900",
+    "updatedAt": "2026-07-04T13:55:21.065900",
+    "stations": [
+      {
+        "tel": "SQF",
+        "mile": 11.0
+      },
+      {
+        "tel": "XEF",
+        "mile": 14.0
+      },
+      {
+        "tel": "NLF",
+        "mile": 18.0
+      },
+      {
+        "tel": "MQF",
+        "mile": 23.0
+      },
+      {
+        "tel": "LKF",
+        "mile": 14.0
+      },
+      {
+        "tel": "LOF",
+        "mile": 15.0
+      },
+      {
+        "tel": "KFF",
+        "mile": 13.0
+      },
+      {
+        "tel": "ELF",
+        "mile": 15.0
+      },
+      {
+        "tel": "ZGF",
+        "mile": 19.0
+      },
+      {
+        "tel": "ZAF",
+        "mile": 7.0
+      },
+      {
+        "tel": "ZBF",
+        "mile": 5.0
+      },
+      {
+        "tel": "ZZF",
+        "mile": 9.0
+      },
+      {
+        "tel": "ZXF",
+        "mile": 19.0
+      },
+      {
+        "tel": "XFF",
+        "mile": 14.0
+      },
+      {
+        "tel": "SJF",
+        "mile": 14.0
+      },
+      {
+        "tel": "SHF",
+        "mile": 15.0
+      },
+      {
+        "tel": "GXF",
+        "mile": 14.0
+      },
+      {
+        "tel": "HGF",
+        "mile": 14.0
+      },
+      {
+        "tel": "YSF",
+        "mile": 17.0
+      },
+      {
+        "tel": "BMF",
+        "mile": 11.0
+      },
+      {
+        "tel": "LDF",
+        "mile": 12.0
+      },
+      {
+        "tel": "LYF",
+        "mile": 17.0
+      },
+      {
+        "tel": "CIF",
+        "mile": 18.0
+      },
+      {
+        "tel": "XAF",
+        "mile": 22.0
+      },
+      {
+        "tel": "YMF",
+        "mile": 21.0
+      },
+      {
+        "tel": "MCF",
+        "mile": 17.0
+      },
+      {
+        "tel": "YHF",
+        "mile": 16.0
+      },
+      {
+        "tel": "GUF",
+        "mile": 17.0
+      },
+      {
+        "tel": "SMF",
+        "mile": 15.0
+      },
+      {
+        "tel": "SXF",
+        "mile": 23.0
+      },
+      {
+        "tel": "LBF"
+      }
+    ]
+  },
+  {
+    "id": "route_1783144706346",
+    "name": "陇海铁路[西局段]",
+    "author": "太局湖段",
+    "icon": "train/CRH2A-2460.png",
+    "createdAt": "2026-07-04T13:58:26.346479",
+    "updatedAt": "2026-07-04T13:58:26.346480",
+    "stations": [
+      {
+        "tel": "TGY",
+        "mile": 12.0
+      },
+      {
+        "tel": "HSY",
+        "mile": 13.0
+      },
+      {
+        "tel": "HGY",
+        "mile": 11.0
+      },
+      {
+        "tel": "TXY",
+        "mile": 11.0
+      },
+      {
+        "tel": "LFY",
+        "mile": 12.0
+      },
+      {
+        "tel": "LZY",
+        "mile": 9.0
+      },
+      {
+        "tel": "LHY",
+        "mile": 8.0
+      },
+      {
+        "tel": "HXY",
+        "mile": 24.0
+      },
+      {
+        "tel": "SYY",
+        "mile": 13.0
+      },
+      {
+        "tel": "WNY",
+        "mile": 13.0
+      },
+      {
+        "tel": "LKY",
+        "mile": 14.0
+      },
+      {
+        "tel": "XFY",
+        "mile": 14.0
+      },
+      {
+        "tel": "LIY",
+        "mile": 13.0
+      },
+      {
+        "tel": "YCY",
+        "mile": 13.0
+      },
+      {
+        "tel": "BQY",
+        "mile": 15.0
+      },
+      {
+        "tel": "XAY",
+        "mile": 11.0
+      },
+      {
+        "tel": "EGY",
+        "mile": 8.0
+      },
+      {
+        "tel": "SMY",
+        "mile": 8.0
+      },
+      {
+        "tel": "SQY",
+        "mile": 11.0
+      },
+      {
+        "tel": "XYY",
+        "mile": 13.0
+      },
+      {
+        "tel": "MAY",
+        "mile": 14.0
+      },
+      {
+        "tel": "XPY",
+        "mile": 14.0
+      },
+      {
+        "tel": "MWY",
+        "mile": 38.0
+      },
+      {
+        "tel": "YSY",
+        "mile": 12.0
+      },
+      {
+        "tel": "JZY",
+        "mile": 26.0
+      },
+      {
+        "tel": "MXY",
+        "mile": 13.0
+      },
+      {
+        "tel": "CJY",
+        "mile": 12.0
+      },
+      {
+        "tel": "YPY",
+        "mile": 13.0
+      },
+      {
+        "tel": "GZY",
+        "mile": 13.0
+      },
+      {
+        "tel": "WLY",
+        "mile": 8.0
+      },
+      {
+        "tel": "BDY",
+        "mile": 11.0
+      },
+      {
+        "tel": "BJY",
+        "mile": 8.0
+      },
+      {
+        "tel": "FLY",
+        "mile": 29.0
+      },
+      {
+        "tel": "GCY",
+        "mile": 15.0
+      },
+      {
+        "tel": "PTY",
+        "mile": 21.0
+      },
+      {
+        "tel": "YLY",
+        "mile": 36.0
+      },
+      {
+        "tel": "WNJ",
+        "mile": 41.0
+      },
+      {
+        "tel": "STY"
+      }
+    ]
+  },
+  {
+    "id": "route_1783144757014",
+    "name": "陇海铁路[兰局段]",
+    "author": "太局湖段",
+    "icon": "train/CRH2A-2460.png",
+    "createdAt": "2026-07-04T13:59:17.014446",
+    "updatedAt": "2026-07-04T13:59:17.014446",
+    "stations": [
+      {
+        "tel": "TSJ",
+        "mile": 44.0
+      },
+      {
+        "tel": "BOY",
+        "mile": 31.0
+      },
+      {
+        "tel": "XZJ",
+        "mile": 33.0
+      },
+      {
+        "tel": "GGJ",
+        "mile": 17.0
+      },
+      {
+        "tel": "PAJ",
+        "mile": 17.0
+      },
+      {
+        "tel": "LMJ",
+        "mile": 18.0
+      },
+      {
+        "tel": "YYJ",
+        "mile": 17.0
+      },
+      {
+        "tel": "WSJ",
+        "mile": 17.0
+      },
+      {
+        "tel": "HJJ",
+        "mile": 24.0
+      },
+      {
+        "tel": "DSJ",
+        "mile": 15.0
+      },
+      {
+        "tel": "JDJ",
+        "mile": 15.0
+      },
+      {
+        "tel": "TJJ",
+        "mile": 21.0
+      },
+      {
+        "tel": "XGJ",
+        "mile": 18.0
+      },
+      {
+        "tel": "XTJ",
+        "mile": 14.0
+      },
+      {
+        "tel": "SAJ",
+        "mile": 27.0
+      },
+      {
+        "tel": "LVJ",
+        "mile": 17.0
+      },
+      {
+        "tel": "LZJ"
+      }
+    ]
   }
 ]

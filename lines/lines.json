@@ -2168,5 +2168,26 @@
     "author": "太局湖段",
     "icon": "train/CRH2A-2460.png",
     "page": "3"
+  },
+  {
+    "name": "陇海铁路[郑局段]",
+    "id": "route_1783144521065",
+    "author": "太局湖段",
+    "icon": "train/CRH2A-2460.png",
+    "page": "3"
+  },
+  {
+    "name": "陇海铁路[西局段]",
+    "id": "route_1783144706346",
+    "author": "太局湖段",
+    "icon": "train/CRH2A-2460.png",
+    "page": "3"
+  },
+  {
+    "name": "陇海铁路[兰局段]",
+    "id": "route_1783144757014",
+    "author": "太局湖段",
+    "icon": "train/CRH2A-2460.png",
+    "page": "3"
   }
 ]
