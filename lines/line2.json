@@ -4239,5 +4239,1513 @@
         "tel": "HJX"
       }
     ]
+  },
+  {
+    "id": "route_1783067603860",
+    "name": "白阿线",
+    "author": "DF11-0444",
+    "icon": "bureau/沈阳铁路局.png",
+    "createdAt": "2026-07-03T16:33:23.860671",
+    "updatedAt": "2026-07-03T16:33:23.860671",
+    "stations": [
+      {
+        "tel": "BCT",
+        "mile": 13.0
+      },
+      {
+        "tel": "BBT",
+        "mile": 11.0
+      },
+      {
+        "tel": "PVT",
+        "mile": 25.0
+      },
+      {
+        "tel": "ZVT",
+        "mile": 9.0
+      },
+      {
+        "tel": "GGT",
+        "mile": 16.0
+      },
+      {
+        "tel": "NVT",
+        "mile": 13.0
+      },
+      {
+        "tel": "WWT",
+        "mile": 6.0
+      },
+      {
+        "tel": "WHT",
+        "mile": 25.0
+      },
+      {
+        "tel": "GHT",
+        "mile": 30.0
+      },
+      {
+        "tel": "MAT",
+        "mile": 5.0
+      },
+      {
+        "tel": "RZT",
+        "mile": 25.0
+      },
+      {
+        "tel": "RDT",
+        "mile": 17.0
+      },
+      {
+        "tel": "SNT",
+        "mile": 37.0
+      },
+      {
+        "tel": "MUT",
+        "mile": 44.0
+      },
+      {
+        "tel": "WCT",
+        "mile": 41.0
+      },
+      {
+        "tel": "BAT",
+        "mile": 24.0
+      },
+      {
+        "tel": "ART"
+      }
+    ]
+  },
+  {
+    "id": "route_1783067483754",
+    "name": "伊敏线",
+    "author": "DF11-0444",
+    "icon": "bureau/哈尔滨铁路局.png",
+    "createdAt": "2026-07-03T16:31:23.754856",
+    "updatedAt": "2026-07-03T16:31:23.754856",
+    "stations": [
+      {
+        "tel": "HLX",
+        "mile": 22.0
+      },
+      {
+        "tel": "JCX",
+        "mile": 23.0
+      },
+      {
+        "tel": "XOX",
+        "mile": 31.0
+      },
+      {
+        "tel": "YMX"
+      }
+    ]
+  },
+  {
+    "id": "route_1783067115352",
+    "name": "林碧线",
+    "author": "DF11-0444",
+    "icon": "bureau/哈尔滨铁路局.png",
+    "createdAt": "2026-07-03T16:25:15.352292",
+    "updatedAt": "2026-07-03T16:25:15.352293",
+    "stations": [
+      {
+        "tel": "LXX",
+        "mile": 16.0
+      },
+      {
+        "tel": "VTX",
+        "mile": 45.0
+      },
+      {
+        "tel": "VYX",
+        "mile": 40.0
+      },
+      {
+        "tel": "VZX",
+        "mile": 14.0
+      },
+      {
+        "tel": "BUX"
+      }
+    ]
+  },
+  {
+    "id": "route_1783077206235",
+    "name": "宇辉线",
+    "author": "DF11-0444",
+    "icon": "bureau/沈阳铁路局.png",
+    "createdAt": "2026-07-03T19:13:26.236002",
+    "updatedAt": "2026-07-03T19:13:26.236003",
+    "stations": [
+      {
+        "tel": "HNL",
+        "mile": 67.0
+      },
+      {
+        "tel": "JYL"
+      }
+    ]
+  },
+  {
+    "id": "route_1783077137518",
+    "name": "东宁线",
+    "author": "DF11-0444",
+    "icon": "bureau/哈尔滨铁路局.png",
+    "createdAt": "2026-07-03T19:12:17.518737",
+    "updatedAt": "2026-07-03T19:12:17.518738",
+    "stations": [
+      {
+        "tel": "SXB",
+        "mile": 7.5
+      },
+      {
+        "tel": "LRPLGL",
+        "mile": 10.4
+      },
+      {
+        "tel": "ZVY",
+        "mile": 14.1
+      },
+      {
+        "tel": "BUX",
+        "mile": 17.9
+      },
+      {
+        "tel": "ERH",
+        "mile": 6.2
+      },
+      {
+        "tel": "DEB",
+        "mile": 7.4
+      },
+      {
+        "tel": "CFX",
+        "mile": 12.6
+      },
+      {
+        "tel": "SVB",
+        "mile": 12.2
+      },
+      {
+        "tel": "NQJ",
+        "mile": 2.6
+      },
+      {
+        "tel": "ONB"
+      }
+    ]
+  },
+  {
+    "id": "route_1783072413054",
+    "name": "通让线",
+    "author": "DF11-0444",
+    "icon": "",
+    "createdAt": "2026-07-03T17:53:33.054817",
+    "updatedAt": "2026-07-03T17:53:33.054818",
+    "stations": [
+      {
+        "tel": "TLD",
+        "mile": 7.6
+      },
+      {
+        "tel": "TDD",
+        "mile": 32.5
+      },
+      {
+        "tel": "GOD",
+        "mile": 23.4
+      },
+      {
+        "tel": "BND",
+        "mile": 33.2
+      },
+      {
+        "tel": "ALD",
+        "mile": 24.1
+      },
+      {
+        "tel": "TIT",
+        "mile": 31.6
+      },
+      {
+        "tel": "QFT",
+        "mile": 11.9
+      },
+      {
+        "tel": "JRT",
+        "mile": 23.2
+      },
+      {
+        "tel": "GRT",
+        "mile": 34.3
+      },
+      {
+        "tel": "QOT",
+        "mile": 23.1
+      },
+      {
+        "tel": "HZT",
+        "mile": 31.6
+      },
+      {
+        "tel": "RNT",
+        "mile": 27.3
+      },
+      {
+        "tel": "XZT",
+        "mile": 29.2
+      },
+      {
+        "tel": "TQT",
+        "mile": 6.4
+      },
+      {
+        "tel": "LZX",
+        "mile": 18.4
+      },
+      {
+        "tel": "XAX",
+        "mile": 23.9
+      },
+      {
+        "tel": "LYX",
+        "mile": 18.3
+      },
+      {
+        "tel": "YJX",
+        "mile": 9.1
+      },
+      {
+        "tel": "DTX",
+        "mile": 7.4
+      },
+      {
+        "tel": "ZUX",
+        "mile": 5.3
+      },
+      {
+        "tel": "RHX",
+        "mile": 0.2
+      },
+      {
+        "tel": "RLX"
+      }
+    ]
+  },
+  {
+    "id": "route_1783077645693",
+    "name": "辽长线",
+    "author": "DF11-0444",
+    "icon": "bureau/沈阳铁路局.png",
+    "createdAt": "2026-07-03T19:20:45.693551",
+    "updatedAt": "2026-07-03T19:20:45.693552",
+    "stations": [
+      {
+        "tel": "LYL",
+        "mile": 9.0
+      },
+      {
+        "tel": "BQL",
+        "mile": 25.0
+      },
+      {
+        "tel": "JUL",
+        "mile": 28.0
+      },
+      {
+        "tel": "YTL",
+        "mile": 30.1
+      },
+      {
+        "tel": "OYT",
+        "mile": 4.9
+      },
+      {
+        "tel": "CCT"
+      }
+    ]
+  },
+  {
+    "id": "route_1783077419272",
+    "name": "通灌线",
+    "author": "DF11-0444",
+    "icon": "bureau/沈阳铁路局.png",
+    "createdAt": "2026-07-03T19:16:59.272315",
+    "updatedAt": "2026-07-03T19:16:59.272315",
+    "stations": [
+      {
+        "tel": "GST",
+        "mile": 22.5
+      },
+      {
+        "tel": "VGT",
+        "mile": 22.3
+      },
+      {
+        "tel": "YLT",
+        "mile": 12.3
+      },
+      {
+        "tel": "KBT",
+        "mile": 9.4
+      },
+      {
+        "tel": "DDT",
+        "mile": 22.4
+      },
+      {
+        "tel": "WET",
+        "mile": 10.0
+      },
+      {
+        "tel": "HKT",
+        "mile": 18.4
+      },
+      {
+        "tel": "GFT",
+        "mile": 16.7
+      },
+      {
+        "tel": "DYL",
+        "mile": 25.6
+      },
+      {
+        "tel": "TXL",
+        "mile": 20.7
+      },
+      {
+        "tel": "THL"
+      }
+    ]
+  },
+  {
+    "id": "route_1783077282898",
+    "name": "宇松线",
+    "author": "DF11-0444",
+    "icon": "bureau/沈阳铁路局.png",
+    "createdAt": "2026-07-03T19:14:42.898231",
+    "updatedAt": "2026-07-03T19:14:42.898232",
+    "stations": [
+      {
+        "tel": "JYL",
+        "mile": 51.0
+      },
+      {
+        "tel": "FSL"
+      }
+    ]
+  },
+  {
+    "id": "route_1783139929072",
+    "name": "陶舒线",
+    "author": "DF11-0444",
+    "icon": "bureau/沈阳铁路局.png",
+    "createdAt": "2026-07-04T12:38:49.072979",
+    "updatedAt": "2026-07-04T12:38:49.072980",
+    "stations": [
+      {
+        "tel": "TPT",
+        "mile": 23.0
+      },
+      {
+        "tel": "WKT",
+        "mile": 12.0
+      },
+      {
+        "tel": "UDT",
+        "mile": 21.0
+      },
+      {
+        "tel": "YRT",
+        "mile": 21.0
+      },
+      {
+        "tel": "XGT",
+        "mile": 16.0
+      },
+      {
+        "tel": "XMT",
+        "mile": 24.0
+      },
+      {
+        "tel": "SLL"
+      }
+    ]
+  },
+  {
+    "id": "route_1783139911435",
+    "name": "松陶线",
+    "author": "DF11-0444",
+    "icon": "bureau/沈阳铁路局.png",
+    "createdAt": "2026-07-04T12:38:31.435919",
+    "updatedAt": "2026-07-04T12:38:31.435920",
+    "stations": [
+      {
+        "tel": "VYT",
+        "mile": 12.0
+      },
+      {
+        "tel": "OCT",
+        "mile": 32.0
+      },
+      {
+        "tel": "OJT",
+        "mile": 32.0
+      },
+      {
+        "tel": "GPT",
+        "mile": 22.0
+      },
+      {
+        "tel": "FXT",
+        "mile": 12.0
+      },
+      {
+        "tel": "TPT"
+      }
+    ]
+  },
+  {
+    "id": "route_1783140044024",
+    "name": "大郑线",
+    "author": "DF11-0444",
+    "icon": "bureau/沈阳铁路局.png",
+    "createdAt": "2026-07-04T12:40:44.024312",
+    "updatedAt": "2026-07-04T12:40:44.024312",
+    "stations": [
+      {
+        "tel": "DHD",
+        "mile": 15.0
+      },
+      {
+        "tel": "HED",
+        "mile": 23.0
+      },
+      {
+        "tel": "BDD",
+        "mile": 11.0
+      },
+      {
+        "tel": "FSD",
+        "mile": 12.0
+      },
+      {
+        "tel": "XLD",
+        "mile": 26.0
+      },
+      {
+        "tel": "POD",
+        "mile": 27.0
+      },
+      {
+        "tel": "ZWD",
+        "mile": 36.0
+      },
+      {
+        "tel": "ZGD",
+        "mile": 38.0
+      },
+      {
+        "tel": "GQD",
+        "mile": 54.0
+      },
+      {
+        "tel": "MUD",
+        "mile": 12.0
+      },
+      {
+        "tel": "TXD",
+        "mile": 2.0
+      },
+      {
+        "tel": "TLD",
+        "mile": 8.0
+      },
+      {
+        "tel": "TDD",
+        "mile": 4.0
+      },
+      {
+        "tel": "WMD",
+        "mile": 12.0
+      },
+      {
+        "tel": "QJD",
+        "mile": 25.0
+      },
+      {
+        "tel": "DLD",
+        "mile": 7.0
+      },
+      {
+        "tel": "QOD",
+        "mile": 5.0
+      },
+      {
+        "tel": "DAD",
+        "mile": 15.0
+      },
+      {
+        "tel": "MDD",
+        "mile": 16.0
+      },
+      {
+        "tel": "OLD",
+        "mile": 14.0
+      },
+      {
+        "tel": "BAD",
+        "mile": 8.0
+      },
+      {
+        "tel": "ZJD"
+      }
+    ]
+  },
+  {
+    "id": "route_1783140371526",
+    "name": "霍白线",
+    "author": "DF11-0444",
+    "icon": "",
+    "createdAt": "2026-07-04T12:46:11.526447",
+    "updatedAt": "2026-07-04T12:46:26.575492",
+    "stations": [
+      {
+        "tel": "HND",
+        "mile": 42.0
+      },
+      {
+        "tel": "ZND",
+        "mile": 26.0
+      },
+      {
+        "tel": "YKD",
+        "mile": 24.0
+      },
+      {
+        "tel": "SDD",
+        "mile": 38.0
+      },
+      {
+        "tel": "BOD"
+      }
+    ]
+  },
+  {
+    "id": "route_1783140167440",
+    "name": "通霍线",
+    "author": "DF11-0444",
+    "icon": "bureau/沈阳铁路局.png",
+    "createdAt": "2026-07-04T12:42:47.441001",
+    "updatedAt": "2026-07-04T12:42:47.441001",
+    "stations": [
+      {
+        "tel": "TLD",
+        "mile": 4.2
+      },
+      {
+        "tel": "TED",
+        "mile": 12.3
+      },
+      {
+        "tel": "KDD",
+        "mile": 16.2
+      },
+      {
+        "tel": "OPD",
+        "mile": 23.6
+      },
+      {
+        "tel": "HOD",
+        "mile": 28.8
+      },
+      {
+        "tel": "OBD",
+        "mile": 18.5
+      },
+      {
+        "tel": "QVD",
+        "mile": 20.6
+      },
+      {
+        "tel": "ZRD",
+        "mile": 16.6
+      },
+      {
+        "tel": "MOD",
+        "mile": 21.7
+      },
+      {
+        "tel": "DED",
+        "mile": 18.8
+      },
+      {
+        "tel": "OTD",
+        "mile": 22.4
+      },
+      {
+        "tel": "ZLD",
+        "mile": 16.7
+      },
+      {
+        "tel": "TOD",
+        "mile": 16.5
+      },
+      {
+        "tel": "OOD",
+        "mile": 14.3
+      },
+      {
+        "tel": "BFD",
+        "mile": 17.3
+      },
+      {
+        "tel": "BCD",
+        "mile": 15.6
+      },
+      {
+        "tel": "XVD",
+        "mile": 13.5
+      },
+      {
+        "tel": "RRD",
+        "mile": 12.6
+      },
+      {
+        "tel": "WZD",
+        "mile": 13.6
+      },
+      {
+        "tel": "CRD",
+        "mile": 11.6
+      },
+      {
+        "tel": "TMD",
+        "mile": 8.6
+      },
+      {
+        "tel": "VGD",
+        "mile": 11.7
+      },
+      {
+        "tel": "XRD",
+        "mile": 14.4
+      },
+      {
+        "tel": "YRD",
+        "mile": 11.4
+      },
+      {
+        "tel": "HRD",
+        "mile": 10.8
+      },
+      {
+        "tel": "YND",
+        "mile": 20.3
+      },
+      {
+        "tel": "ZHD",
+        "mile": 6.4
+      },
+      {
+        "tel": "HWD"
+      }
+    ]
+  },
+  {
+    "id": "route_1783140322090",
+    "name": "京通线",
+    "author": "DF11-0444",
+    "icon": "",
+    "createdAt": "2026-07-04T12:45:22.090117",
+    "updatedAt": "2026-07-04T12:45:22.090118",
+    "stations": [
+      {
+        "tel": "VAP",
+        "mile": 31.0
+      },
+      {
+        "tel": "CPP",
+        "mile": 6.0
+      },
+      {
+        "tel": "VBP",
+        "mile": 7.0
+      },
+      {
+        "tel": "GVP",
+        "mile": 9.0
+      },
+      {
+        "tel": "BVP",
+        "mile": 8.0
+      },
+      {
+        "tel": "FGP",
+        "mile": 11.0
+      },
+      {
+        "tel": "HBP",
+        "mile": 24.0
+      },
+      {
+        "tel": "HVP",
+        "mile": 48.0
+      },
+      {
+        "tel": "GKP",
+        "mile": 28.0
+      },
+      {
+        "tel": "HHP",
+        "mile": 13.0
+      },
+      {
+        "tel": "WHP",
+        "mile": 9.0
+      },
+      {
+        "tel": "RDP",
+        "mile": 9.0
+      },
+      {
+        "tel": "UPP",
+        "mile": 18.0
+      },
+      {
+        "tel": "ZUP",
+        "mile": 11.0
+      },
+      {
+        "tel": "VGP",
+        "mile": 13.0
+      },
+      {
+        "tel": "UNP",
+        "mile": 13.0
+      },
+      {
+        "tel": "LDP",
+        "mile": 7.0
+      },
+      {
+        "tel": "BQP",
+        "mile": 5.0
+      },
+      {
+        "tel": "CYP",
+        "mile": 2.0
+      },
+      {
+        "tel": "UHP",
+        "mile": 62.0
+      },
+      {
+        "tel": "OHD",
+        "mile": 34.0
+      },
+      {
+        "tel": "VJD",
+        "mile": 116.0
+      },
+      {
+        "tel": "CID",
+        "mile": 51.0
+      },
+      {
+        "tel": "OUD",
+        "mile": 39.0
+      },
+      {
+        "tel": "YED",
+        "mile": 28.0
+      },
+      {
+        "tel": "EPD",
+        "mile": 21.0
+      },
+      {
+        "tel": "VLD",
+        "mile": 14.0
+      },
+      {
+        "tel": "NMD",
+        "mile": 54.0
+      },
+      {
+        "tel": "VXD",
+        "mile": 16.0
+      },
+      {
+        "tel": "DMD",
+        "mile": 68.0
+      },
+      {
+        "tel": "RVD",
+        "mile": 37.0
+      },
+      {
+        "tel": "YLD",
+        "mile": 16.0
+      },
+      {
+        "tel": "TXD",
+        "mile": 6.0
+      },
+      {
+        "tel": "TLD"
+      }
+    ]
+  },
+  {
+    "id": "route_1783140592953",
+    "name": "京秦线",
+    "author": "DF11-0444",
+    "icon": "train/CR400AF-SZE.png",
+    "createdAt": "2026-07-04T12:49:52.953570",
+    "updatedAt": "2026-07-04T12:49:52.953570",
+    "stations": [
+      {
+        "tel": "BJP",
+        "mile": 5.1
+      },
+      {
+        "tel": "BOP",
+        "mile": 6.2
+      },
+      {
+        "tel": "SQP",
+        "mile": 24.4
+      },
+      {
+        "tel": "AJP",
+        "mile": 7.7
+      },
+      {
+        "tel": "REP",
+        "mile": 11.8
+      },
+      {
+        "tel": "OWP",
+        "mile": 9.1
+      },
+      {
+        "tel": "OXP",
+        "mile": 7.7
+      },
+      {
+        "tel": "RJP",
+        "mile": 16.0
+      },
+      {
+        "tel": "JIP",
+        "mile": 11.2
+      },
+      {
+        "tel": "BSP",
+        "mile": 7.3
+      },
+      {
+        "tel": "LSP",
+        "mile": 10.7
+      },
+      {
+        "tel": "ATP",
+        "mile": 15.4
+      },
+      {
+        "tel": "FIP",
+        "mile": 18.5
+      },
+      {
+        "tel": "FUP",
+        "mile": 8.6
+      },
+      {
+        "tel": "APP",
+        "mile": 8.6
+      },
+      {
+        "tel": "UOP",
+        "mile": 9.2
+      },
+      {
+        "tel": "OLP",
+        "mile": 8.7
+      },
+      {
+        "tel": "FSP",
+        "mile": 11.2
+      },
+      {
+        "tel": "MLP",
+        "mile": 6.1
+      },
+      {
+        "tel": "AGP",
+        "mile": 5.2
+      },
+      {
+        "tel": "UXP",
+        "mile": 4.5
+      },
+      {
+        "tel": "LXP",
+        "mile": 6.4
+      },
+      {
+        "tel": "ZGP",
+        "mile": 7.5
+      },
+      {
+        "tel": "SMP",
+        "mile": 6.7
+      },
+      {
+        "tel": "JSP",
+        "mile": 4.1
+      },
+      {
+        "tel": "HFP",
+        "mile": 3.1
+      },
+      {
+        "tel": "CLP",
+        "mile": 11.3
+      },
+      {
+        "tel": "ZJP",
+        "mile": 9.4
+      },
+      {
+        "tel": "LQP",
+        "mile": 8.4
+      },
+      {
+        "tel": "BEP",
+        "mile": 8.4
+      },
+      {
+        "tel": "NDP",
+        "mile": 9.6
+      },
+      {
+        "tel": "QTP",
+        "mile": 7.5
+      },
+      {
+        "tel": "LKP",
+        "mile": 6.9
+      },
+      {
+        "tel": "SHD"
+      }
+    ]
+  },
+  {
+    "id": "route_1783140737766",
+    "name": "哈大北段",
+    "author": "DF11-0444",
+    "icon": "",
+    "createdAt": "2026-07-04T12:52:17.766069",
+    "updatedAt": "2026-07-04T12:52:17.766069",
+    "stations": [
+      {
+        "tel": "SBT",
+        "mile": 7.2
+      },
+      {
+        "tel": "WTT",
+        "mile": 9.6
+      },
+      {
+        "tel": "HUT",
+        "mile": 13.7
+      },
+      {
+        "tel": "XCT",
+        "mile": 12.8
+      },
+      {
+        "tel": "XIT",
+        "mile": 9.4
+      },
+      {
+        "tel": "LCT",
+        "mile": 8.5
+      },
+      {
+        "tel": "DET",
+        "mile": 8.6
+      },
+      {
+        "tel": "TLT",
+        "mile": 13.7
+      },
+      {
+        "tel": "PDT",
+        "mile": 12.6
+      },
+      {
+        "tel": "ZGT",
+        "mile": 12.3
+      },
+      {
+        "tel": "KYT",
+        "mile": 15.2
+      },
+      {
+        "tel": "MZT",
+        "mile": 16.7
+      },
+      {
+        "tel": "CTT",
+        "mile": 16.4
+      },
+      {
+        "tel": "SMT",
+        "mile": 15.5
+      },
+      {
+        "tel": "MDT",
+        "mile": 35.0
+      },
+      {
+        "tel": "SPT",
+        "mile": 11.3
+      },
+      {
+        "tel": "YMT",
+        "mile": 16.3
+      },
+      {
+        "tel": "GDT",
+        "mile": 20.7
+      },
+      {
+        "tel": "GLT",
+        "mile": 14.6
+      },
+      {
+        "tel": "TOT",
+        "mile": 13.6
+      },
+      {
+        "tel": "FTT",
+        "mile": 12.6
+      },
+      {
+        "tel": "DNT",
+        "mile": 7.3
+      },
+      {
+        "tel": "YJT",
+        "mile": 5.4
+      },
+      {
+        "tel": "CCT",
+        "mile": 24.5
+      },
+      {
+        "tel": "MST",
+        "mile": 37.6
+      },
+      {
+        "tel": "DHT",
+        "mile": 21.3
+      },
+      {
+        "tel": "YAT",
+        "mile": 25.6
+      },
+      {
+        "tel": "TPT",
+        "mile": 21.0
+      },
+      {
+        "tel": "FYT",
+        "mile": 17.0
+      },
+      {
+        "tel": "CJT",
+        "mile": 13.0
+      },
+      {
+        "tel": "LLB",
+        "mile": 21.0
+      },
+      {
+        "tel": "SCB",
+        "mile": 31.6
+      },
+      {
+        "tel": "WUB",
+        "mile": 11.6
+      },
+      {
+        "tel": "WGB",
+        "mile": 6.8
+      },
+      {
+        "tel": "HBB"
+      }
+    ]
+  },
+  {
+    "id": "route_1783140668177",
+    "name": "沈山线",
+    "author": "DF11-0444",
+    "icon": "bureau/沈阳铁路局.png",
+    "createdAt": "2026-07-04T12:51:08.177091",
+    "updatedAt": "2026-07-04T12:51:08.177091",
+    "stations": [
+      {
+        "tel": "SHD",
+        "mile": 10.0
+      },
+      {
+        "tel": "WJD",
+        "mile": 17.8
+      },
+      {
+        "tel": "GLD",
+        "mile": 11.1
+      },
+      {
+        "tel": "QWD",
+        "mile": 25.7
+      },
+      {
+        "tel": "SZD",
+        "mile": 10.4
+      },
+      {
+        "tel": "DXD",
+        "mile": 31.8
+      },
+      {
+        "tel": "DDD",
+        "mile": 25.9
+      },
+      {
+        "tel": "HLD",
+        "mile": 10.5
+      },
+      {
+        "tel": "GQQ",
+        "mile": 11.0
+      },
+      {
+        "tel": "NRD",
+        "mile": 11.0
+      },
+      {
+        "tel": "JZD",
+        "mile": 16.3
+      },
+      {
+        "tel": "TYD",
+        "mile": 24.7
+      },
+      {
+        "tel": "JID",
+        "mile": 7.5
+      },
+      {
+        "tel": "HQD",
+        "mile": 8.5
+      },
+      {
+        "tel": "SAD",
+        "mile": 11.3
+      },
+      {
+        "tel": "YQD",
+        "mile": 13.0
+      },
+      {
+        "tel": "GBD",
+        "mile": 15.7
+      },
+      {
+        "tel": "QDD",
+        "mile": 16.3
+      },
+      {
+        "tel": "GSD",
+        "mile": 9.9
+      },
+      {
+        "tel": "DHD",
+        "mile": 11.8
+      },
+      {
+        "tel": "TJD",
+        "mile": 11.0
+      },
+      {
+        "tel": "LID",
+        "mile": 11.0
+      },
+      {
+        "tel": "RHD",
+        "mile": 15.0
+      },
+      {
+        "tel": "DQD",
+        "mile": 22.0
+      },
+      {
+        "tel": "XMD",
+        "mile": 6.0
+      },
+      {
+        "tel": "GTD",
+        "mile": 17.0
+      },
+      {
+        "tel": "XDD",
+        "mile": 9.0
+      },
+      {
+        "tel": "STD",
+        "mile": 9.0
+      },
+      {
+        "tel": "MJT",
+        "mile": 5.0
+      },
+      {
+        "tel": "OXT",
+        "mile": 6.0
+      },
+      {
+        "tel": "YHT",
+        "mile": 9.0
+      },
+      {
+        "tel": "LTT",
+        "mile": 5.0
+      },
+      {
+        "tel": "SYT"
+      }
+    ]
+  },
+  {
+    "id": "route_1783141001553",
+    "name": "新义线",
+    "author": "DF11-0444",
+    "icon": "bureau/沈阳铁路局.png",
+    "createdAt": "2026-07-04T12:56:41.553869",
+    "updatedAt": "2026-07-04T12:56:41.553869",
+    "stations": [
+      {
+        "tel": "XLD",
+        "mile": 18.0
+      },
+      {
+        "tel": "DBD",
+        "mile": 14.0
+      },
+      {
+        "tel": "XQD",
+        "mile": 13.0
+      },
+      {
+        "tel": "AJD",
+        "mile": 13.0
+      },
+      {
+        "tel": "FXD",
+        "mile": 38.0
+      },
+      {
+        "tel": "QBD",
+        "mile": 14.0
+      },
+      {
+        "tel": "LND",
+        "mile": 9.0
+      },
+      {
+        "tel": "JDD",
+        "mile": 12.5
+      },
+      {
+        "tel": "YXD"
+      }
+    ]
+  },
+  {
+    "id": "route_1783140785570",
+    "name": "沈大线",
+    "author": "DF11-0444",
+    "icon": "bureau/沈阳铁路局.png",
+    "createdAt": "2026-07-04T12:53:05.570750",
+    "updatedAt": "2026-07-04T12:53:05.570750",
+    "stations": [
+      {
+        "tel": "SBT",
+        "mile": 3.0
+      },
+      {
+        "tel": "SYT",
+        "mile": 5.0
+      },
+      {
+        "tel": "HHT",
+        "mile": 8.0
+      },
+      {
+        "tel": "SXT",
+        "mile": 9.0
+      },
+      {
+        "tel": "LBT",
+        "mile": 22.0
+      },
+      {
+        "tel": "DGT",
+        "mile": 11.0
+      },
+      {
+        "tel": "ZZT",
+        "mile": 9.0
+      },
+      {
+        "tel": "LYT",
+        "mile": 8.0
+      },
+      {
+        "tel": "LNT",
+        "mile": 12.0
+      },
+      {
+        "tel": "AST",
+        "mile": 6.0
+      },
+      {
+        "tel": "JBT",
+        "mile": 9.0
+      },
+      {
+        "tel": "NTT",
+        "mile": 8.0
+      },
+      {
+        "tel": "HCT",
+        "mile": 7.0
+      },
+      {
+        "tel": "TWT",
+        "mile": 8.0
+      },
+      {
+        "tel": "TAT",
+        "mile": 7.0
+      },
+      {
+        "tel": "FNT",
+        "mile": 7.0
+      },
+      {
+        "tel": "DQT",
+        "mile": 11.0
+      },
+      {
+        "tel": "SGT",
+        "mile": 10.0
+      },
+      {
+        "tel": "GXT",
+        "mile": 10.0
+      },
+      {
+        "tel": "LUT",
+        "mile": 11.0
+      },
+      {
+        "tel": "XYT",
+        "mile": 11.0
+      },
+      {
+        "tel": "JIT",
+        "mile": 7.0
+      },
+      {
+        "tel": "XJT",
+        "mile": 16.0
+      },
+      {
+        "tel": "WLT",
+        "mile": 14.0
+      },
+      {
+        "tel": "SFT",
+        "mile": 6.0
+      },
+      {
+        "tel": "DST",
+        "mile": 12.0
+      },
+      {
+        "tel": "WAT",
+        "mile": 8.0
+      },
+      {
+        "tel": "WDT",
+        "mile": 10.0
+      },
+      {
+        "tel": "TJT",
+        "mile": 17.0
+      },
+      {
+        "tel": "PLT",
+        "mile": 12.0
+      },
+      {
+        "tel": "SHT",
+        "mile": 10.0
+      },
+      {
+        "tel": "SST",
+        "mile": 9.0
+      },
+      {
+        "tel": "RLT",
+        "mile": 17.0
+      },
+      {
+        "tel": "JZT",
+        "mile": 10.0
+      },
+      {
+        "tel": "YNT",
+        "mile": 7.0
+      },
+      {
+        "tel": "DFT",
+        "mile": 6.0
+      },
+      {
+        "tel": "NLT",
+        "mile": 7.0
+      },
+      {
+        "tel": "ZIT",
+        "mile": 5.0
+      },
+      {
+        "tel": "SKT",
+        "mile": 4.0
+      },
+      {
+        "tel": "DLT"
+      }
+    ]
   }
 ]
