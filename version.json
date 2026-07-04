@@ -1,16 +1,16 @@
 {
   "LastUpdate": "260705",
   "Version": "1.2.5.2",
-  "Build": "1251",
+  "Build": "1252",
   "minVersion": "1212",
   "message": "",
   "StationBuild": "20260705001",
   "TrainBuild": "20260705001",
   "CoachTrainBuild": "20260705001",
   "LocoBuild": "20260705001",
-  "github": "https://gh-proxy.com/https://github.com/CrYinLang/EmuTrain/releases/download/1.2.5.1/app-release.apk",
-  "gitee": "https://gitee.com/CrYinLang/EmuTrain/releases/download/1.2.5.1/app-release.apk",
+  "github": "https://gh-proxy.com/https://github.com/CrYinLang/EmuTrain/releases/download/1.2.5.2/app-release.apk",
+  "gitee": "https://gitee.com/CrYinLang/EmuTrain/releases/download/1.2.5.2/app-release.apk",
   "qq": "https://qm.qq.com/q/fk5M9PJGyk",
-  "describe": "新增 首次启动欢迎界面和用户协议确认\n优化 新版本更新说明显示逻辑\n新增 线路走向图无精准定位车站里程估算显示开关\n更新 更多车站",
-  "Announcement": "公告:QQ群:667933194\n官网:https://emutrain.github.io/"
+  "describe": "懒得说",
+  "Announcement": "QQ667933194\n网站:https://emutrain.github.io/"
 }
