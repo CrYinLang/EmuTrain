@@ -1458,5 +1458,529 @@
         "tel": "LZJ"
       }
     ]
+  },
+  {
+    "id": "route_1783339592424",
+    "name": "张东线",
+    "author": "燎川Leon",
+    "icon": "bureau/济南铁路局.png",
+    "createdAt": "2026-07-06T20:06:32.424915",
+    "updatedAt": "2026-07-06T20:06:32.424916",
+    "stations": [
+      {
+        "tel": "ZBK",
+        "mile": 22.0
+      },
+      {
+        "tel": "VTK",
+        "mile": 22.0
+      },
+      {
+        "tel": "BXK",
+        "mile": 47.0
+      },
+      {
+        "tel": "DPK"
+      }
+    ]
+  },
+  {
+    "id": "route_1783338623148",
+    "name": "京原线",
+    "author": "燎川Leon",
+    "icon": "bureau/国铁集团.png",
+    "createdAt": "2026-07-06T19:50:23.148303",
+    "updatedAt": "2026-07-06T19:50:23.148304",
+    "stations": [
+      {
+        "tel": "SRP",
+        "mile": 10.0
+      },
+      {
+        "tel": "DHP",
+        "mile": 9.0
+      },
+      {
+        "tel": "SWP",
+        "mile": 7.0
+      },
+      {
+        "tel": "NGP",
+        "mile": 5.0
+      },
+      {
+        "tel": "AOP",
+        "mile": 4.0
+      },
+      {
+        "tel": "LGP",
+        "mile": 13.0
+      },
+      {
+        "tel": "GSP",
+        "mile": 10.0
+      },
+      {
+        "tel": "AFP",
+        "mile": 8.0
+      },
+      {
+        "tel": "SVP",
+        "mile": 7.0
+      },
+      {
+        "tel": "SEP",
+        "mile": 5.0
+      },
+      {
+        "tel": "PYP",
+        "mile": 9.0
+      },
+      {
+        "tel": "AIP",
+        "mile": 9.0
+      },
+      {
+        "tel": "AAP",
+        "mile": 9.0
+      },
+      {
+        "tel": "FKP",
+        "mile": 10.0
+      },
+      {
+        "tel": "BAP",
+        "mile": 7.0
+      },
+      {
+        "tel": "BUP",
+        "mile": 7.0
+      },
+      {
+        "tel": "NSP",
+        "mile": 8.0
+      },
+      {
+        "tel": "QVP",
+        "mile": 6.0
+      },
+      {
+        "tel": "ZYP",
+        "mile": 5.0
+      },
+      {
+        "tel": "RPP",
+        "mile": 8.0
+      },
+      {
+        "tel": "TYP",
+        "mile": 7.0
+      },
+      {
+        "tel": "WVP",
+        "mile": 7.0
+      },
+      {
+        "tel": "FYP",
+        "mile": 8.0
+      },
+      {
+        "tel": "BYP",
+        "mile": 7.0
+      },
+      {
+        "tel": "LYP",
+        "mile": 10.0
+      },
+      {
+        "tel": "XXP",
+        "mile": 6.0
+      },
+      {
+        "tel": "AHP",
+        "mile": 7.0
+      },
+      {
+        "tel": "ZBP",
+        "mile": 8.0
+      },
+      {
+        "tel": "ACP",
+        "mile": 7.0
+      },
+      {
+        "tel": "DFP",
+        "mile": 7.0
+      },
+      {
+        "tel": "LVV",
+        "mile": 20.0
+      },
+      {
+        "tel": "PGV",
+        "mile": 7.0
+      },
+      {
+        "tel": "DBV",
+        "mile": 7.0
+      },
+      {
+        "tel": "DZV",
+        "mile": 8.0
+      },
+      {
+        "tel": "DYV",
+        "mile": 29.0
+      },
+      {
+        "tel": "FSV",
+        "mile": 9.0
+      },
+      {
+        "tel": "XSV",
+        "mile": 8.0
+      },
+      {
+        "tel": "ZIV",
+        "mile": 10.0
+      },
+      {
+        "tel": "DKV",
+        "mile": 12.0
+      },
+      {
+        "tel": "YVV",
+        "mile": 79.0
+      },
+      {
+        "tel": "YPV"
+      }
+    ]
+  },
+  {
+    "id": "route_1783337000273",
+    "name": "北京市郊铁路S2线（支线）",
+    "author": "燎川Leon",
+    "icon": "bureau/北京铁路局.png",
+    "createdAt": "2026-07-06T19:23:20.273021",
+    "updatedAt": "2026-07-06T19:23:20.273022",
+    "stations": [
+      {
+        "tel": "HKP",
+        "mile": 29.6
+      },
+      {
+        "tel": "NKP",
+        "mile": 27.0
+      },
+      {
+        "tel": "ILP",
+        "mile": 9.0
+      },
+      {
+        "tel": "KZP",
+        "mile": 42.3
+      },
+      {
+        "tel": "SCP"
+      }
+    ]
+  },
+  {
+    "id": "route_1783336898775",
+    "name": "北京市郊铁路S2线（主线）",
+    "author": "燎川Leon",
+    "icon": "bureau/北京铁路局.png",
+    "createdAt": "2026-07-06T19:21:38.775348",
+    "updatedAt": "2026-07-06T19:21:38.775349",
+    "stations": [
+      {
+        "tel": "HKP",
+        "mile": 29.6
+      },
+      {
+        "tel": "NKP",
+        "mile": 27.0
+      },
+      {
+        "tel": "ILP",
+        "mile": 20.0
+      },
+      {
+        "tel": "YNP"
+      }
+    ]
+  },
+  {
+    "id": "route_1783335020380",
+    "name": "北京市郊铁路S1线",
+    "author": "燎川Leon",
+    "icon": "bureau/北京铁路局.png",
+    "createdAt": "2026-07-06T18:50:20.380727",
+    "updatedAt": "2026-07-06T18:50:20.380727",
+    "stations": [
+      {
+        "tel": "LAP",
+        "mile": 31.0
+      },
+      {
+        "tel": "BXP",
+        "mile": 9.0
+      },
+      {
+        "tel": "BJP",
+        "mile": 5.0
+      },
+      {
+        "tel": "BOP",
+        "mile": 15.0
+      },
+      {
+        "tel": "TOP",
+        "mile": 3.7
+      },
+      {
+        "tel": "QEP"
+      }
+    ]
+  },
+  {
+    "id": "route_1783142340274",
+    "name": "莱荣城际铁路",
+    "author": "燎川Leon",
+    "icon": "bureau/济南铁路局.png",
+    "createdAt": "2026-07-04T13:19:00.274894",
+    "updatedAt": "2026-07-04T13:19:00.274895",
+    "stations": [
+      {
+        "tel": "LBK",
+        "mile": 28.0
+      },
+      {
+        "tel": "VEK",
+        "mile": 41.0
+      },
+      {
+        "tel": "KYK",
+        "mile": 40.0
+      },
+      {
+        "tel": "REK",
+        "mile": 37.0
+      },
+      {
+        "tel": "WRK",
+        "mile": 18.0
+      },
+      {
+        "tel": "WWK",
+        "mile": 31.0
+      },
+      {
+        "tel": "RCK"
+      }
+    ]
+  },
+  {
+    "id": "route_1783141816596",
+    "name": "西蓁联络线",
+    "author": "燎川Leon",
+    "icon": "bureau/济南铁路局.png",
+    "createdAt": "2026-07-04T13:10:16.596703",
+    "updatedAt": "2026-07-04T13:10:16.596704",
+    "stations": [
+      {
+        "tel": "GZK",
+        "mile": 2.67
+      },
+      {
+        "tel": "YAK"
+      }
+    ]
+  },
+  {
+    "id": "route_1783141534907",
+    "name": "烟威联络线（烟荣联络线）",
+    "author": "燎川Leon",
+    "icon": "bureau/济南铁路局.png",
+    "createdAt": "2026-07-04T13:05:34.907436",
+    "updatedAt": "2026-07-04T13:05:34.907436",
+    "stations": [
+      {
+        "tel": "GZK",
+        "mile": 7.0
+      },
+      {
+        "tel": "YLK"
+      }
+    ]
+  },
+  {
+    "id": "route_1783141175524",
+    "name": "青荣城际铁路",
+    "author": "燎川Leon",
+    "icon": "bureau/济南铁路局.png",
+    "createdAt": "2026-07-04T12:59:35.524738",
+    "updatedAt": "2026-07-04T12:59:35.524739",
+    "stations": [
+      {
+        "tel": "QDK",
+        "mile": 1.203
+      },
+      {
+        "tel": "QHK",
+        "mile": 15.059
+      },
+      {
+        "tel": "CEK",
+        "mile": 15.555
+      },
+      {
+        "tel": "JVK",
+        "mile": 28.032
+      },
+      {
+        "tel": "XZK",
+        "mile": 21.408
+      },
+      {
+        "tel": "LBK",
+        "mile": 20.272
+      },
+      {
+        "tel": "LYK",
+        "mile": 27.826
+      },
+      {
+        "tel": "HEK",
+        "mile": 22.911
+      },
+      {
+        "tel": "TOK",
+        "mile": 35.653
+      },
+      {
+        "tel": "YLK",
+        "mile": 23.617
+      },
+      {
+        "tel": "MBK",
+        "mile": 37.042
+      },
+      {
+        "tel": "WHK",
+        "mile": 12.651
+      },
+      {
+        "tel": "WKK",
+        "mile": 23.766
+      },
+      {
+        "tel": "WGK",
+        "mile": 17.662
+      },
+      {
+        "tel": "RCK"
+      }
+    ]
+  },
+  {
+    "id": "route_1783140578311",
+    "name": "潍烟高速铁路",
+    "author": "燎川Leon",
+    "icon": "bureau/济南铁路局.png",
+    "createdAt": "2026-07-04T12:49:38.312022",
+    "updatedAt": "2026-07-04T12:49:38.312022",
+    "stations": [
+      {
+        "tel": "CRK",
+        "mile": 27.7
+      },
+      {
+        "tel": "KBK",
+        "mile": 32.0
+      },
+      {
+        "tel": "VPK",
+        "mile": 50.4
+      },
+      {
+        "tel": "VDK",
+        "mile": 30.3
+      },
+      {
+        "tel": "UKK",
+        "mile": 31.4
+      },
+      {
+        "tel": "POK",
+        "mile": 27.0
+      },
+      {
+        "tel": "DCK",
+        "mile": 25.3
+      },
+      {
+        "tel": "FUK",
+        "mile": 10.4
+      },
+      {
+        "tel": "GZK"
+      }
+    ]
+  },
+  {
+    "id": "route_1782553601224",
+    "name": "京张高铁延庆线",
+    "author": "燎川Leon",
+    "icon": "bureau/北京铁路局.png",
+    "createdAt": "2026-06-27T17:46:41.224410",
+    "updatedAt": "2026-06-27T17:46:41.224411",
+    "stations": [
+      {
+        "tel": "YNP",
+        "mile": 13.0
+      },
+      {
+        "tel": "VLP"
+      }
+    ]
+  },
+  {
+    "id": "route_1783494828115",
+    "name": "汕汕高铁",
+    "author": "CR400BF-BS-5276",
+    "icon": "bureau/广州铁路局.png",
+    "createdAt": "2026-07-08T15:13:48.115552",
+    "updatedAt": "2026-07-08T15:13:48.115552",
+    "stations": [
+      {
+        "tel": "OGQ",
+        "mile": 26.0
+      },
+      {
+        "tel": "LAA",
+        "mile": 24.0
+      },
+      {
+        "tel": "LDA",
+        "mile": 43.0
+      },
+      {
+        "tel": "HGA",
+        "mile": 30.0
+      },
+      {
+        "tel": "CHA",
+        "mile": 19.0
+      },
+      {
+        "tel": "SNA",
+        "mile": 20.75
+      },
+      {
+        "tel": "OTQ"
+      }
+    ]
   }
 ]
