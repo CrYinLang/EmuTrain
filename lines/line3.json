@@ -1982,5 +1982,24 @@
         "tel": "OTQ"
       }
     ]
+  },
+  {
+    "id": "route_1783576699958",
+    "name": "台州市郊铁路",
+    "author": "Yuebian",
+    "icon": "train/CRH6-2.png",
+    "createdAt": "2026-07-09T13:58:19.958567",
+    "updatedAt": "2026-07-09T14:07:36.479527",
+    "stations": [
+      {
+        "tel": "XNU"
+      },
+      {
+        "tel": "LHU"
+      },
+      {
+        "tel": "TZH"
+      }
+    ]
   }
 ]

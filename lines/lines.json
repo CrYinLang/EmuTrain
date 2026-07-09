@@ -2280,5 +2280,12 @@
     "author": "CR400BF-BS-5276",
     "icon": "bureau/广州铁路局.png",
     "page": "3"
+  },
+  {
+    "name": "台州市郊铁路",
+    "id": "route_1783576699958",
+    "author": "Yuebian",
+    "icon": "train/CRH6-2.png",
+    "page": "3"
   }
 ]
