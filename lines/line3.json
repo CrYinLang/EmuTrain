@@ -2001,5 +2001,283 @@
         "tel": "TZH"
       }
     ]
+  },
+  {
+    "id": "route_1783577950395",
+    "name": "台州市郊铁路",
+    "author": "Yuebian",
+    "icon": "train/CRH6-2.png",
+    "createdAt": "2026-07-09T14:19:10.395811",
+    "updatedAt": "2026-07-09T14:19:10.395812",
+    "stations": [
+      {
+        "tel": "XNU",
+        "mile": 39.0
+      },
+      {
+        "tel": "LHU",
+        "mile": 14.0
+      },
+      {
+        "tel": "BZHNAG",
+        "mile": 9.0
+      },
+      {
+        "tel": "TZH"
+      }
+    ]
+  },
+  {
+    "id": "route_1783580187679",
+    "name": "京广线",
+    "author": "燎川Leon",
+    "icon": "bureau/国铁集团.png",
+    "createdAt": "2026-07-09T14:56:27.679454",
+    "updatedAt": "2026-07-09T14:56:27.679455",
+    "stations": [
+      {
+        "tel": "FTP",
+        "mile": 20.4
+      },
+      {
+        "tel": "LAP",
+        "mile": 32.8
+      },
+      {
+        "tel": "ZXP",
+        "mile": 20.1
+      },
+      {
+        "tel": "GBP",
+        "mile": 37.7
+      },
+      {
+        "tel": "XSP",
+        "mile": 23.9
+      },
+      {
+        "tel": "BDP",
+        "mile": 32.8
+      },
+      {
+        "tel": "WDP",
+        "mile": 27.1
+      },
+      {
+        "tel": "DXP",
+        "mile": 56.7
+      },
+      {
+        "tel": "ZDP",
+        "mile": 18.5
+      },
+      {
+        "tel": "SJP",
+        "mile": 29.6
+      },
+      {
+        "tel": "YSP",
+        "mile": 18.2
+      },
+      {
+        "tel": "GIP",
+        "mile": 15.1
+      },
+      {
+        "tel": "UUP",
+        "mile": 47.0
+      },
+      {
+        "tel": "XTP",
+        "mile": 23.7
+      },
+      {
+        "tel": "VOP",
+        "mile": 29.1
+      },
+      {
+        "tel": "HDP",
+        "mile": 30.8
+      },
+      {
+        "tel": "CIP",
+        "mile": 29.0
+      },
+      {
+        "tel": "AYF",
+        "mile": 21.3
+      },
+      {
+        "tel": "TYF",
+        "mile": 18.8
+      },
+      {
+        "tel": "HAF",
+        "mile": 67.1
+      },
+      {
+        "tel": "XXF",
+        "mile": 40.0
+      },
+      {
+        "tel": "WEF",
+        "mile": 30.7
+      },
+      {
+        "tel": "NYF",
+        "mile": 8.4
+      },
+      {
+        "tel": "ZZF",
+        "mile": 45.8
+      },
+      {
+        "tel": "XNF",
+        "mile": 19.0
+      },
+      {
+        "tel": "CEF",
+        "mile": 21.5
+      },
+      {
+        "tel": "XCF",
+        "mile": 24.9
+      },
+      {
+        "tel": "LNF",
+        "mile": 28.9
+      },
+      {
+        "tel": "LON",
+        "mile": 21.4
+      },
+      {
+        "tel": "XPN",
+        "mile": 26.0
+      },
+      {
+        "tel": "SON",
+        "mile": 18.4
+      },
+      {
+        "tel": "ZDN",
+        "mile": 19.7
+      },
+      {
+        "tel": "QSN",
+        "mile": 37.7
+      },
+      {
+        "tel": "MGN",
+        "mile": 38.9
+      },
+      {
+        "tel": "XUN",
+        "mile": 60.1
+      },
+      {
+        "tel": "GSN",
+        "mile": 45.9
+      },
+      {
+        "tel": "HUN",
+        "mile": 33.5
+      },
+      {
+        "tel": "XGN",
+        "mile": 71.0
+      },
+      {
+        "tel": "HKN",
+        "mile": 18.6
+      },
+      {
+        "tel": "WCN",
+        "mile": 77.3
+      },
+      {
+        "tel": "XNN",
+        "mile": 40.0
+      },
+      {
+        "tel": "CBN",
+        "mile": 53.7
+      },
+      {
+        "tel": "LXQ",
+        "mile": 12.2
+      },
+      {
+        "tel": "LKQ",
+        "mile": 29.9
+      },
+      {
+        "tel": "YYQ",
+        "mile": 29.0
+      },
+      {
+        "tel": "RWQ",
+        "mile": 37.5
+      },
+      {
+        "tel": "MLQ",
+        "mile": 75.6
+      },
+      {
+        "tel": "CSQ",
+        "mile": 50.8
+      },
+      {
+        "tel": "ZZQ",
+        "mile": 83.1
+      },
+      {
+        "tel": "HSQ",
+        "mile": 49.2
+      },
+      {
+        "tel": "HYQ",
+        "mile": 62.3
+      },
+      {
+        "tel": "LYQ",
+        "mile": 82.2
+      },
+      {
+        "tel": "CZQ",
+        "mile": 61.1
+      },
+      {
+        "tel": "PSQ",
+        "mile": 38.1
+      },
+      {
+        "tel": "LCQ",
+        "mile": 49.2
+      },
+      {
+        "tel": "SGQ",
+        "mile": 82.5
+      },
+      {
+        "tel": "YDQ",
+        "mile": 67.3
+      },
+      {
+        "tel": "YTQ",
+        "mile": 40.5
+      },
+      {
+        "tel": "GBQ",
+        "mile": 23.5
+      },
+      {
+        "tel": "GBA",
+        "mile": 3.8
+      },
+      {
+        "tel": "GZQ"
+      }
+    ]
   }
 ]

@@ -1,16 +1,16 @@
 {
   "LastUpdate": "260709",
-  "Version": "1.2.60",
-  "Build": "1260",
+  "Version": "1.2.65",
+  "Build": "1265",
   "minVersion": "1220",
   "message": "",
   "StationBuild": "20260709001",
   "TrainBuild": "20260709001",
   "CoachTrainBuild": "20260705001",
   "LocoBuild": "20260705001",
-  "github": "https://gh-proxy.com/https://github.com/CrYinLang/EmuTrain/releases/download/1.2.6.0/app-release.apk",
-  "gitee": "https://gitee.com/CrYinLang/EmuTrain/releases/download/1.2.6.0/app-release.apk",
+  "github": "https://gh-proxy.com/https://github.com/CrYinLang/EmuTrain/releases/download/1.2.6.5/app-release.apk",
+  "gitee": "https://gitee.com/CrYinLang/EmuTrain/releases/download/1.2.6.5/app-release.apk",
   "qq": "https://qm.qq.com/q/fk5M9PJGyk",
-  "describe": "添加了12306官方车站数据，添加了几个新的车站，优化了旅途页结构，加强测速器添加大量功能",
+  "describe": "添加了LBJ列车预警器，添加了AI功能，添加了车站停靠列车查询功能，优化了添加旅途页结构，优化测速器",
   "Announcement": "QQ667933194\n网站:https://emutrain.github.io/"
 }
