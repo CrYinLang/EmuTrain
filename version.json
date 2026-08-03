@@ -1,16 +1,16 @@
 {
-    "LastUpdate": "260717",
-    "Version": "1.2.67",
+    "LastUpdate": "260810",
+    "Version": "1.2.8.0",
     "Build": "1267",
     "minVersion": "1250",
     "message": "",
     "StationBuild": "20260714001",
-    "TrainBuild": "20260714001",
+    "TrainBuild": "20260802001",
     "CoachTrainBuild": "20260705001",
     "LocoBuild": "20260705001",
-    "github": "https://gh-proxy.com/https://github.com/CrYinLang/EmuTrain/releases/download/1.2.6.6/app-release.apk",
-    "gitee": "https://gitee.com/CrYinLang/EmuTrain/releases/download/1.2.6.6/app-release.apk",
+    "github": "https://gh-proxy.com/https://github.com/CrYinLang/EmuTrain/releases/download/1.2.8.0/app-release.apk",
+    "gitee": "https://gitee.com/CrYinLang/EmuTrain/releases/download/1.2.8.0/app-release.apk",
     "qq": "https://qm.qq.com/q/fk5M9PJGyk",
-    "describe": "1267版本更新啦，这次是本次更新内容:\n1.加强AI功能，经过邀请码后的AI可以使用图片功能\n2.允许用户自行使用第三方AI\n3.优化了LBJ预警器的功能，增加了来车震动\n4.优化地图功能，支持与LBJ功能联动\n5.GPS测速允许调节跨站距离提示\n6.增加了车站经停功能，可以看到车站所有列车\n7.增加途径站功能，可根据车次号查看列车通过车站线路\n8.添加拍车集卡功能，可导入图片记笔记，自动排序\n9.更新了一波配属，修复了几个车站问题\n10.重做了部分图标\n11.优化了部分逻辑\n12.重构线路处下载线路的卡顿，下载速度大幅提升\n13.GPS定位可以智能压缩，默认打开，可在设置关闭和选择精度",
+    "describe": "",
     "Announcement": "QQ667933194\n网站:https://emutrain.github.io/"
 }
